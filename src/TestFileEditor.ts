@@ -9,7 +9,6 @@ export class TestFileEditor {
 
     constructor(fileUri: Uri) {
         this._uri = fileUri;
-        this.getFormattedPath();
     }
 
     public addTestFileToContextLine(): void {
@@ -19,7 +18,9 @@ export class TestFileEditor {
             }
             this.backUpTestFile(data);
 
-            data.replace(this._lineRegex, "");
+            const contextRegex = /context\(.*\);$/m;
+
+            data.replace(contextRegex, `context('./', true, /${this.getFormattedPath()}$/);`);
 
         });
     }
@@ -41,6 +42,6 @@ export class TestFileEditor {
     private getFormattedPath(): string {
         const relativePath = workspace.asRelativePath(this._uri);
 
-       return relativePath.replace("/", "\\/").replace(".", "\\.");
+        return relativePath.replace("/", "\\/").replace(".", "\\.");
     }
 }
