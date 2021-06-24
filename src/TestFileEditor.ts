@@ -5,6 +5,7 @@ import { LineNotFoundInFileError } from "./exceptions/LineNotFoundInFileError";
 export class TestFileEditor {
     private testFileLocation: Uri;
     private lineToReplaceRegex: RegExp = /^const context = require\.context.*/m;
+    private lineToReplaceInitialValue: string;
 
     constructor(fileUri: Uri) {
         this.testFileLocation = fileUri;
@@ -15,9 +16,8 @@ export class TestFileEditor {
             if (readErr) {
                 throw new Error(readErr.message);
             }
-            if (!data.match(this.lineToReplaceRegex)) {
-                throw new LineNotFoundInFileError("Error: unable to find require.context in test.ts");
-            }
+            this.backUpTestFile(data);
+
             data.replace(this.lineToReplaceRegex, "");
 
         });
@@ -27,7 +27,17 @@ export class TestFileEditor {
 
     }
 
-    private backUpTestFile(): void {
+    private backUpTestFile(data: string): void {
+        const matches = data.match(this.lineToReplaceRegex);
 
+        if (matches === null) {
+            throw new LineNotFoundInFileError("Error: unable to find require.context in test.ts");
+        }
+
+        this.lineToReplaceInitialValue = matches[0];
+    }
+
+    private getRelativePath(): string {
+        const relativePath
     }
 }
