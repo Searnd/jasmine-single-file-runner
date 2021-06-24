@@ -9,7 +9,7 @@ export class TestFileEditor {
 
     constructor(fileUri: Uri) {
         this._uri = fileUri;
-        this.getRelativePath();
+        this.getFormattedPath();
     }
 
     public addTestFileToContextLine(): void {
@@ -38,7 +38,9 @@ export class TestFileEditor {
         this._lineInitialValue = matches[0];
     }
 
-    private getRelativePath(): string {
-        return workspace.asRelativePath(this._uri);
+    private getFormattedPath(): string {
+        const relativePath = workspace.asRelativePath(this._uri);
+
+       return relativePath.replace("/", "\\/").replace(".", "\\.");
     }
 }
