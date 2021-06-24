@@ -3,16 +3,18 @@ import * as fs from 'fs';
 import { LineNotFoundInFileError } from "./exceptions/LineNotFoundInFileError";
 
 export class TestFileEditor {
-    private _uri: Uri;
+    private _testFileUri: Uri;
+
     private _lineRegex: RegExp = /^const context = require\.context.*/m;
+
     private _lineInitialValue: string = "";
 
     constructor(fileUri: Uri) {
-        this._uri = fileUri;
+        this._testFileUri = fileUri;
     }
 
-    public addTestFileToContextLine(): void {
-        fs.readFile(this._uri.fsPath, {encoding: 'utf8'}, (readErr, data) => {
+    public addTestFileToContextLine(specFileUri: Uri): void {
+        fs.readFile(this._testFileUri.fsPath, {encoding: 'utf8'}, (readErr, data) => {
             if (readErr) {
                 throw new Error(readErr.message);
             }
@@ -20,7 +22,7 @@ export class TestFileEditor {
 
             const contextRegex = /context\(.*\);$/m;
 
-            data.replace(contextRegex, `context('./', true, /${this.getFormattedPath()}$/);`);
+            data.replace(contextRegex, `context('./', true, /${this.getFormattedPath(specFileUri)}$/);`);
 
         });
     }
@@ -39,8 +41,8 @@ export class TestFileEditor {
         this._lineInitialValue = matches[0];
     }
 
-    private getFormattedPath(): string {
-        const relativePath = workspace.asRelativePath(this._uri);
+    private getFormattedPath(uri: Uri): string {
+        const relativePath = workspace.asRelativePath(uri);
 
         return relativePath.replace("/", "\\/").replace(".", "\\.");
     }
