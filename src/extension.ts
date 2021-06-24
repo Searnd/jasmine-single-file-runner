@@ -13,13 +13,15 @@ export function activate(context: vscode.ExtensionContext) {
 
 	const commandRegistrar = new CommandRegistrar(context);
 
-	commandRegistrar.registerTextEditorCommand('jsfr.testCurrentFile', async () => {
+	commandRegistrar.registerTextEditorCommand('jsfr.testCurrentFile', async (textEditor) => {
 		vscode.window.showInformationMessage('Executing tests for current file...');
 		try {
 			const testFileFinder = new TestFileFinder();
 			const testFileUri = await testFileFinder.getTestFileLocation();
 
 			const testFileEditor = new TestFileEditor(testFileUri);
+			testFileEditor.addTestFileToContextLine(textEditor.document.uri);
+
 			vscode.window.showInformationMessage("Success!");
 		}
 		catch(e) {

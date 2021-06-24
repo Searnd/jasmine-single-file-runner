@@ -22,7 +22,13 @@ export class TestFileEditor {
 
             const contextRegex = /context\(.*\);$/m;
 
-            data.replace(contextRegex, `context('./', true, /${this.getFormattedPath(specFileUri)}$/);`);
+            const newFileContent = data.replace(contextRegex, `context('./', true, /${this.getFormattedPath(specFileUri)}$/);`);
+
+            fs.writeFile(this._testFileUri.fsPath, newFileContent, 'utf8', (writeErr) => {
+                if (writeErr) {
+                    throw new Error(writeErr.message);
+                }
+            });
 
         });
     }
