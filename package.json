@@ -28,7 +28,8 @@
 		"menus": {
 			"editor/context": [
 				{
-					"command": "jsfr.testCurrentFile"
+					"command": "jsfr.testCurrentFile",
+					"when": "resourceFilename =~ /\\.spec\\.ts$/"
 				}
 			]
 		}
