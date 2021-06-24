@@ -10,16 +10,11 @@
 		"Other"
 	],
 	"activationEvents": [
-        "onCommand:jsfr.helloWorld",
 		"onCommand:jsfr.testCurrentFile"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
-			{
-				"command": "jsfr.helloWorld",
-				"title": "jsfr: Hello World"
-			},
 			{
 				"command": "jsfr.testCurrentFile",
 				"title": "jsfr: Test Current File"

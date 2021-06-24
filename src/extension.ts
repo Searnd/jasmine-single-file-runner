@@ -1,7 +1,9 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import { CommandRegistrar } from './CommandRegistrar';
 import { FileNotFoundError } from './exceptions/FileNotFoundError';
+import { LineNotFoundInFileError } from './exceptions/LineNotFoundInFileError';
 import { TestFileEditor } from './TestFileEditor';
 import { TestFileFinder } from './TestFileFinder';
 
@@ -9,23 +11,9 @@ import { TestFileFinder } from './TestFileFinder';
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 
-	function registerCommand(command: string, callback: () => void): void {
-		const disposable = vscode.commands.registerCommand(command, callback);
+	const commandRegistrar = new CommandRegistrar(context);
 
-		context.subscriptions.push(disposable);
-	}
-
-	function registerTextEditorCommand(command: string, callback: () => void): void {
-		const disposable = vscode.commands.registerTextEditorCommand(command, callback);
-
-		context.subscriptions.push(disposable);
-	}
-
-	registerCommand('jsfr.helloWorld', () => {
-		vscode.window.showInformationMessage('Hello World from Jasmine Single File Runner!');
-	});
-
-	registerTextEditorCommand('jsfr.testCurrentFile', async () => {
+	commandRegistrar.registerTextEditorCommand('jsfr.testCurrentFile', async () => {
 		vscode.window.showInformationMessage('Executing tests for current file...');
 		try {
 			const testFileFinder = new TestFileFinder();
@@ -35,7 +23,7 @@ export function activate(context: vscode.ExtensionContext) {
 			vscode.window.showInformationMessage("Success!");
 		}
 		catch(e) {
-			if (e instanceof FileNotFoundError) {
+			if (e instanceof FileNotFoundError || e instanceof LineNotFoundInFileError) {
 				vscode.window.showErrorMessage(e.message);
 			} else {
 				throw e;
