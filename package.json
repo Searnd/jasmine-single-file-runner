@@ -16,10 +16,18 @@
 	"contributes": {
 		"commands": [
 			{
-				"command": "jasmine-single-file-runner.helloWorld",
+				"command": "jsfr.helloWorld",
 				"title": "Hello World"
 			}
-		]
+		],
+		"menus": {
+			"editor/context": [
+				{
+					"command": "jsfr.testCurrentFile",
+					"when": "resourceExtname == .spec.ts"
+				}
+			]
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
