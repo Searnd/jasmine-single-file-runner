@@ -20,7 +20,7 @@ export function activate(context: vscode.ExtensionContext) {
 			const testFileUri = await testFileFinder.getTestFileLocation();
 
 			const testFileEditor = new TestFileEditor(testFileUri);
-			testFileEditor.addTestFileToContextLine(textEditor.document.uri);
+			testFileEditor.addSpecFileToContextLine(textEditor.document.uri);
 
 			vscode.window.showInformationMessage("Success!");
 		}
