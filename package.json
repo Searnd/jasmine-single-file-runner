@@ -1,5 +1,5 @@
 {
-  "name": "jasmine-single-file-runner",
+  "name": "jsfr",
 	"displayName": "Jasmine Single File Runner",
 	"description": "",
 	"version": "0.0.1",
@@ -10,21 +10,25 @@
 		"Other"
 	],
 	"activationEvents": [
-        "onCommand:jasmine-single-file-runner.helloWorld"
+        "onCommand:jsfr.helloWorld",
+		"onCommand:jsfr.testCurrentFile"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
 				"command": "jsfr.helloWorld",
-				"title": "Hello World"
+				"title": "jsfr: Hello World"
+			},
+			{
+				"command": "jsfr.testCurrentFile",
+				"title": "jsfr: Test Current File"
 			}
 		],
 		"menus": {
 			"editor/context": [
 				{
-					"command": "jsfr.testCurrentFile",
-					"when": "resourceExtname == .spec.ts"
+					"command": "jsfr.testCurrentFile"
 				}
 			]
 		}
