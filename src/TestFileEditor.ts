@@ -1,24 +1,25 @@
-import { Uri } from "vscode";
+import { Uri, workspace } from "vscode";
 import * as fs from 'fs';
 import { LineNotFoundInFileError } from "./exceptions/LineNotFoundInFileError";
 
 export class TestFileEditor {
-    private testFileLocation: Uri;
-    private lineToReplaceRegex: RegExp = /^const context = require\.context.*/m;
-    private lineToReplaceInitialValue: string;
+    private _uri: Uri;
+    private _lineRegex: RegExp = /^const context = require\.context.*/m;
+    private _lineInitialValue: string = "";
 
     constructor(fileUri: Uri) {
-        this.testFileLocation = fileUri;
+        this._uri = fileUri;
+        this.getRelativePath();
     }
 
     public addTestFileToContextLine(): void {
-        fs.readFile(this.testFileLocation.fsPath, {encoding: 'utf8'}, (readErr, data) => {
+        fs.readFile(this._uri.fsPath, {encoding: 'utf8'}, (readErr, data) => {
             if (readErr) {
                 throw new Error(readErr.message);
             }
             this.backUpTestFile(data);
 
-            data.replace(this.lineToReplaceRegex, "");
+            data.replace(this._lineRegex, "");
 
         });
     }
@@ -28,16 +29,16 @@ export class TestFileEditor {
     }
 
     private backUpTestFile(data: string): void {
-        const matches = data.match(this.lineToReplaceRegex);
+        const matches = data.match(this._lineRegex);
 
         if (matches === null) {
             throw new LineNotFoundInFileError("Error: unable to find require.context in test.ts");
         }
 
-        this.lineToReplaceInitialValue = matches[0];
+        this._lineInitialValue = matches[0];
     }
 
     private getRelativePath(): string {
-        const relativePath
+        return workspace.asRelativePath(this._uri);
     }
 }
