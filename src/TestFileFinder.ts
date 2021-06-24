@@ -1,4 +1,4 @@
-import { workspace } from 'vscode';
+import { Uri, workspace } from 'vscode';
 import { FileNotFoundError } from './exceptions/FileNotFoundError';
 
 export class TestFileFinder {
