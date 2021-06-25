@@ -14,6 +14,8 @@ Must have VS Code open in an angular project.
 
 ---
 
-### 0.1.0
+### 0.1.1
+Fix bug where no spec files were being detected
 
+### 0.1.0
 Initial release of JSFR.
