@@ -2,6 +2,7 @@ import { Uri, workspace } from "vscode";
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import { LineNotFoundInFileError } from "./exceptions/LineNotFoundInFileError";
+import path = require("path");
 
 // TODO: improve cohesion by extracting methods
 export class TestFileEditor {
@@ -73,5 +74,9 @@ export class TestFileEditor {
         relativePath = relativePath.slice("src/".length);
 
         return relativePath.replace(/\//g, "\\/").replace(/\./g, "\\.");
+    }
+
+    private getSpecFileName(): string {
+        return path.basename(this._specFile.fileName);
     }
 }
