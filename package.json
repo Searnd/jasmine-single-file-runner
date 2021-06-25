@@ -26,6 +26,12 @@
 					"command": "jsfr.testCurrentFile",
 					"when": "resourceFilename =~ /\\.spec\\.ts$/"
 				}
+			],
+			"explorer/context": [
+				{
+					"command": "jsfr.testCurrentFile",
+					"when": "resourceFilename =~ /\\.spec\\.ts$/"
+				}
 			]
 		}
 	},
