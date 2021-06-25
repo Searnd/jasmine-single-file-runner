@@ -28,9 +28,11 @@ export class TestFileEditor {
 
             const contextRegex = /context\(.*\);$/m;
 
+            const formattedDirname = this.removePathPrefix(this.getSpecFileDir());
+
             const formattedSpecFilename = this.cleanupRegexString(this.getSpecFilename());
 
-            const newFileContent = data.replace(contextRegex, `context('./${this.getSpecFileDir()}', false, /${formattedSpecFilename}$/);`);
+            const newFileContent = data.replace(contextRegex, `context('./${formattedDirname}', false, /${formattedSpecFilename}$/);`);
 
             fs.writeFile(this._testFileUri.fsPath, newFileContent, 'utf8', (writeErr) => {
                 if (writeErr) {
@@ -63,8 +65,8 @@ export class TestFileEditor {
         this._contextLineInitialValue = data;
     }
 
-    private getFormattedPath(uri: Uri): string {
-        let relativePath = workspace.asRelativePath(uri, false);
+    private removePathPrefix(path: string): string {
+        let relativePath = workspace.asRelativePath(path, false);
         const matches = relativePath.match(/src\/app\/.*/);
 
         if (!matches) {
@@ -74,7 +76,7 @@ export class TestFileEditor {
         relativePath = (matches as RegExpMatchArray)[0];
         relativePath = relativePath.slice("src/".length);
 
-        return this.cleanupRegexString(relativePath);
+        return relativePath;
     }
 
     private getSpecFileDir(): string {
