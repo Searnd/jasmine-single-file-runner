@@ -1,19 +1,25 @@
 import { Uri, workspace } from "vscode";
+import * as vscode from 'vscode';
 import * as fs from 'fs';
 import { LineNotFoundInFileError } from "./exceptions/LineNotFoundInFileError";
+import path = require("path");
 
+// TODO: improve cohesion by extracting methods
 export class TestFileEditor {
     private _testFileUri: Uri;
+
+    private _specFile: vscode.TextDocument;
 
     private _contextLineRegex: RegExp = /^const context = require\.context.*/m;
 
     private _contextLineInitialValue: string = "";
 
-    constructor(fileUri: Uri) {
-        this._testFileUri = fileUri;
+    constructor(testFileUri: Uri, specFile: vscode.TextDocument) {
+        this._testFileUri = testFileUri;
+        this._specFile = specFile;
     }
 
-    public addSpecFileToContextLine(specFileUri: Uri): void {
+    public addSpecFileToContextLine(): void {
         fs.readFile(this._testFileUri.fsPath, {encoding: 'utf8'}, (readErr, data) => {
             if (readErr) {
                 throw new Error(readErr.message);
@@ -22,7 +28,11 @@ export class TestFileEditor {
 
             const contextRegex = /context\(.*\);$/m;
 
-            const newFileContent = data.replace(contextRegex, `context('./', true, /${this.getFormattedPath(specFileUri)}$/);`);
+            const formattedDirname = this.removePathPrefix(this.getSpecFileDir());
+
+            const formattedSpecFilename = this.cleanupRegexString(this.getSpecFilename());
+
+            const newFileContent = data.replace(contextRegex, `context('./${formattedDirname}', false, /${formattedSpecFilename}$/);`);
 
             fs.writeFile(this._testFileUri.fsPath, newFileContent, 'utf8', (writeErr) => {
                 if (writeErr) {
@@ -55,9 +65,8 @@ export class TestFileEditor {
         this._contextLineInitialValue = data;
     }
 
-    // Only works on Windows
-    private getFormattedPath(uri: Uri): string {
-        let relativePath = workspace.asRelativePath(uri, false);
+    private removePathPrefix(path: string): string {
+        let relativePath = workspace.asRelativePath(path, false);
         const matches = relativePath.match(/src\/app\/.*/);
 
         if (!matches) {
@@ -67,6 +76,19 @@ export class TestFileEditor {
         relativePath = (matches as RegExpMatchArray)[0];
         relativePath = relativePath.slice("src/".length);
 
-        return relativePath.replace(/\//g, "\\/").replace(/\./g, "\\.");
+        return relativePath;
+    }
+
+    private getSpecFileDir(): string {
+        const dirname = path.dirname(this._specFile.fileName);
+        return workspace.asRelativePath(dirname);
+    }
+
+    private getSpecFilename(): string {
+        return path.basename(this._specFile.fileName);
+    }
+
+    private cleanupRegexString(regexStr: string): string {
+        return regexStr.replace(/\//g, "\\/").replace(/\./g, "\\.");
     }
 }

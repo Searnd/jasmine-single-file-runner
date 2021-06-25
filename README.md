@@ -14,6 +14,9 @@ Must have VS Code open in an angular project.
 
 ---
 
+### 0.2.0
+Spec file detection is no longer recursive
+
 ### 0.1.1
 Fix bug where no spec files were being detected
 
