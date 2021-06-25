@@ -58,13 +58,14 @@ export class TestFileEditor {
     // Only works on Windows
     private getFormattedPath(uri: Uri): string {
         let relativePath = workspace.asRelativePath(uri, false);
-        const matches = relativePath.match(/src\/.*/);
+        const matches = relativePath.match(/src\/app\/.*/);
 
         if (!matches) {
             throw new LineNotFoundInFileError("Error: unable to parse path to spec file");
         }
 
         relativePath = (matches as RegExpMatchArray)[0];
+        relativePath = relativePath.slice("src/".length);
 
         return relativePath.replace(/\//g, "\\/").replace(/\./g, "\\.");
     }
