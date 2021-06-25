@@ -61,7 +61,6 @@ export class TestFileEditor {
         this._contextLineInitialValue = data;
     }
 
-    // Only works on Windows
     private getFormattedPath(uri: Uri): string {
         let relativePath = workspace.asRelativePath(uri, false);
         const matches = relativePath.match(/src\/app\/.*/);
@@ -74,6 +73,10 @@ export class TestFileEditor {
         relativePath = relativePath.slice("src/".length);
 
         return this.cleanupRegexString(relativePath);
+    }
+
+    private getSpecFileDir(): string {
+        return path.dirname(this._specFile.fileName);
     }
 
     private getSpecFileName(): string {
