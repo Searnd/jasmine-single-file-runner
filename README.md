@@ -14,6 +14,9 @@ Must have VS Code open in an angular project.
 
 ---
 
+### 0.2.1
+Fix bug causing app.component.spec.ts to not be properly added to the context path
+
 ### 0.2.0
 Spec file detection is no longer recursive
 
