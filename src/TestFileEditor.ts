@@ -73,10 +73,14 @@ export class TestFileEditor {
         relativePath = (matches as RegExpMatchArray)[0];
         relativePath = relativePath.slice("src/".length);
 
-        return relativePath.replace(/\//g, "\\/").replace(/\./g, "\\.");
+        return this.cleanupRegexString(relativePath);
     }
 
     private getSpecFileName(): string {
         return path.basename(this._specFile.fileName);
+    }
+
+    private cleanupRegexString(regexStr: string): string {
+        return regexStr.replace(/\//g, "\\/").replace(/\./g, "\\.");
     }
 }
