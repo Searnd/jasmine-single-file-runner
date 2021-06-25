@@ -10,7 +10,8 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:jsfr.testCurrentFile"
+		"onCommand:jsfr.testCurrentFile",
+		"onCommand:workbench.action.tasks.runTask"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -35,7 +36,10 @@
 					"group": "0_jsfr"
 				}
 			]
-		}
+		},
+		"taskDefinitions": [
+			{ "type": "ngTest" }
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
