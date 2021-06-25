@@ -16,8 +16,6 @@ export class TestFileEditor {
     constructor(testFileUri: Uri, specFile: vscode.TextDocument) {
         this._testFileUri = testFileUri;
         this._specFile = specFile;
-
-        this.addSaveListener();
     }
 
     public addSpecFileToContextLine(specFileUri: Uri): void {
@@ -75,13 +73,5 @@ export class TestFileEditor {
         relativePath = relativePath.slice("src/".length);
 
         return relativePath.replace(/\//g, "\\/").replace(/\./g, "\\.");
-    }
-
-    private addSaveListener(): void {
-        workspace.onDidSaveTextDocument(textDoc => {
-            if (textDoc.uri === this._specFile.uri) {
-                // copy spec file
-            }
-        });
     }
 }
