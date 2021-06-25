@@ -80,7 +80,8 @@ export class TestFileEditor {
     }
 
     private getSpecFileDir(): string {
-        return path.dirname(this._specFile.fileName);
+        const dirname = path.dirname(this._specFile.fileName);
+        return workspace.asRelativePath(dirname);
     }
 
     private getSpecFilename(): string {
