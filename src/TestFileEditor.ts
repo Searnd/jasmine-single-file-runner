@@ -9,8 +9,8 @@ export class TestFileEditor {
 
     private _contextLineInitialValue: string = "";
 
-    constructor(fileUri: Uri) {
-        this._testFileUri = fileUri;
+    constructor(testFileUri: Uri) {
+        this._testFileUri = testFileUri;
     }
 
     public addSpecFileToContextLine(specFileUri: Uri): void {
@@ -22,7 +22,7 @@ export class TestFileEditor {
 
             const contextRegex = /context\(.*\);$/m;
 
-            const newFileContent = data.replace(contextRegex, `context('./', true, /${this.getFormattedPath(specFileUri)}$/);`);
+            const newFileContent = data.replace(contextRegex, `context('./', false, /${this.getFormattedPath(specFileUri)}$/);`);
 
             fs.writeFile(this._testFileUri.fsPath, newFileContent, 'utf8', (writeErr) => {
                 if (writeErr) {
