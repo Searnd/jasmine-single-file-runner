@@ -35,7 +35,7 @@ export class TestFileEditor {
 
     public restoreContextLine(): void {
         if (!this._contextLineInitialValue.length) {
-            throw new LineNotFoundInFileError("Error: attempting to restore line before it was found");
+            throw new LineNotFoundInFileError("Error: line not found. Nothing to restore.");
         }
 
         fs.writeFile(this._testFileUri.fsPath, this._contextLineInitialValue, 'utf8', (writeErr) => {
@@ -52,7 +52,7 @@ export class TestFileEditor {
             throw new LineNotFoundInFileError("Error: unable to find require.context in test.ts");
         }
 
-        this._contextLineInitialValue = matches[0];
+        this._contextLineInitialValue = data;
     }
 
     // Only works on Windows
