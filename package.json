@@ -17,20 +17,22 @@
 		"commands": [
 			{
 				"command": "jsfr.testCurrentFile",
-				"title": "jsfr: Test Current File"
+				"title": "JSFR: Test Current File"
 			}
 		],
 		"menus": {
 			"editor/context": [
 				{
 					"command": "jsfr.testCurrentFile",
-					"when": "resourceFilename =~ /\\.spec\\.ts$/"
+					"when": "resourceFilename =~ /\\.spec\\.ts$/",
+					"group": "0_jsfr"
 				}
 			],
 			"explorer/context": [
 				{
 					"command": "jsfr.testCurrentFile",
-					"when": "resourceFilename =~ /\\.spec\\.ts$/"
+					"when": "resourceFilename =~ /\\.spec\\.ts$/",
+					"group": "0_jsfr"
 				}
 			]
 		}
