@@ -5,9 +5,11 @@ import * as vscode from 'vscode';
 import { CommandRegistrar } from './CommandRegistrar';
 import { FileNotFoundError } from './exceptions/FileNotFoundError';
 import { LineNotFoundInFileError } from './exceptions/LineNotFoundInFileError';
+import { TaskRegistrar } from './TaskRegistrar';
 import { TestFileEditor } from './TestFileEditor';
 import { TestFileFinder } from './TestFileFinder';
-import { TestRunner } from './TestRunner';
+
+let ngTestProvider: vscode.Disposable | undefined;
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -24,14 +26,16 @@ export function activate(context: vscode.ExtensionContext) {
 			const testFileEditor = new TestFileEditor(testFileUri);
 			testFileEditor.addSpecFileToContextLine(textEditor.document.uri);
 
+			const taskRegistrar = new TaskRegistrar();
 			const specFileDirectory = path.dirname(textEditor.document.uri.fsPath);
-			const testRunner = new TestRunner(specFileDirectory);
-			testRunner.execTests(() => {
-				testFileEditor.restoreContextLine();
-			}).then(
-				() => { vscode.window.showInformationMessage("Success!"); },
-				() => { vscode.window.showErrorMessage("Error: unable to run ng test"); }
-			);
+			taskRegistrar.registerTaskProvider("ngTest", "ng test", specFileDirectory);
+			// const testRunner = new TestRunner(specFileDirectory);
+			// testRunner.execTests(() => {
+			// 	testFileEditor.restoreContextLine();
+			// }).then(
+			// 	() => { vscode.window.showInformationMessage("Success!"); },
+			// 	() => { vscode.window.showErrorMessage("Error: unable to run ng test"); }
+			// );
 		}
 		catch(e) {
 			if (e instanceof FileNotFoundError || e instanceof LineNotFoundInFileError) {
@@ -44,4 +48,6 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() {
+	ngTestProvider?.dispose();
+}
