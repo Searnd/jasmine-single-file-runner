@@ -19,7 +19,7 @@ export class TestFileEditor {
         this._specFile = specFile;
     }
 
-    public addSpecFileToContextLine(specFileUri: Uri): void {
+    public addSpecFileToContextLine(): void {
         fs.readFile(this._testFileUri.fsPath, {encoding: 'utf8'}, (readErr, data) => {
             if (readErr) {
                 throw new Error(readErr.message);
@@ -28,7 +28,9 @@ export class TestFileEditor {
 
             const contextRegex = /context\(.*\);$/m;
 
-            const newFileContent = data.replace(contextRegex, `context('./', false, /${this.getFormattedPath(specFileUri)}$/);`);
+            const formattedSpecFilename = this.cleanupRegexString(this.getSpecFilename());
+
+            const newFileContent = data.replace(contextRegex, `context('./${this.getSpecFileDir()}', false, /${formattedSpecFilename}$/);`);
 
             fs.writeFile(this._testFileUri.fsPath, newFileContent, 'utf8', (writeErr) => {
                 if (writeErr) {
@@ -79,7 +81,7 @@ export class TestFileEditor {
         return path.dirname(this._specFile.fileName);
     }
 
-    private getSpecFileName(): string {
+    private getSpecFilename(): string {
         return path.basename(this._specFile.fileName);
     }
 
