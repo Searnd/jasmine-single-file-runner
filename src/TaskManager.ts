@@ -7,15 +7,13 @@ export class TaskManager {
         this._type = type;
     }
 
-    public registerTaskProvider(commandLine: string, cwd?: string): vscode.Disposable {
+    public registerTaskProvider(name: string, commandLine: string, cwd: string): vscode.Disposable {
         return vscode.tasks.registerTaskProvider(this._type, {
             provideTasks: () => {
                 const execution = new vscode.ShellExecution(commandLine, {cwd});
-                const task = new vscode.Task({type: this._type}, vscode.TaskScope.Workspace, "ng test", "jsfr", execution);
+                const task = new vscode.Task({type: this._type}, vscode.TaskScope.Workspace, name, "jsfr", execution);
 
-                return [
-                    task
-                ];
+                return [task];
             },
             resolveTask: (task) => {
                 return task;

@@ -5,7 +5,7 @@ import * as vscode from 'vscode';
 import { CommandRegistrar } from './CommandRegistrar';
 import { FileNotFoundError } from './exceptions/FileNotFoundError';
 import { LineNotFoundInFileError } from './exceptions/LineNotFoundInFileError';
-import { TaskRegistrar } from './TaskRegistrar';
+import { TaskManager } from './TaskManager';
 import { TestFileEditor } from './TestFileEditor';
 import { TestFileFinder } from './TestFileFinder';
 
@@ -18,7 +18,7 @@ export function activate(context: vscode.ExtensionContext) {
 	const commandRegistrar = new CommandRegistrar(context);
 
 	commandRegistrar.registerTextEditorCommand('jsfr.testCurrentFile', async (textEditor) => {
-		vscode.window.showInformationMessage('Executing tests for current file...');
+		vscode.window.showInformationMessage('Preparing...');
 		try {
 			const testFileFinder = new TestFileFinder();
 			const testFileUri = await testFileFinder.getTestFileLocation();
@@ -26,16 +26,22 @@ export function activate(context: vscode.ExtensionContext) {
 			const testFileEditor = new TestFileEditor(testFileUri);
 			testFileEditor.addSpecFileToContextLine(textEditor.document.uri);
 
-			const taskRegistrar = new TaskRegistrar();
+			const taskType = "ngTest";
+			const taskManager = new TaskManager(taskType);
+			
 			const specFileDirectory = path.dirname(textEditor.document.uri.fsPath);
-			taskRegistrar.registerTaskProvider("ngTest", "ng test", specFileDirectory);
-			// const testRunner = new TestRunner(specFileDirectory);
-			// testRunner.execTests(() => {
-			// 	testFileEditor.restoreContextLine();
-			// }).then(
-			// 	() => { vscode.window.showInformationMessage("Success!"); },
-			// 	() => { vscode.window.showErrorMessage("Error: unable to run ng test"); }
-			// );
+
+			ngTestProvider = taskManager.registerTaskProvider(taskType, "ng test", specFileDirectory);
+
+			const ngTestTask = await taskManager.getTask(taskType);
+			if (ngTestTask) {
+				vscode.tasks.executeTask(ngTestTask).then(
+					() => { vscode.window.showInformationMessage("Executing tests!"); },
+					() => { vscode.window.showErrorMessage("Error: unable to run ng test"); }
+				);
+			} else {
+				vscode.window.showErrorMessage("Error: task not properly registered");
+			}
 		}
 		catch(e) {
 			if (e instanceof FileNotFoundError || e instanceof LineNotFoundInFileError) {
