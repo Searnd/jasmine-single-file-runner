@@ -67,7 +67,7 @@ export class TestFileEditor {
 
     private removePathPrefix(path: string): string {
         let relativePath = workspace.asRelativePath(path, false);
-        const matches = relativePath.match(/src\/app\/.*/);
+        const matches = relativePath.match(/src\/app.*/);
 
         if (!matches) {
             throw new LineNotFoundInFileError("Error: unable to parse path to spec file");

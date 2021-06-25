@@ -2,6 +2,9 @@
   "name": "jsfr",
 	"displayName": "Jasmine Single File Runner",
 	"publisher": "AndresFlores",
+	"author": {
+		"name": "Andres Flores"
+	},
 	"description": "",
 	"version": "0.2.0",
 	"engines": {
