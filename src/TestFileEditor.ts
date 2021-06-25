@@ -1,16 +1,20 @@
 import { Uri, workspace } from "vscode";
+import * as vscode from 'vscode';
 import * as fs from 'fs';
 import { LineNotFoundInFileError } from "./exceptions/LineNotFoundInFileError";
 
 export class TestFileEditor {
     private _testFileUri: Uri;
 
+    private _specFile: vscode.TextDocument;
+
     private _contextLineRegex: RegExp = /^const context = require\.context.*/m;
 
     private _contextLineInitialValue: string = "";
 
-    constructor(testFileUri: Uri) {
+    constructor(testFileUri: Uri, specFile: vscode.TextDocument) {
         this._testFileUri = testFileUri;
+        this._specFile = specFile;
     }
 
     public addSpecFileToContextLine(specFileUri: Uri): void {

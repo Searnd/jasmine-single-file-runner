@@ -23,7 +23,7 @@ export function activate(context: vscode.ExtensionContext) {
 			const testFileFinder = new TestFileFinder();
 			const testFileUri = await testFileFinder.getTestFileLocation();
 
-			const testFileEditor = new TestFileEditor(testFileUri);
+			const testFileEditor = new TestFileEditor(testFileUri, textEditor.document);
 			testFileEditor.addSpecFileToContextLine(textEditor.document.uri);
 
 			const taskType = "ngTest";
