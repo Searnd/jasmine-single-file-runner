@@ -42,6 +42,12 @@ export function activate(context: vscode.ExtensionContext) {
 			} else {
 				vscode.window.showErrorMessage("Error: task not properly registered");
 			}
+
+			vscode.tasks.onDidEndTask((e) => {
+				if (e.execution.task.name === taskType) {
+					testFileEditor.restoreContextLine();
+				}
+			});
 		}
 		catch(e) {
 			if (e instanceof FileNotFoundError || e instanceof LineNotFoundInFileError) {
