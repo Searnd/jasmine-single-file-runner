@@ -8,6 +8,8 @@ Execute tests by simply right-clicking anywhere in a `.spec.ts` file and selecti
 
 ## Requirements
 
+Must have VS Code version 1.57.0 or higher.
+
 Must have VS Code open in an angular project.
 
 ---
