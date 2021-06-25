@@ -1,6 +1,7 @@
 {
   "name": "jsfr",
 	"displayName": "Jasmine Single File Runner",
+	"publisher": "AndresFlores",
 	"description": "",
 	"version": "0.0.1",
 	"engines": {
