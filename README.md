@@ -12,6 +12,10 @@ Must have VS Code version 1.57.0 or higher.
 
 Must have VS Code open in an angular project.
 
+## Known Issues
+
+Changes made to the `test.ts` file while JSFR is running won't be kept, as `test.ts` is reverted to its initial state before starting JSFR.
+
 ---
 
 ### 0.2.1
