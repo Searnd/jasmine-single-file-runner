@@ -18,6 +18,9 @@ Changes made to the `test.ts` file while JSFR is running won't be kept, as `test
 
 ---
 
+### 0.2.2
+Update README, add license
+
 ### 0.2.1
 Fix bug causing app.component.spec.ts to not be properly added to the context path
 
