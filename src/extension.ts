@@ -17,8 +17,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 	async function executeTestsOnSelection(documentOrUri: vscode.TextDocument|vscode.Uri) {
 		const document: vscode.TextDocument = documentOrUri as vscode.TextDocument || vscode.workspace.openTextDocument(documentOrUri as vscode.Uri);
+
 		if (document) {
-			vscode.window.showInformationMessage('Preparing...');
 			try {
 				const testFileFinder = new TestFileFinder();
 				const testFileUri = await testFileFinder.getTestFileLocation();
@@ -36,7 +36,7 @@ export function activate(context: vscode.ExtensionContext) {
 				const ngTestTask = await taskManager.getTask(taskType);
 				if (ngTestTask) {
 					vscode.tasks.executeTask(ngTestTask).then(
-						() => { vscode.window.showInformationMessage("Executing tests!"); },
+						() => { vscode.window.showInformationMessage("JSFR: Executing tests"); },
 						() => { vscode.window.showErrorMessage("Error: unable to run ng test"); }
 					);
 				} else {
@@ -62,7 +62,15 @@ export function activate(context: vscode.ExtensionContext) {
 	const commandRegistrar = new CommandRegistrar(context);
 
 	commandRegistrar.registerTextEditorCommand('jsfr.testCurrentFile', (textEditor) => {
-		executeTestsOnSelection(textEditor.document);
+		const progressOptions: vscode.ProgressOptions = {
+			title: "JSFR",
+			location: vscode.ProgressLocation.Notification
+		};
+		vscode.window.withProgress(progressOptions, async (progress) => {
+			progress.report({message: "Preparing..."});
+
+			await executeTestsOnSelection(textEditor.document);
+		});
 	});
 }
 
