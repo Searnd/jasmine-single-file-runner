@@ -4,7 +4,11 @@ Or JSFR for short. This extension gives you the ability to provide a single file
 
 ## Features
 
-Execute tests by simply right-clicking anywhere in a `.spec.ts` file and selecting the option `JSFR: Test Current File`. Also possible by right-cliking on the `.spec.ts` file in the file explorer.
+Execute tests by simply right-clicking anywhere in a `.spec.ts` file and selecting the option `JSFR: Test Current File`:
+![right-click-in-text-editor](assets/docs/te-right-click.gif)
+
+Or by right-cliking on the `.spec.ts` file in the file explorer:
+![right-click-in-file-explorer](assets/docs/fe-right-click.gif)
 
 ## Requirements
 
