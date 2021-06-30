@@ -22,17 +22,21 @@ Changes made to the `test.ts` file while JSFR is running won't be kept, as `test
 
 ---
 
+### 0.2.3
+- Add gifs to README
+- Fix async issues with executing tests
+
 ### 0.2.2
-Update README, add license
+- Update README, add license
 
 ### 0.2.1
-Fix bug causing app.component.spec.ts to not be properly added to the context path
+- Fix bug causing app.component.spec.ts to not be properly added to the context path
 
 ### 0.2.0
-Spec file detection is no longer recursive
+- Spec file detection is no longer recursive
 
 ### 0.1.1
-Fix bug where no spec files were being detected
+- Fix bug where no spec files were being detected
 
 ### 0.1.0
-Initial release of JSFR.
+- Initial release of JSFR.
