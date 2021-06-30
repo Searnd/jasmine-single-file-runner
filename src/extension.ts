@@ -3,8 +3,7 @@
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { CommandRegistrar } from './CommandRegistrar';
-import { FileNotFoundError } from './exceptions/FileNotFoundError';
-import { LineNotFoundInFileError } from './exceptions/LineNotFoundInFileError';
+import { FileNotFoundError, LineNotFoundInFileError } from './exceptions/error-index';
 import { TaskManager } from './TaskManager';
 import { TestFileEditor } from './TestFileEditor';
 import { TestFileFinder } from './TestFileFinder';
