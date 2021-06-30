@@ -15,47 +15,54 @@ let ngTestProvider: vscode.Disposable | undefined;
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 
+	async function executeTestsOnSelection(documentOrUri: vscode.TextDocument|vscode.Uri) {
+		const document: vscode.TextDocument = documentOrUri as vscode.TextDocument || vscode.workspace.openTextDocument(documentOrUri as vscode.Uri);
+		if (document) {
+			vscode.window.showInformationMessage('Preparing...');
+			try {
+				const testFileFinder = new TestFileFinder();
+				const testFileUri = await testFileFinder.getTestFileLocation();
+	
+				const testFileEditor = new TestFileEditor(testFileUri, document);
+				await testFileEditor.addSpecFileToContextLine();
+	
+				const taskType = "ngTest";
+				const taskManager = new TaskManager(taskType);
+				
+				const specFileDirectory = path.dirname(document.uri.fsPath);
+	
+				ngTestProvider = taskManager.registerTaskProvider(taskType, "ng test", specFileDirectory);
+	
+				const ngTestTask = await taskManager.getTask(taskType);
+				if (ngTestTask) {
+					vscode.tasks.executeTask(ngTestTask).then(
+						() => { vscode.window.showInformationMessage("Executing tests!"); },
+						() => { vscode.window.showErrorMessage("Error: unable to run ng test"); }
+					);
+				} else {
+					vscode.window.showErrorMessage("Error: task not properly registered");
+				}
+	
+				vscode.tasks.onDidEndTask((e) => {
+					if (e.execution.task.name === taskType) {
+						testFileEditor.restoreContextLine();
+					}
+				});
+			}
+			catch(e) {
+				if (e instanceof FileNotFoundError || e instanceof LineNotFoundInFileError) {
+					vscode.window.showErrorMessage(e.message);
+				} else {
+					throw e;
+				}
+			}
+		}
+	}
+
 	const commandRegistrar = new CommandRegistrar(context);
 
-	commandRegistrar.registerTextEditorCommand('jsfr.testCurrentFile', async (textEditor) => {
-		vscode.window.showInformationMessage('Preparing...');
-		try {
-			const testFileFinder = new TestFileFinder();
-			const testFileUri = await testFileFinder.getTestFileLocation();
-
-			const testFileEditor = new TestFileEditor(testFileUri, textEditor.document);
-			testFileEditor.addSpecFileToContextLine();
-
-			const taskType = "ngTest";
-			const taskManager = new TaskManager(taskType);
-			
-			const specFileDirectory = path.dirname(textEditor.document.uri.fsPath);
-
-			ngTestProvider = taskManager.registerTaskProvider(taskType, "ng test", specFileDirectory);
-
-			const ngTestTask = await taskManager.getTask(taskType);
-			if (ngTestTask) {
-				vscode.tasks.executeTask(ngTestTask).then(
-					() => { vscode.window.showInformationMessage("Executing tests!"); },
-					() => { vscode.window.showErrorMessage("Error: unable to run ng test"); }
-				);
-			} else {
-				vscode.window.showErrorMessage("Error: task not properly registered");
-			}
-
-			vscode.tasks.onDidEndTask((e) => {
-				if (e.execution.task.name === taskType) {
-					testFileEditor.restoreContextLine();
-				}
-			});
-		}
-		catch(e) {
-			if (e instanceof FileNotFoundError || e instanceof LineNotFoundInFileError) {
-				vscode.window.showErrorMessage(e.message);
-			} else {
-				throw e;
-			}
-		}
+	commandRegistrar.registerTextEditorCommand('jsfr.testCurrentFile', (textEditor) => {
+		executeTestsOnSelection(textEditor.document);
 	});
 }
 

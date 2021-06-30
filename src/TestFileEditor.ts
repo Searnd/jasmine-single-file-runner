@@ -1,6 +1,6 @@
 import { Uri, workspace } from "vscode";
 import * as vscode from 'vscode';
-import * as fs from 'fs';
+import { promises as fs } from 'fs';
 import { LineNotFoundInFileError } from "./exceptions/LineNotFoundInFileError";
 import path = require("path");
 
@@ -19,40 +19,28 @@ export class TestFileEditor {
         this._specFile = specFile;
     }
 
-    public addSpecFileToContextLine(): void {
-        fs.readFile(this._testFileUri.fsPath, {encoding: 'utf8'}, (readErr, data) => {
-            if (readErr) {
-                throw new Error(readErr.message);
-            }
-            this.backUpTestFile(data);
+    public async addSpecFileToContextLine(): Promise<void> {
+        const data = await fs.readFile(this._testFileUri.fsPath, {encoding: 'utf8'});
 
-            const contextRegex = /context\(.*\);$/m;
+        this.backUpTestFile(data);
 
-            const formattedDirname = this.removePathPrefix(this.getSpecFileDir());
+        const contextRegex = /context\(.*\);$/m;
 
-            const formattedSpecFilename = this.cleanupRegexString(this.getSpecFilename());
+        const formattedDirname = this.removePathPrefix(this.getSpecFileDir());
 
-            const newFileContent = data.replace(contextRegex, `context('./${formattedDirname}', false, /${formattedSpecFilename}$/);`);
+        const formattedSpecFilename = this.cleanupRegexString(this.getSpecFilename());
 
-            fs.writeFile(this._testFileUri.fsPath, newFileContent, 'utf8', (writeErr) => {
-                if (writeErr) {
-                    throw new Error(writeErr.message);
-                }
-            });
+        const newFileContent = data.replace(contextRegex, `context('./${formattedDirname}', false, /${formattedSpecFilename}$/);`);
 
-        });
+        await fs.writeFile(this._testFileUri.fsPath, newFileContent, 'utf8');
     }
 
-    public restoreContextLine(): void {
+    public async restoreContextLine(): Promise<void> {
         if (!this._contextLineInitialValue.length) {
             throw new LineNotFoundInFileError("Error: line not found. Nothing to restore.");
         }
 
-        fs.writeFile(this._testFileUri.fsPath, this._contextLineInitialValue, 'utf8', (writeErr) => {
-            if (writeErr) {
-                throw new Error(writeErr.message);
-            }
-        });
+        await fs.writeFile(this._testFileUri.fsPath, this._contextLineInitialValue, 'utf8');
     }
 
     private backUpTestFile(data: string): void {
