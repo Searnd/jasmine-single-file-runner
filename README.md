@@ -22,6 +22,10 @@ Changes made to the `test.ts` file while JSFR is running won't be kept, as `test
 
 ---
 
+### 0.2.4
+- 'Preparing' message has progress bar
+- Refactoring
+
 ### 0.2.3
 - Add gifs to README
 - Fix async issues with executing tests

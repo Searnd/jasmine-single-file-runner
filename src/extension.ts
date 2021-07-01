@@ -21,7 +21,6 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.window.withProgress(progressOptions, async (progress) => {
 			progress.report({message: "Preparing..."});
 
-			// await executeTestsOnSelection(textEditor.document);
 			try {
 				const coordinator = new Coordinator(textEditor.document);
 				await coordinator.initialize();
