@@ -20,8 +20,6 @@ export class Coordinator {
         if (!this._document) {
             throw new ArgumentInvalidError();
         }
-
-        this.initialize();
     }
 
     public async executeTests(): Promise<void> {
@@ -35,7 +33,7 @@ export class Coordinator {
         this.startTask();
     }
 
-    private async initialize(): Promise<void> {
+    public async initialize(): Promise<void> {
         this._testFileFinder = new TestFileFinder();
         const testFileUri = await this._testFileFinder.getTestFileLocation();
 
