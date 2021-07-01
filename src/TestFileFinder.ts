@@ -1,5 +1,5 @@
 import { Uri, workspace } from 'vscode';
-import { FileNotFoundError } from './exceptions/FileNotFoundError';
+import { FileNotFoundError } from './exceptions/error-index';
 
 export class TestFileFinder {
     public async getTestFileLocation(): Promise<Uri> {
