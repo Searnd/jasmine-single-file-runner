@@ -10,8 +10,8 @@ export class LineNotFoundInFileError extends Error {
     }
 }
 
-export class InvalidArgumentError extends Error {
-    constructor(message: string) {
+export class ArgumentInvalidError extends Error {
+    constructor(message: string = "Error: invalid argument") {
         super(message);
     }
 }
