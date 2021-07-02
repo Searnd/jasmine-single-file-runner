@@ -1,4 +1,5 @@
-import { CommandlineProcessHandler } from "../integration/commandline-process-handler";
+import { SpawnOptions } from "child_process";
+import { CommandlineProcessHandler } from "./cl-process-handler";
 import { KarmaEventListener } from "./karma-event-listener";
 
 export class AngularServer {
@@ -21,8 +22,17 @@ export class AngularServer {
     }
   }
 
-  public async start(projectPath: string): Promise<void> {
-    this.processHandler.create(cliCommand, cliArgs, options);
+  public async start(projectAbsolutePath: string): Promise<void> {
+    //TODO: dynamically set karma file path
+    const baseKarmaConfigFilePath = "./karma.conf.js";
+
+    const options: SpawnOptions = {
+      cwd: projectAbsolutePath,
+      shell: true,
+      env: Object.create(process.env)
+    };
+
+    this.processHandler.create("ng", ["test", `--karma-config="${baseKarmaConfigFilePath}"`, "--progress=false"], options);
 
     await this.karmaEventListener.listenUntilKarmaIsReady(9999);
   }
