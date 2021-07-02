@@ -7,7 +7,7 @@
     "email": "andres.flores@outlook.fr"
   },
   "description": "",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "engines": {
     "vscode": "^1.57.0"
   },
