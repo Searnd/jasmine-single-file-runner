@@ -19,7 +19,7 @@ export class JsfrAdapter implements TestAdapter {
     }
 
     constructor(
-        public readonly workspace: vscode.WorkspaceFolder,
+        public readonly workspaceFolder: vscode.WorkspaceFolder,
         private readonly _log: Log
     ) {
         this._log.info("Initializing JsfrAdapter");
@@ -57,7 +57,7 @@ export class JsfrAdapter implements TestAdapter {
 
     public dispose(): void {
         this.cancel();
-        
+
         this._disposables.forEach(disposable => disposable.dispose());
 
         this._disposables = [];

@@ -1,18 +1,18 @@
-import { TestSuiteInfo, TestInfo } from "vscode-test-adapter-api";
 import * as path from "path";
 import { SpecCompleteResponse } from "../models/spec-complete-response";
+import { KarmaTestInfo, KarmaTestSuiteInfo } from "../models/karma-test-suite-info";
 
 export class SpecResponseToTestSuiteInfoMapper {
   public constructor(private readonly projectRootPath: string) {}
 
-  public map(specs: SpecCompleteResponse[]): TestSuiteInfo {
-    const rootSuiteNode = {
+  public map(specs: SpecCompleteResponse[]): KarmaTestSuiteInfo {
+    const rootSuiteNode: KarmaTestSuiteInfo = {
       type: "suite",
       id: "root",
       label: "root",
       fullName: "root",
       children: [],
-    } as TestSuiteInfo;
+    };
 
     for (const spec of specs) {
       const suiteNames = this.filterSuiteNames(spec.suite);
@@ -23,11 +23,11 @@ export class SpecResponseToTestSuiteInfoMapper {
     return rootSuiteNode;
   }
 
-  private getOrCreateLowerSuiteNode(node: TestSuiteInfo, spec: SpecCompleteResponse, suiteNames: string[]): TestSuiteInfo {
+  private getOrCreateLowerSuiteNode(node: KarmaTestSuiteInfo, spec: SpecCompleteResponse, suiteNames: string[]): KarmaTestSuiteInfo {
     for (const suiteName of suiteNames) {
       let nextNode = this.findNodeByKey(node, suiteName);
       if (!nextNode) {
-        const locationHint = suiteNames.reduce((previousValue: any, currentValue: any, index: number) => {
+        const locationHint = suiteNames.reduce((previousValue: any, currentValue: any) => {
           if (previousValue === suiteName) {
             spec.suite = [suiteName];
             return suiteName;
@@ -46,7 +46,7 @@ export class SpecResponseToTestSuiteInfoMapper {
     return node;
   }
 
-  private findNodeByKey(node: TestInfo | TestSuiteInfo, suiteLookup: string): TestSuiteInfo | undefined {
+  private findNodeByKey(node: KarmaTestInfo | KarmaTestSuiteInfo, suiteLookup: string): KarmaTestSuiteInfo | undefined {
     if (node.type === "test") {
       return undefined;
     }
@@ -56,7 +56,7 @@ export class SpecResponseToTestSuiteInfoMapper {
     } else {
       for (const child of node.children) {
         if (child.label === suiteLookup) {
-          return child as TestSuiteInfo;
+          return child as KarmaTestSuiteInfo;
         }
       }
     }
@@ -71,7 +71,7 @@ export class SpecResponseToTestSuiteInfoMapper {
     return suiteNames;
   }
 
-  private createTest(specComplete: SpecCompleteResponse, suiteNode: TestSuiteInfo, suiteLookup: string) {
+  private createTest(specComplete: SpecCompleteResponse, suiteNode: KarmaTestSuiteInfo, suiteLookup: string) {
     suiteNode.children.push({
       id: specComplete.id,
       fullName: suiteLookup + " " + specComplete.description,
@@ -79,10 +79,10 @@ export class SpecResponseToTestSuiteInfoMapper {
       file: specComplete.filePath ? path.join(this.projectRootPath, specComplete.filePath as string) : undefined,
       type: "test",
       line: specComplete.line ? (specComplete.line as number) : undefined,
-    } as TestInfo);
+    });
   }
 
-  private createSuite(specComplete: SpecCompleteResponse, suiteLookup: string): TestSuiteInfo {
+  private createSuite(specComplete: SpecCompleteResponse, suiteLookup: string): KarmaTestSuiteInfo {
     return {
       id: suiteLookup,
       fullName: specComplete.suite[specComplete.suite.length - 1],
@@ -90,6 +90,6 @@ export class SpecResponseToTestSuiteInfoMapper {
       file: specComplete.filePath ? path.join(this.projectRootPath, specComplete.filePath as string) : undefined,
       type: "suite",
       children: [],
-    } as TestSuiteInfo;
+    };
   }
 }
