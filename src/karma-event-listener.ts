@@ -3,13 +3,14 @@ import * as express from "express";
 import { KarmaEventName, TestResult, TestState } from "./enums/enum-index";
 import { Server } from "socket.io";
 import { KarmaEvent } from "./models/karma-event";
+import { EventEmitter } from "./event-emitter";
+import { KarmaTestSuiteInfo } from "./models/karma-test-suite-info";
+import { SpecResponseToTestSuiteInfoMapper } from "./mappers/spec-response-to-test-suite-info.mapper";
 
 export class KarmaEventListener {
     private savedSpecs: any[] = [];
 
     private server: http.Server;
-
-    private _isServerLoaded: boolean = false;
 
     public isServerLoaded: boolean = false;
     public isTestRunning: boolean = false;
@@ -62,6 +63,16 @@ export class KarmaEventListener {
         });
     }
 
+    public getLoadedTests(projectRootPath: string): KarmaTestSuiteInfo {
+        const mapper = new SpecResponseToTestSuiteInfoMapper(projectRootPath);
+        return mapper.map(this.savedSpecs);
+    }
+
+    public stopListeningToKarma(): void {
+        this.isServerLoaded = false;
+        this.server.close();
+    }
+
     private onSpecComplete(event: KarmaEvent) {
         const { results } = event;
     
@@ -83,7 +94,7 @@ export class KarmaEventListener {
       }
 
     private onBrowserConnected(resolve: (value?: void | PromiseLike<void>) => void) {
-        this._isServerLoaded = true;
+        this.isServerLoaded = true;
         resolve();
       }
 }
