@@ -12,6 +12,7 @@ import * as vscode from "vscode";
 import { SpecCompleteResponse } from "./models/spec-complete-response";
 import { KarmaEvent } from "./models/karma-event";
 import { TestState } from "./enums/enum-index";
+import { TestResultToTestStateMapper } from "./mappers/test-result-to-test-state.mapper";
 
 export class EventEmitter {
   public constructor(
@@ -25,8 +26,7 @@ export class EventEmitter {
   }
 
   public emitTestResultEvent(testName: string, karmaEvent: KarmaEvent) {
-    const testResultMapper = new TestResultToTestStateMapper();
-    const testState = testResultMapper.Map(karmaEvent.results.status);
+    const testState = TestResultToTestStateMapper.map(karmaEvent.results.status);
 
     const testEvent = { type: "test", test: testName, state: testState } as TestEvent;
 
