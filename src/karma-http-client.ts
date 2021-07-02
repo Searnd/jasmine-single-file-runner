@@ -1,19 +1,18 @@
 import * as http from "http";
+import { KarmaConfig } from "./types/types-index";
 
 export class KarmaHttpClient {
-  public constructor() {}
   public createKarmaRunCallConfiguration(tests: any) {
     // if testName is undefined, reset jasmine.getEnv().specFilter function
     // otherwise, last specified specFilter will be used
     if (tests[0] === "root" || tests[0] === undefined) {
       tests = "";
     }
-    const serverPort = 9876;
-    const urlRoot = "/run";
-    const config = {
-      port: serverPort,
+
+    const config: KarmaConfig = {
+      port: 9876,
       refresh: true,
-      urlRoot,
+      urlRoot: "/run",
       hostname: "localhost",
       clientArgs: [`--grep=${tests}`],
     };
@@ -21,7 +20,7 @@ export class KarmaHttpClient {
     return { config, tests };
   }
 
-  public callKarmaRunWithConfig(config: any): Promise<void> {
+  public callKarmaRunWithConfig(config: KarmaConfig): Promise<void> {
     return new Promise<void>(resolve => {
       const options = {
         hostname: config.hostname,
