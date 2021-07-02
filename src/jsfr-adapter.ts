@@ -44,12 +44,12 @@ export class JsfrAdapter implements TestAdapter {
 
         this._testsEmitter.fire({ type: "started" } as TestLoadStartedEvent);
 
-
         const { config } = this._karmaHttpClient.createKarmaRunCallConfiguration("$#%#");
         await this._karmaHttpClient.callKarmaRunWithConfig(config);
-        
+        //TODO: replace "" with path to angular root
+        const loadedTests = this._karmaEventListener.getLoadedTests("");
 
-        this._testsEmitter.fire({ type: "finished" } as TestLoadFinishedEvent);
+        this._testsEmitter.fire({ type: "finished", suite: loadedTests } as TestLoadFinishedEvent);
     }
 
     public async run(tests: string[]): Promise<void> {
