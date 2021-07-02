@@ -15,8 +15,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:jsfr.testCurrentFile",
-    "onCommand:workbench.action.tasks.runTask"
+    "workspaceContains:**/angular.json"
   ],
   "main": "./out/extension.js",
   "contributes": {
