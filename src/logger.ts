@@ -16,7 +16,7 @@ export class Logger {
     this.outputChannel = outputChannel;
   }
 
-  public debug(msg: string, ...params: any[]): void {
+  public debug(msg: string): void {
     if (this.isDebuggingMode) {
       global.console.log(this.formatMsg(msg, LogLevel.debug));
 
@@ -40,14 +40,14 @@ export class Logger {
     }
   }
 
-  public warn(msg: string, ...params: any[]): void {
+  public warn(msg: string): void {
     global.console.log(this.formatMsg(msg, LogLevel.warn));
       if (this.outputChannel !== undefined) {
         this.outputChannel.appendLine(this.formatMsg(msg, LogLevel.warn));
       }
   }
 
-  public error(msg: string, ...params: any[]): void {
+  public error(msg: string): void {
     global.console.log(this.formatMsg(msg, LogLevel.error));
       if (this.outputChannel !== undefined) {
         this.outputChannel.appendLine(this.formatMsg(msg, LogLevel.error));
