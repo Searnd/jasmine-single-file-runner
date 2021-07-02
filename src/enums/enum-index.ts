@@ -13,10 +13,16 @@ export enum TestState {
   
 
 export enum KarmaEventName {
-    browserConnected = "browser_connected",
-    runComplete = "run_complete",
-    specComplete = "spec_complete",
-    browserStart = "browser_start",
-    browserError = "browser_error",
-  }
-  
+  browserConnected = "browser_connected",
+  runComplete = "run_complete",
+  specComplete = "spec_complete",
+  browserStart = "browser_start",
+  browserError = "browser_error",
+}
+
+export enum LogLevel {
+  error = "error",
+  warn = "warn",
+  info = "info",
+  debug = "debug",
+}

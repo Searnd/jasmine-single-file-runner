@@ -1,5 +1,5 @@
 import { OutputChannel } from "vscode";
-import { TestResult } from "./enums/enum-index";
+import { LogLevel, TestResult } from "./enums/enum-index";
 
 export const OUTPUT_CHANNEL = "Test Explorer Logs";
 
@@ -16,21 +16,21 @@ export class Logger {
     this.outputChannel = outputChannel;
   }
 
-  public debug(msg: string, ...params: any[]) {
+  public debug(msg: string, ...params: any[]): void {
     if (this.isDebuggingMode) {
-      global.console.log(this.formatMsg(msg, LogLevel.DEBUG));
+      global.console.log(this.formatMsg(msg, LogLevel.debug));
 
       if (this.outputChannel !== undefined) {
-        this.outputChannel.appendLine(this.formatMsg(msg, LogLevel.DEBUG));
+        this.outputChannel.appendLine(this.formatMsg(msg, LogLevel.debug));
       }
     }
   }
 
-  public info(msg: string, ...params: any[]) {
-    global.console.log(this.formatMsg(msg, LogLevel.INFO));
+  public info(msg: string, ...params: any[]): void {
+    global.console.log(this.formatMsg(msg, LogLevel.info));
 
     if (this.outputChannel !== undefined) {
-      this.outputChannel.appendLine(this.formatMsg(msg, LogLevel.INFO));
+      this.outputChannel.appendLine(this.formatMsg(msg, LogLevel.info));
     }
 
     if (params.length > 0) {
@@ -40,21 +40,21 @@ export class Logger {
     }
   }
 
-  public warn(msg: string, ...params: any[]) {
-    global.console.log(this.formatMsg(msg, LogLevel.WARN));
+  public warn(msg: string, ...params: any[]): void {
+    global.console.log(this.formatMsg(msg, LogLevel.warn));
       if (this.outputChannel !== undefined) {
-        this.outputChannel.appendLine(this.formatMsg(msg, LogLevel.WARN));
+        this.outputChannel.appendLine(this.formatMsg(msg, LogLevel.warn));
       }
   }
 
-  public error(msg: string, ...params: any[]) {
-    global.console.log(this.formatMsg(msg, LogLevel.ERROR));
+  public error(msg: string, ...params: any[]): void {
+    global.console.log(this.formatMsg(msg, LogLevel.error));
       if (this.outputChannel !== undefined) {
-        this.outputChannel.appendLine(this.formatMsg(msg, LogLevel.ERROR));
+        this.outputChannel.appendLine(this.formatMsg(msg, LogLevel.error));
       }
   }
 
-  public karmaLogs(msg: string) {
+  public karmaLogs(msg: string): void {
     if (this.isDebuggingMode) {
       global.console.log(msg);
 
@@ -64,7 +64,7 @@ export class Logger {
     }
   }
 
-  public status(status: TestResult) {
+  public status(status: TestResult): void {
     let msg;
     if (status === TestResult.success) {
       msg = `[SUCCESS] ✅ Passed`;
