@@ -11,6 +11,9 @@
   "engines": {
     "vscode": "^1.57.0"
   },
+  "extensionDependencies": [
+    "hbenl.vscode-test-explorer"
+  ],
   "categories": [
     "Other"
   ],
