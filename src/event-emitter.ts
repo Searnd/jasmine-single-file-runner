@@ -11,6 +11,7 @@ import {
 import * as vscode from "vscode";
 import { SpecCompleteResponse } from "./models/spec-complete-response";
 import { KarmaEvent } from "./models/karma-event";
+import { TestState } from "./enums/enum-index";
 
 export class EventEmitter {
   public constructor(
