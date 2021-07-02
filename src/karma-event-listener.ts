@@ -12,12 +12,12 @@ export class KarmaEventListener {
 
     private server: http.Server;
 
-    public isServerLoaded: boolean = false;
-    public isTestRunning: boolean = false;
-    public lastRunTests: string = "";
+    public isServerLoaded = false;
+    public isTestRunning = false;
+    public lastRunTests = "";
     public testStatus: TestResult | any;
     public runCompleteEvent: KarmaEvent | any;
-    public isComponentRun: boolean = false;
+    public isComponentRun = false;
 
     constructor(
         private readonly eventEmitter: EventEmitter
@@ -27,8 +27,9 @@ export class KarmaEventListener {
     }
 
     public listenUntilKarmaIsReady(defaultSocketPort?: number): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
+        return new Promise<void>((resolve) => {
             // *shrug*
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
             const io = require("socket.io")(this.server, { forceNew: true });
             io.set("heartbeat interval", 24 * 60 * 60 * 1000);
             io.set("heartbeat timeout", 24 * 60 * 60 * 1000);
