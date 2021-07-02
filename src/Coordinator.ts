@@ -26,6 +26,7 @@ export class Coordinator {
         if (!this._testFileFinder || !this._testFileEditor || !this._taskManager) {
             throw new vscode.FileSystemError("Error: test file finder and/or test file editor and/or task manager not initialized");
         }
+        this._testFileEditor.addSpecFileToContextLine();
 
         const specFileDirectory = path.dirname(this._document.uri.fsPath);
         this._taskManager.registerTaskProvider(this._taskType, "ng test", specFileDirectory);

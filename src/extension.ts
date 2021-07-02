@@ -12,27 +12,27 @@ import { JsfrAdapter } from './jsfr-adapter';
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 
-	const workspaceFolder = (vscode.workspace.workspaceFolders || [])[0];
+	// const workspaceFolder = (vscode.workspace.workspaceFolders || [])[0];
 
-	const log = new Log("JSFR", workspaceFolder, "JSFR Log");
-	context.subscriptions.push(log);
+	// const log = new Log("JSFR", workspaceFolder, "JSFR Log");
+	// context.subscriptions.push(log);
 
-	const testExplorerExtension = vscode.extensions.getExtension<TestHub>(testExplorerExtensionId);
-	if (log.enabled) {
-		log.info(`Test Explorer ${testExplorerExtension ? '' : 'not '}found`);
-	}
+	// const testExplorerExtension = vscode.extensions.getExtension<TestHub>(testExplorerExtensionId);
+	// if (log.enabled) {
+	// 	log.info(`Test Explorer ${testExplorerExtension ? '' : 'not '}found`);
+	// }
 
-	if (testExplorerExtension) {
-		const testHub = testExplorerExtension.exports;
+	// if (testExplorerExtension) {
+	// 	const testHub = testExplorerExtension.exports;
 
-		const testAdapterRegistrar = new TestAdapterRegistrar(
-			testHub,
-			workspaceFolder => new JsfrAdapter(workspaceFolder, log),
-			log
-		);
+	// 	const testAdapterRegistrar = new TestAdapterRegistrar(
+	// 		testHub,
+	// 		workspaceFolder => new JsfrAdapter(workspaceFolder, log),
+	// 		log
+	// 	);
 
-		context.subscriptions.push(testAdapterRegistrar);
-	}
+	// 	context.subscriptions.push(testAdapterRegistrar);
+	// }
 
 	const commandRegistrar = new CommandRegistrar(context);
 
@@ -50,11 +50,8 @@ export function activate(context: vscode.ExtensionContext) {
 				await coordinator.executeTests();
 			}
 			catch(e) {
-				if (e instanceof FileNotFoundError || e instanceof LineNotFoundInFileError) {
-					vscode.window.showErrorMessage(e.message);
-				} else {
-					throw e;
-				}
+				vscode.window.showErrorMessage(e.message);
+				throw e;
 			}
 		});
 	});
