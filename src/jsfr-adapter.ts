@@ -74,7 +74,7 @@ export class JsfrAdapter implements TestAdapter {
     }
 
     public cancel(): void {
-
+        //stuff
     }
 
     public dispose(): void {

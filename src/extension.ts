@@ -10,10 +10,10 @@ import { OUTPUT_CHANNEL } from './logger';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
+export function activate(context: vscode.ExtensionContext): void {
 
 	const workspaceFolder = (vscode.workspace.workspaceFolders || [])[0];
-	const channel = vscode.window.createOutputChannel(OUTPUT_CHANNEL);
+	vscode.window.createOutputChannel(OUTPUT_CHANNEL);
 
 	const log = new Log("JSFR", workspaceFolder, "JSFR Log");
 	context.subscriptions.push(log);
@@ -59,5 +59,6 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {
+export function deactivate(): void {
+	//stuff
 }
