@@ -2,13 +2,13 @@ import * as vscode from 'vscode';
 import { TestAdapter, TestLoadFinishedEvent, TestLoadStartedEvent, TestRunStartedEvent } from 'vscode-test-adapter-api';
 import { Log } from 'vscode-test-adapter-util';
 import { KarmaHttpClient } from './karma-http-client';
-import { KarmaConfig, TestLoadEvent, TestState } from './types/types-index';
+import { KarmaConfig, TestLoadEvent, TestStateEvent } from './types/types-index';
 
 export class JsfrAdapter implements TestAdapter {
     private _disposables: vscode.Disposable[] = [];
 
 	private readonly _testsEmitter = new vscode.EventEmitter<TestLoadEvent>();
-	private readonly _testStatesEmitter = new vscode.EventEmitter<TestState>();
+	private readonly _testStatesEmitter = new vscode.EventEmitter<TestStateEvent>();
 	private readonly _autorunEmitter = new vscode.EventEmitter<void>();
 
     private readonly _karmaHttpClient: KarmaHttpClient = new KarmaHttpClient();
@@ -17,7 +17,7 @@ export class JsfrAdapter implements TestAdapter {
         return this._testsEmitter.event;
     }
 
-    public get testStates(): vscode.Event<TestState> {
+    public get testStates(): vscode.Event<TestStateEvent> {
         return this._testStatesEmitter.event;
     }
 

@@ -4,7 +4,7 @@ export type TestLoadEvent = TestLoadStartedEvent | TestLoadFinishedEvent;
 
 export type TestRunEvent = TestRunStartedEvent | TestRunFinishedEvent;
 
-export type TestState = TestRunEvent | TestSuiteEvent | TestEvent;
+export type TestStateEvent = TestRunEvent | TestSuiteEvent | TestEvent;
 
 export type KarmaConfig = {
     port: number,
