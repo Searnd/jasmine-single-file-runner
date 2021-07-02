@@ -4,6 +4,7 @@ import { Log } from 'vscode-test-adapter-util';
 import { EventEmitter } from './event-emitter';
 import { KarmaEventListener } from './karma-event-listener';
 import { KarmaHttpClient } from './karma-http-client';
+import { KarmaTestInfo, KarmaTestSuiteInfo } from './models/karma-test-suite-info';
 import { TestLoadEvent, TestStateEvent } from './types/types-index';
 
 export class JsfrAdapter implements TestAdapter {
@@ -58,6 +59,10 @@ export class JsfrAdapter implements TestAdapter {
         this._testStatesEmitter.fire({ type: "started", tests} as TestRunStartedEvent);
         
         //TODO: run tests
+        const karmaParams = this._karmaHttpClient.createKarmaRunCallConfiguration(tests);
+
+        this._karmaEventListener.isTestRunning = true;
+        this._karmaEventListener.lastRunTests = karmaParams.tests;
         
         this._testStatesEmitter.fire({ type: "finished"} as TestLoadFinishedEvent);
     }
@@ -72,5 +77,19 @@ export class JsfrAdapter implements TestAdapter {
         this._disposables.forEach(disposable => disposable.dispose());
 
         this._disposables = [];
+    }
+
+    private findNode(searchNode: KarmaTestSuiteInfo | KarmaTestInfo, id: string): KarmaTestSuiteInfo | KarmaTestInfo | undefined {
+        if (searchNode.id === id) {
+            return searchNode;
+        } else if (searchNode.type === 'suite') {
+            for (const child of searchNode.children) {
+                const found = this.findNode(child, id);
+                if (found){
+                    return found;
+                }
+            }
+        }
+        return undefined;
     }
 }
