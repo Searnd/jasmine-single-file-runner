@@ -1,9 +1,12 @@
 import * as vscode from 'vscode';
 import { TestAdapter, TestLoadFinishedEvent, TestLoadStartedEvent, TestRunStartedEvent } from 'vscode-test-adapter-api';
 import { Log } from 'vscode-test-adapter-util';
+import { AngularServer } from './angular-server';
+import { CommandlineProcessHandler } from './cl-process-handler';
 import { EventEmitter } from './event-emitter';
 import { KarmaEventListener } from './karma-event-listener';
 import { KarmaHttpClient } from './karma-http-client';
+import { Logger, OUTPUT_CHANNEL } from './logger';
 import { KarmaTestInfo, KarmaTestSuiteInfo } from './models/karma-test-suite-info';
 import { TestLoadEvent, TestStateEvent } from './types/types-index';
 
@@ -16,6 +19,12 @@ export class JsfrAdapter implements TestAdapter {
 
     private readonly _karmaEventListener: KarmaEventListener =
         new KarmaEventListener(new EventEmitter(this._testStatesEmitter, this._testsEmitter));
+
+    private readonly _angularServer: AngularServer =
+        new AngularServer(
+            this._karmaEventListener,
+            new CommandlineProcessHandler(new Logger(this._outputChannel), this._karmaEventListener)
+        );
 
     private readonly _karmaHttpClient: KarmaHttpClient = new KarmaHttpClient();
 
@@ -31,7 +40,8 @@ export class JsfrAdapter implements TestAdapter {
 
     constructor(
         public readonly workspaceFolder: vscode.WorkspaceFolder,
-        private readonly _log: Log
+        private readonly _log: Log,
+        private readonly _outputChannel: vscode.OutputChannel
     ) {
         this._log.info("Initializing JsfrAdapter");
 
@@ -47,10 +57,12 @@ export class JsfrAdapter implements TestAdapter {
 
         this._testsEmitter.fire({ type: "started" } as TestLoadStartedEvent);
 
+        const projectPath = this.workspaceFolder.uri.fsPath;
+        await this._angularServer.start(projectPath);
+
         const { config } = this._karmaHttpClient.createKarmaRunCallConfiguration("$#%#");
         await this._karmaHttpClient.callKarmaRunWithConfig(config);
-        //TODO: replace "" with path to angular root
-        this.loadedTests = this._karmaEventListener.getLoadedTests("");
+        this.loadedTests = this._karmaEventListener.getLoadedTests(projectPath);
 
         this._testsEmitter.fire({ type: "finished", suite: this.loadedTests } as TestLoadFinishedEvent);
     }
