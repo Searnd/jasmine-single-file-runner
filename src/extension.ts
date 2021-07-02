@@ -13,7 +13,7 @@ import { OUTPUT_CHANNEL } from './logger';
 export function activate(context: vscode.ExtensionContext): void {
 
 	const workspaceFolder = (vscode.workspace.workspaceFolders || [])[0];
-	vscode.window.createOutputChannel(OUTPUT_CHANNEL);
+	const channel = vscode.window.createOutputChannel(OUTPUT_CHANNEL);
 
 	const log = new Log("JSFR", workspaceFolder, "JSFR Log");
 	context.subscriptions.push(log);
@@ -28,7 +28,7 @@ export function activate(context: vscode.ExtensionContext): void {
 
 		const testAdapterRegistrar = new TestAdapterRegistrar(
 			testHub,
-			workspaceFolder => new JsfrAdapter(workspaceFolder, log),
+			workspaceFolder => new JsfrAdapter(workspaceFolder, log, channel),
 			log
 		);
 
