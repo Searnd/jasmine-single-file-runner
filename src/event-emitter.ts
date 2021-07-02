@@ -1,8 +1,5 @@
 import {
   TestEvent,
-  TestRunStartedEvent,
-  TestRunFinishedEvent,
-  TestSuiteEvent,
   TestDecoration,
   TestLoadStartedEvent,
   TestLoadFinishedEvent,
@@ -13,11 +10,12 @@ import { SpecCompleteResponse } from "./models/spec-complete-response";
 import { KarmaEvent } from "./models/karma-event";
 import { TestState } from "./enums/enum-index";
 import { TestResultToTestStateMapper } from "./mappers/test-result-to-test-state.mapper";
+import { TestLoadEvent, TestStateEvent } from "./types/types-index";
 
 export class EventEmitter {
   public constructor(
-    private readonly eventEmitterInterface: vscode.EventEmitter<TestRunStartedEvent | TestRunFinishedEvent | TestSuiteEvent | TestEvent>,
-    private readonly testLoadedEmitterInterface: vscode.EventEmitter<TestLoadStartedEvent | TestLoadFinishedEvent>
+    private readonly eventEmitterInterface: vscode.EventEmitter<TestStateEvent>,
+    private readonly testLoadedEmitterInterface: vscode.EventEmitter<TestLoadEvent>
   ) {}
 
   public emitTestStateEvent(testName: string, testState: TestState) {
