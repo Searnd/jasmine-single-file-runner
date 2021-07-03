@@ -4,6 +4,8 @@ import * as vscode from "vscode";
 import { CommandRegistrar } from "./core/command-registrar";
 import { Coordinator } from "./core/coordinator";
 
+let coordinator: Coordinator | undefined;
+
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext): void {
@@ -42,7 +44,7 @@ export function activate(context: vscode.ExtensionContext): void {
 			progress.report({message: "Preparing..."});
 
 			try {
-				const coordinator = new Coordinator(textEditor.document);
+				coordinator = new Coordinator(textEditor.document);
 				await coordinator.initialize();
 				await coordinator.executeTests();
 			}
@@ -56,5 +58,5 @@ export function activate(context: vscode.ExtensionContext): void {
 
 // this method is called when your extension is deactivated
 export function deactivate(): void {
-	//stuff
+	coordinator?.dispose();
 }

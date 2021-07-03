@@ -49,6 +49,11 @@ export class Coordinator {
         this._taskManager = new VscodeTaskManager(this._taskType);
     }
 
+    public dispose(): void {
+        this._testFileEditor.restoreContextLine();
+        this._tsconfigSpecEditor.restoreFile();
+    }
+
     private async startTask(): Promise<void> {
         const ngTestTask = await this._taskManager.getTask(this._taskType);
         if (ngTestTask) {
@@ -62,8 +67,7 @@ export class Coordinator {
 
         vscode.tasks.onDidEndTask((e) => {
             if (e.execution.task.name === this._taskType) {
-                this._testFileEditor.restoreContextLine();
-                this._tsconfigSpecEditor.restoreFile();
+                this.dispose();
             }
         });
     }
