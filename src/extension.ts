@@ -1,12 +1,12 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
-import { testExplorerExtensionId, TestHub } from 'vscode-test-adapter-api';
-import { Log, TestAdapterRegistrar } from 'vscode-test-adapter-util';
-import { CommandRegistrar } from './core/command-registrar';
-import { Coordinator } from './core/coordinator';
-import { OUTPUT_CHANNEL } from './core/helpers/logger';
-import { JsfrAdapter } from './core/jsfr-adapter';
+import * as vscode from "vscode";
+import { testExplorerExtensionId, TestHub } from "vscode-test-adapter-api";
+import { Log, TestAdapterRegistrar } from "vscode-test-adapter-util";
+import { CommandRegistrar } from "./core/command-registrar";
+import { Coordinator } from "./core/coordinator";
+import { OUTPUT_CHANNEL } from "./core/helpers/logger";
+import { JsfrAdapter } from "./core/jsfr-adapter";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -37,7 +37,7 @@ export function activate(context: vscode.ExtensionContext): void {
 
 	const commandRegistrar = new CommandRegistrar(context);
 
-	commandRegistrar.registerTextEditorCommand('jsfr.testCurrentFile', (textEditor) => {
+	commandRegistrar.registerTextEditorCommand("jsfr.testCurrentFile", (textEditor) => {
 		const progressOptions: vscode.ProgressOptions = {
 			title: "JSFR",
 			location: vscode.ProgressLocation.Notification

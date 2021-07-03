@@ -1,4 +1,4 @@
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
 
 type PaletteCommandCallback = (...args: any[]) => any;
 type TextEditorCommandCallback = (textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit, ...args: any[]) => void;

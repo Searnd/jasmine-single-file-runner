@@ -67,11 +67,11 @@ export class Logger {
   public status(status: TestResult): void {
     let msg;
     if (status === TestResult.success) {
-      msg = `[SUCCESS] ✅ Passed`;
+      msg = "[SUCCESS] ✅ Passed";
     } else if (status === TestResult.failed) {
-      msg = `[FAILURE] ❌ failed`;
+      msg = "[FAILURE] ❌ failed";
     } else {
-      msg = `[SKIPPED] Test Skipped`;
+      msg = "[SKIPPED] Test Skipped";
     }
 
     if (this.outputChannel !== undefined) {

@@ -1,6 +1,6 @@
 import { Uri, workspace } from "vscode";
-import * as vscode from 'vscode';
-import { promises as fs } from 'fs';
+import * as vscode from "vscode";
+import { promises as fs } from "fs";
 import path = require("path");
 import { LineNotFoundInFileError } from "../domain/exceptions/error-index";
 
@@ -20,7 +20,7 @@ export class TestFileEditor {
     }
 
     public async addSpecFileToContextLine(): Promise<void> {
-        const data = await fs.readFile(this._testFileUri.fsPath, {encoding: 'utf8'});
+        const data = await fs.readFile(this._testFileUri.fsPath, {encoding: "utf8"});
 
         this.backUpTestFile(data);
 
@@ -32,7 +32,7 @@ export class TestFileEditor {
 
         const newFileContent = data.replace(contextRegex, `context('./${formattedDirname}', false, /${formattedSpecFilename}$/);`);
 
-        await fs.writeFile(this._testFileUri.fsPath, newFileContent, 'utf8');
+        await fs.writeFile(this._testFileUri.fsPath, newFileContent, "utf8");
     }
 
     public async restoreContextLine(): Promise<void> {
@@ -40,7 +40,7 @@ export class TestFileEditor {
             throw new LineNotFoundInFileError("Error: line not found. Nothing to restore.");
         }
 
-        await fs.writeFile(this._testFileUri.fsPath, this._contextLineInitialValue, 'utf8');
+        await fs.writeFile(this._testFileUri.fsPath, this._contextLineInitialValue, "utf8");
     }
 
     private backUpTestFile(data: string): void {

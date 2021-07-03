@@ -1,14 +1,14 @@
-import * as vscode from 'vscode';
-import { TestAdapter, TestLoadFinishedEvent, TestLoadStartedEvent, TestRunStartedEvent } from 'vscode-test-adapter-api';
-import { Log } from 'vscode-test-adapter-util';
-import { AngularServer } from '../infrastructure/angular/angular-server';
-import { CommandlineProcessHandler } from '../infrastructure/command-line/cl-process-handler';
-import { EventEmitter } from '../infrastructure/event-emitter/event-emitter';
-import { Logger } from './helpers/logger';
-import { KarmaEventListener } from '../infrastructure/karma/karma-event-listener';
-import { KarmaTestInfo, KarmaTestSuiteInfo } from '../domain/models/karma-test-suite-info';
-import { TestLoadEvent, TestStateEvent } from '../domain/types/types-index';
-import { KarmaHttpClient } from '../infrastructure/karma/karma-http-client';
+import * as vscode from "vscode";
+import { TestAdapter, TestLoadFinishedEvent, TestLoadStartedEvent, TestRunStartedEvent } from "vscode-test-adapter-api";
+import { Log } from "vscode-test-adapter-util";
+import { AngularServer } from "../infrastructure/angular/angular-server";
+import { CommandlineProcessHandler } from "../infrastructure/command-line/cl-process-handler";
+import { EventEmitter } from "../infrastructure/event-emitter/event-emitter";
+import { Logger } from "./helpers/logger";
+import { KarmaEventListener } from "../infrastructure/karma/karma-event-listener";
+import { KarmaTestInfo, KarmaTestSuiteInfo } from "../domain/models/karma-test-suite-info";
+import { TestLoadEvent, TestStateEvent } from "../domain/types/types-index";
+import { KarmaHttpClient } from "../infrastructure/karma/karma-http-client";
 
 export class JsfrAdapter implements TestAdapter {
     private _disposables: vscode.Disposable[] = [];
@@ -100,7 +100,7 @@ export class JsfrAdapter implements TestAdapter {
     private findNode(searchNode: KarmaTestSuiteInfo | KarmaTestInfo | undefined, id: string): KarmaTestSuiteInfo | KarmaTestInfo | undefined {
         if (searchNode?.id === id) {
             return searchNode;
-        } else if (searchNode?.type === 'suite') {
+        } else if (searchNode?.type === "suite") {
             for (const child of searchNode.children) {
                 const found = this.findNode(child, id);
                 if (found){

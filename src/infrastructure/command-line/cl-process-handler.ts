@@ -40,7 +40,7 @@ export class CommandlineProcessHandler {
     public killAsync(): Promise<void> {
         return new Promise<void>((resolve) => {
         kill(this.angularProcess.pid, "SIGTERM", () => {
-            this.logger.info(`Angular exited succesfully`);
+            this.logger.info("Angular exited succesfully");
             resolve();
         });
         });
