@@ -6,11 +6,11 @@ import {
   TestSuiteInfo,
 } from "vscode-test-adapter-api";
 import * as vscode from "vscode";
-import { SpecCompleteResponse } from "../../domain/models/spec-complete-response";
-import { KarmaEvent } from "../../domain/models/karma-event";
-import { TestState } from "../../domain/enums/enum-index";
-import { TestResultToTestStateMapper } from "../mappers/test-result-to-test-state.mapper";
-import { TestLoadEvent, TestStateEvent } from "../../domain/types/types-index";
+import { TestLoadEvent, TestStateEvent } from "@domain/types/types-index";
+import { TestState } from "@domain/enums/enum-index";
+import { KarmaEvent } from "@domain/models/karma-event";
+import { TestResultToTestStateMapper } from "@infrastructure/mappers/test-result-to-test-state.mapper";
+import { SpecCompleteResponse } from "@domain/models/spec-complete-response";
 
 export class EventEmitter {
   public constructor(
