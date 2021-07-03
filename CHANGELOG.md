@@ -1,5 +1,8 @@
 # Change Log
 
+### [Unreleased]
+- Spec file detection is no longer recursive in angular.json
+
 ### [0.2.5]
 - Fix context line not being properly updated
 - Move release info to CHANGELOG.md
