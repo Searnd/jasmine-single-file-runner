@@ -1,9 +1,9 @@
 import * as http from "http";
 import * as express from "express";
 import { KarmaEventName, TestResult, TestState } from "../../enums/enum-index";
-import { KarmaEvent } from "../../models/karma-event";
+import { KarmaEvent } from "../../domain/models/karma-event";
 import { EventEmitter } from "../event-emitter/event-emitter";
-import { KarmaTestSuiteInfo } from "../../models/karma-test-suite-info";
+import { KarmaTestSuiteInfo } from "../../domain/models/karma-test-suite-info";
 import { SpecResponseToTestSuiteInfoMapper } from "../mappers/spec-response-to-test-suite-info.mapper";
 
 export class KarmaEventListener {

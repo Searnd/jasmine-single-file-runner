@@ -6,7 +6,7 @@ import { CommandlineProcessHandler } from '../infrastructure/command-line/cl-pro
 import { EventEmitter } from '../infrastructure/event-emitter/event-emitter';
 import { Logger } from './helpers/logger';
 import { KarmaEventListener } from '../infrastructure/karma/karma-event-listener';
-import { KarmaTestInfo, KarmaTestSuiteInfo } from '../models/karma-test-suite-info';
+import { KarmaTestInfo, KarmaTestSuiteInfo } from '../domain/models/karma-test-suite-info';
 import { TestLoadEvent, TestStateEvent } from '../domain/types/types-index';
 import { KarmaHttpClient } from '../infrastructure/karma/karma-http-client';
 

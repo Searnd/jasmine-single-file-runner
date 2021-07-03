@@ -6,8 +6,8 @@ import {
   TestSuiteInfo,
 } from "vscode-test-adapter-api";
 import * as vscode from "vscode";
-import { SpecCompleteResponse } from "../../models/spec-complete-response";
-import { KarmaEvent } from "../../models/karma-event";
+import { SpecCompleteResponse } from "../../domain/models/spec-complete-response";
+import { KarmaEvent } from "../../domain/models/karma-event";
 import { TestState } from "../../enums/enum-index";
 import { TestResultToTestStateMapper } from "../mappers/test-result-to-test-state.mapper";
 import { TestLoadEvent, TestStateEvent } from "../../domain/types/types-index";
