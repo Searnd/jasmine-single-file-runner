@@ -1,6 +1,6 @@
 import * as http from "http";
 import * as express from "express";
-import { KarmaEventName, TestResult, TestState } from "../../enums/enum-index";
+import { KarmaEventName, TestResult, TestState } from "../../domain/enums/enum-index";
 import { KarmaEvent } from "../../domain/models/karma-event";
 import { EventEmitter } from "../event-emitter/event-emitter";
 import { KarmaTestSuiteInfo } from "../../domain/models/karma-test-suite-info";
