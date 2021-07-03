@@ -16,7 +16,10 @@
         "eqeqeq": "warn",
         "no-throw-literal": "warn",
         "semi": "off",
-        "quotes": ["error", "double"]
+        "quotes": ["error", "double"],
+        "no-restricted-imports": ["error", {
+            "patterns": [".*"]
+        }]
     },
     "ignorePatterns": [
         "out",
