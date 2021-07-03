@@ -46,15 +46,6 @@ export class TsConfigSpecEditor {
     }
 
     private removePathPrefix(path: string): string {
-        let relativePath = workspace.asRelativePath(path, false);
-        const matches = relativePath.match(/src\/app.*/);
-
-        if (!matches) {
-            throw new FileSystemError("Error: unable to parse path to spec file");
-        }
-
-        relativePath = (matches as RegExpMatchArray)[0];
-
-        return relativePath;
+        return workspace.asRelativePath(path, false);
     }
 }
