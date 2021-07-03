@@ -3,7 +3,7 @@
 import * as vscode from 'vscode';
 import { testExplorerExtensionId, TestHub } from 'vscode-test-adapter-api';
 import { Log, TestAdapterRegistrar } from 'vscode-test-adapter-util';
-import { CommandRegistrar } from './CommandRegistrar';
+import { CommandRegistrar } from './core/command-registrar';
 import { Coordinator } from './core/coordinator';
 import { OUTPUT_CHANNEL } from './core/helpers/logger';
 import { JsfrAdapter } from './jsfr-adapter';

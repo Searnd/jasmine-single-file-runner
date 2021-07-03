@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { TestAdapter, TestLoadFinishedEvent, TestLoadStartedEvent, TestRunStartedEvent } from 'vscode-test-adapter-api';
 import { Log } from 'vscode-test-adapter-util';
-import { AngularServer } from './angular-server';
+import { AngularServer } from './infrastructure/angular/angular-server';
 import { CommandlineProcessHandler } from './cl-process-handler';
 import { EventEmitter } from './event-emitter';
 import { Logger } from './core/helpers/logger';

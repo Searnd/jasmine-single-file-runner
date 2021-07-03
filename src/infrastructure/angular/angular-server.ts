@@ -1,6 +1,6 @@
 import { SpawnOptions } from "child_process";
-import { CommandlineProcessHandler } from "./cl-process-handler";
-import { KarmaEventListener } from "./infrastructure/karma/karma-event-listener";
+import { CommandlineProcessHandler } from "../../cl-process-handler";
+import { KarmaEventListener } from "../karma/karma-event-listener";
 
 export class AngularServer {
   public constructor(
