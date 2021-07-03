@@ -59,7 +59,8 @@
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
-    "lint": "eslint src --ext ts",
+    "lint": "eslint .",
+    "lint fix": "eslint . --fix",
     "test": "node ./out/test/runTest.js",
     "package": "vsce package -o dist/jsfr.vsix"
   },
