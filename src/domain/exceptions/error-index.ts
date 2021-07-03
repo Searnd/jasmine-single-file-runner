@@ -11,7 +11,7 @@ export class LineNotFoundInFileError extends Error {
 }
 
 export class ArgumentInvalidError extends Error {
-    constructor(message: string = "Error: invalid argument") {
+    constructor(message = "Error: invalid argument") {
         super(message);
     }
 }

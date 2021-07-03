@@ -1,6 +1,6 @@
 import path = require('path');
 import * as vscode from 'vscode';
-import { ArgumentInvalidError } from './exceptions/error-index';
+import { ArgumentInvalidError } from './domain/exceptions/error-index';
 import { TaskManager } from './TaskManager';
 import { TestFileEditor } from './TestFileEditor';
 import { TestFileFinder } from './TestFileFinder';
