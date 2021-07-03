@@ -41,10 +41,10 @@ export class Coordinator {
 
     public async initialize(): Promise<void> {
         const testFileUri = await FileFinder.getFileLocation("**/src/test.ts");
-        this._testFileEditor = new TestFileEditor(testFileUri, this._document);
+        this._testFileEditor = new TestFileEditor(testFileUri, this._document.uri);
 
         const tsconfigSpecFileUri = await FileFinder.getFileLocation("**/tsconfig.spec.json");
-        this._tsconfigSpecEditor = new TsConfigSpecEditor(tsconfigSpecFileUri);
+        this._tsconfigSpecEditor = new TsConfigSpecEditor(tsconfigSpecFileUri, this._document.uri);
 
         this._taskManager = new VscodeTaskManager(this._taskType);
     }

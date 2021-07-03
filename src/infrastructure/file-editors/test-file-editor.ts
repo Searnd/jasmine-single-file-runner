@@ -1,23 +1,18 @@
 import { Uri, workspace } from "vscode";
-import * as vscode from "vscode";
 import { promises as fs } from "fs";
 import * as path from "path";
 import { LineNotFoundInFileError } from "../../domain/exceptions/error-index";
 
 // TODO: improve cohesion by extracting methods
 export class TestFileEditor {
-    private _testFileUri: Uri;
-
-    private _specFile: vscode.TextDocument;
-
     private _contextLineRegex = /^const context = require\.context.*/m;
 
     private _contextLineInitialValue = "";
 
-    constructor(testFileUri: Uri, specFile: vscode.TextDocument) {
-        this._testFileUri = testFileUri;
-        this._specFile = specFile;
-    }
+    constructor(
+        private readonly _testFileUri: Uri,
+        private readonly _specFileUri: Uri
+    ) { }
 
     public async addSpecFileToContextLine(): Promise<void> {
         const data = await fs.readFile(this._testFileUri.fsPath, {encoding: "utf8"});
@@ -68,12 +63,12 @@ export class TestFileEditor {
     }
 
     private getSpecFileDir(): string {
-        const dirname = path.dirname(this._specFile.fileName);
+        const dirname = path.dirname(this._specFileUri.fsPath);
         return workspace.asRelativePath(dirname);
     }
 
     private getSpecFilename(): string {
-        return path.basename(this._specFile.fileName);
+        return path.basename(this._specFileUri.fsPath);
     }
 
     private cleanupRegexString(regexStr: string): string {

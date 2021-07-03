@@ -1,5 +1,4 @@
-import { FileSystemError, Uri, workspace } from "vscode";
-import * as path from "path";
+import { FileSystemError, TextDocument, Uri, workspace } from "vscode";
 import * as fs from "fs/promises";
 import * as stripJsonComments from "strip-json-comments";
 
@@ -11,7 +10,8 @@ export class TsConfigSpecEditor {
     private _tsconfigInitialData: string | undefined;
 
     constructor(
-        private _tsconfigSpecFileUri: Uri
+        private readonly _tsconfigSpecFileUri: Uri,
+        private readonly _specFileUri: Uri
     ) {}
 
     public async addSpecFile(): Promise<void> {
@@ -24,7 +24,7 @@ export class TsConfigSpecEditor {
             throw new FileSystemError("Error: unable to fetch tsconfig.spec.json");
         }
 
-        const formattedSpecFilename = this.removePathPrefix(this._tsconfigSpecFileUri.fsPath);
+        const formattedSpecFilename = this.removePathPrefix(this._specFileUri.fsPath);
         tsconfig.include = [ formattedSpecFilename ];
 
         await fs.writeFile(this._tsconfigSpecFileUri.fsPath, JSON.stringify(tsconfig), "utf8");
@@ -46,6 +46,15 @@ export class TsConfigSpecEditor {
     }
 
     private removePathPrefix(path: string): string {
-        return workspace.asRelativePath(path, false);
+        let relativePath = workspace.asRelativePath(path, false);
+        const matches = relativePath.match(/src\/app.*/);
+
+        if (!matches) {
+            throw new FileSystemError("Error: unable to parse path to spec file");
+        }
+
+        relativePath = (matches as RegExpMatchArray)[0];
+
+        return relativePath;
     }
 }
