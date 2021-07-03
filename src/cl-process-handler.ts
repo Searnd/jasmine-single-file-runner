@@ -2,7 +2,7 @@ import { KarmaEventListener } from "./karma-event-listener";
 import { ChildProcess, SpawnOptions } from "child_process";
 import * as spawn from "cross-spawn";
 import * as kill from "tree-kill";
-import { Logger } from "./helpers/logger";
+import { Logger } from "./core/helpers/logger";
 
 export class CommandlineProcessHandler {
     private angularProcess!: ChildProcess;
