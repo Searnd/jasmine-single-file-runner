@@ -25,15 +25,17 @@ export class Coordinator {
     }
 
     public async executeTests(): Promise<void> {
-        if (!this._testFileEditor || !this._taskManager) {
-            throw new vscode.FileSystemError("Error: test file finder and/or test file editor and/or task manager not initialized");
+        if (!this._testFileEditor || !this._tsconfigSpecEditor || !this._taskManager) {
+            throw new vscode.FileSystemError("Error: test file editor and/or tsconfig editor and/or task manager not initialized");
         }
-        this._testFileEditor.addSpecFileToContextLine();
+
+        await this._testFileEditor.addSpecFileToContextLine();
+        await this._tsconfigSpecEditor.addSpecFile();
 
         const specFileDirectory = path.dirname(this._document.uri.fsPath);
         this._taskManager.registerTaskProvider(this._taskType, "ng test", specFileDirectory);
 
-        this.startTask();
+        await this.startTask();
     }
 
     public async initialize(): Promise<void> {
@@ -60,6 +62,7 @@ export class Coordinator {
         vscode.tasks.onDidEndTask((e) => {
             if (e.execution.task.name === this._taskType) {
                 this._testFileEditor.restoreContextLine();
+                this._tsconfigSpecEditor.restoreFile();
             }
         });
     }

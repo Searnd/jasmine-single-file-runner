@@ -5,7 +5,7 @@ declare module "karma" {
     detached?: boolean;
     configFile?: string;
     coverageIstanbulReporter?: any;
-    reporters: string[];
+    reporters?: string[];
   }
 
   interface Reporter {

@@ -1,7 +1,7 @@
 import { UtilityHelper } from "@core/helpers/utility-helper";
 import { Config, ConfigOptions } from "karma";
 import * as path from "path";
-import * as TestExplorerCustomReporter from "../core/integration/test-explorer-custom-karma-reporter"; //TODO: implement this
+// import * as TestExplorerCustomReporter from "../core/integration/test-explorer-custom-karma-reporter"; //TODO: implement this
 
 export class KarmaConfigurator {
   private readonly testExplorerHelper: UtilityHelper;
@@ -73,13 +73,13 @@ export class KarmaConfigurator {
     originalConfigModule(config);
   }
 
-  public configureTestExplorerCustomReporter(config: Config): void {
-    this.addPlugin(config, { [`reporter:${TestExplorerCustomReporter.name}`]: ["type", TestExplorerCustomReporter.instance] });
-    if (!config.reporters) {
-      config.reporters = [];
-    }
-    config.reporters.push(TestExplorerCustomReporter.name);
-  }
+  // public configureTestExplorerCustomReporter(config: Config): void {
+  //   this.addPlugin(config, { [`reporter:${TestExplorerCustomReporter.name}`]: ["type", TestExplorerCustomReporter.instance] });
+  //   if (!config.reporters) {
+  //     config.reporters = [];
+  //   }
+  //   config.reporters.push(TestExplorerCustomReporter.name);
+  // }
 
   private addPlugin(karmaConfig: ConfigOptions, karmaPlugin: any): void {
     karmaConfig.plugins = karmaConfig.plugins || ["karma-*"];
