@@ -1,12 +1,8 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
-import { testExplorerExtensionId, TestHub } from "vscode-test-adapter-api";
-import { Log, TestAdapterRegistrar } from "vscode-test-adapter-util";
-import { CommandRegistrar } from "./core/command-registrar";
-import { Coordinator } from "./core/coordinator";
-import { OUTPUT_CHANNEL } from "./core/helpers/logger";
-import { JsfrAdapter } from "./core/jsfr-adapter";
+import { CommandRegistrar } from "@core/command-registrar";
+import { Coordinator } from "@core/coordinator";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
