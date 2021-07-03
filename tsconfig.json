@@ -10,7 +10,6 @@
 		"rootDir": "src",
 		"baseUrl": ".",
 		"paths": {
-			"@config/*": ["src/config/*"],
 			"@core/*": ["src/core/*"],
 			"@domain/*": ["src/domain/*"],
 			"@infrastructure/*": ["src/infrastructure/*"],

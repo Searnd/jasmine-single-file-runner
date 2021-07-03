@@ -1,5 +1,5 @@
-import { KarmaConfigurator } from "./karma-configurator";
 import { Config } from "karma";
+import { KarmaConfigurator } from "./karma-configurator";
 
 const karmaConfigurator = new KarmaConfigurator();
 const originalConfigPath = process.env.userKarmaConfigPath as string;
