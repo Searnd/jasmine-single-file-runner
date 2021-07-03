@@ -12,28 +12,28 @@ import { JsfrAdapter } from './core/jsfr-adapter';
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext): void {
 
-	const workspaceFolder = (vscode.workspace.workspaceFolders || [])[0];
-	const channel = vscode.window.createOutputChannel(OUTPUT_CHANNEL);
+	// const workspaceFolder = (vscode.workspace.workspaceFolders || [])[0];
+	// const channel = vscode.window.createOutputChannel(OUTPUT_CHANNEL);
 
-	const log = new Log("JSFR", workspaceFolder, "JSFR Log");
-	context.subscriptions.push(log);
+	// const log = new Log("JSFR", workspaceFolder, "JSFR Log");
+	// context.subscriptions.push(log);
 
-	const testExplorerExtension = vscode.extensions.getExtension<TestHub>(testExplorerExtensionId);
-	if (log.enabled) {
-		log.info(`Test Explorer ${testExplorerExtension ? '' : 'not '}found`);
-	}
+	// const testExplorerExtension = vscode.extensions.getExtension<TestHub>(testExplorerExtensionId);
+	// if (log.enabled) {
+	// 	log.info(`Test Explorer ${testExplorerExtension ? '' : 'not '}found`);
+	// }
 
-	if (testExplorerExtension) {
-		const testHub = testExplorerExtension.exports;
+	// if (testExplorerExtension) {
+	// 	const testHub = testExplorerExtension.exports;
 
-		const testAdapterRegistrar = new TestAdapterRegistrar(
-			testHub,
-			workspaceFolder => new JsfrAdapter(workspaceFolder, log, channel),
-			log
-		);
+	// 	const testAdapterRegistrar = new TestAdapterRegistrar(
+	// 		testHub,
+	// 		workspaceFolder => new JsfrAdapter(workspaceFolder, log, channel),
+	// 		log
+	// 	);
 
-		context.subscriptions.push(testAdapterRegistrar);
-	}
+	// 	context.subscriptions.push(testAdapterRegistrar);
+	// }
 
 	const commandRegistrar = new CommandRegistrar(context);
 
