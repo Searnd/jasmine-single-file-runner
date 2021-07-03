@@ -1,7 +1,6 @@
 import * as http from "http";
 import * as express from "express";
 import { KarmaEventName, TestResult, TestState } from "./enums/enum-index";
-import { Server } from "socket.io";
 import { KarmaEvent } from "./models/karma-event";
 import { EventEmitter } from "./event-emitter";
 import { KarmaTestSuiteInfo } from "./models/karma-test-suite-info";
@@ -31,6 +30,8 @@ export class KarmaEventListener {
             // *shrug*
             // eslint-disable-next-line @typescript-eslint/no-var-requires
             const io = require("socket.io")(this.server, { forceNew: true });
+            io.set("heartbeat interval", 24 * 60 * 60 * 1000);
+            io.set("heartbeat timeout", 24 * 60 * 60 * 1000);
     
             const port = defaultSocketPort !== 0 ? defaultSocketPort : 9999;
     
@@ -38,7 +39,7 @@ export class KarmaEventListener {
                 global.console.log("Waiting to connect to Karma...");
             }, 5000);
 
-            (io as Server).on("connection", (socket) => {
+            io.on("connection", (socket: any) => {
                 socket.on(KarmaEventName.browserConnected, () => {
                     clearInterval(nInterval);
                     this.onBrowserConnected(resolve);

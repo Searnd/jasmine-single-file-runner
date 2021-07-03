@@ -29,10 +29,10 @@ export class AngularServer {
     const options: SpawnOptions = {
       cwd: projectAbsolutePath,
       shell: true,
-      env: Object.create(process.env)
+      env: process.env
     };
 
-    this.processHandler.create("ng", ["test", `--karma-config="${baseKarmaConfigFilePath}"`, "--progress=false"], options);
+    this.processHandler.create("npx", ["ng", "test", `--karma-config="${baseKarmaConfigFilePath}"`, "--progress=false"], options);
 
     await this.karmaEventListener.listenUntilKarmaIsReady(9999);
   }
