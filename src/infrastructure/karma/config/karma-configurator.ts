@@ -1,6 +1,6 @@
-import { UtilityHelper } from "@/core/helpers/utility-helper";
 import { Config, ConfigOptions } from "karma";
 import * as path from "path";
+import { UtilityHelper } from "../../../core/helpers/utility-helper";
 // import * as TestExplorerCustomReporter from "../core/integration/test-explorer-custom-karma-reporter"; //TODO: implement this
 
 export class KarmaConfigurator {

@@ -2,7 +2,6 @@
 	"compilerOptions": {
 		"module": "commonjs",
 		"target": "es6",
-		"moduleResolution": "node",
 		"resolveJsonModule": true,
 		"outDir": "out",
 		"lib": [
@@ -10,10 +9,6 @@
 		],
 		"sourceMap": true,
 		"rootDir": "src",
-		"baseUrl": ".",
-		"paths": {
-			"@/*": ["src/*"]
-		},
 		"strict": true   /* enable all strict type-checking options */
 		/* Additional Checks */
 		// "noImplicitReturns": true, /* Report error when not all code paths in function return a value. */

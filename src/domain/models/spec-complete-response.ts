@@ -1,4 +1,4 @@
-import { TestResult } from "@/domain/enums/enum-index";
+import { TestResult } from "../enums/enum-index";
 
 export class SpecCompleteResponse {
   public constructor(

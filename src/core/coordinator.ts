@@ -1,10 +1,11 @@
-import { ArgumentInvalidError } from "@/domain/exceptions/error-index";
-import { TestFileEditor } from "@/infrastructure/file-editors/test-file-editor";
-import { FileFinder } from "@/infrastructure/file-finder/file-finder";
+
 import * as path from "path";
 import * as vscode from "vscode";
-import { VscodeTaskManager } from "@/core/vscode-task-manager";
-import { TsConfigSpecEditor } from "@/infrastructure/file-editors/tsconfig-spec-editor";
+import { ArgumentInvalidError } from "../domain/exceptions/error-index";
+import { TestFileEditor } from "../infrastructure/file-editors/test-file-editor";
+import { TsConfigSpecEditor } from "../infrastructure/file-editors/tsconfig-spec-editor";
+import { FileFinder } from "../infrastructure/file-finder/file-finder";
+import { VscodeTaskManager } from "./vscode-task-manager";
 
 export class Coordinator {
     private _testFileEditor!: TestFileEditor;
