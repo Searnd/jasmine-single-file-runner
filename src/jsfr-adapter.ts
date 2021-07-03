@@ -5,7 +5,7 @@ import { AngularServer } from './angular-server';
 import { CommandlineProcessHandler } from './cl-process-handler';
 import { EventEmitter } from './event-emitter';
 import { Logger } from './core/helpers/logger';
-import { KarmaEventListener } from './karma-event-listener';
+import { KarmaEventListener } from './infrastructure/karma/karma-event-listener';
 import { KarmaHttpClient } from './karma-http-client';
 import { KarmaTestInfo, KarmaTestSuiteInfo } from './models/karma-test-suite-info';
 import { TestLoadEvent, TestStateEvent } from './domain/types/types-index';

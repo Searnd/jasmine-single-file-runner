@@ -1,4 +1,4 @@
-import { KarmaEventListener } from "./karma-event-listener";
+import { KarmaEventListener } from "./infrastructure/karma/karma-event-listener";
 import { ChildProcess, SpawnOptions } from "child_process";
 import * as spawn from "cross-spawn";
 import * as kill from "tree-kill";
