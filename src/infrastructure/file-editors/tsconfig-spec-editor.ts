@@ -1,6 +1,7 @@
 import { FileSystemError, Uri, workspace } from "vscode";
 import * as path from "path";
 import * as fs from "fs/promises";
+import * as stripJsonComments from "strip-json-comments";
 
 type Tsconfig = {
     include: string[]
@@ -18,7 +19,7 @@ export class TsConfigSpecEditor {
 
         this.backupFile(data);
 
-        const tsconfig: Tsconfig = await import(this._tsconfigSpecFileUri.fsPath);
+        const tsconfig: Tsconfig = JSON.parse(stripJsonComments(data));
         if (!tsconfig) {
             throw new FileSystemError("Error: unable to fetch tsconfig.spec.json");
         }
