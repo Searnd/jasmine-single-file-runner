@@ -1,7 +1,7 @@
 import { Config, ConfigOptions } from "karma";
 import * as path from "path";
 import * as TestExplorerCustomReporter from "../core/integration/test-explorer-custom-karma-reporter";
-import { UtilityHelper } from "../core/shared/utility-helper";
+import { UtilityHelper } from "../utility-helper";
 
 export class KarmaConfigurator {
   private readonly testExplorerHelper: UtilityHelper;
@@ -63,8 +63,8 @@ export class KarmaConfigurator {
     config.reporters = filteredReporters;
   }
 
-  public loadOriginalUserConfiguration(config: Config, originalConfigPath: string): void {
-    let originalConfigModule = require(originalConfigPath);
+  public async loadOriginalUserConfiguration(config: Config, originalConfigPath: string): Promise<void> {
+    let originalConfigModule = await import(originalConfigPath);
     // https://github.com/karma-runner/karma/blob/v1.7.0/lib/config.js#L364
     if (typeof originalConfigModule === "object" && typeof originalConfigModule.default !== "undefined") {
       originalConfigModule = originalConfigModule.default;
