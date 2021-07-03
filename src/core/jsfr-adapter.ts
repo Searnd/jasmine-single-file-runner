@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { TestAdapter, TestLoadFinishedEvent, TestLoadStartedEvent, TestRunStartedEvent } from 'vscode-test-adapter-api';
 import { Log } from 'vscode-test-adapter-util';
 import { AngularServer } from '../infrastructure/angular/angular-server';
-import { CommandlineProcessHandler } from '../cl-process-handler';
+import { CommandlineProcessHandler } from '../infrastructure/command-line/cl-process-handler';
 import { EventEmitter } from '../infrastructure/event-emitter/event-emitter';
 import { Logger } from './helpers/logger';
 import { KarmaEventListener } from '../infrastructure/karma/karma-event-listener';
