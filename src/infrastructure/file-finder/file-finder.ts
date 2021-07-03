@@ -1,4 +1,4 @@
-import { FileNotFoundError } from "@domain/exceptions/error-index";
+import { FileNotFoundError } from "@/domain/exceptions/error-index";
 import { Uri, workspace } from "vscode";
 
 export class FileFinder {

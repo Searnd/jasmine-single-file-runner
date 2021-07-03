@@ -1,4 +1,4 @@
-import { TestResult, TestState } from "@domain/enums/enum-index";
+import { TestResult, TestState } from "@/domain/enums/enum-index";
 
 export class TestResultToTestStateMapper {
 

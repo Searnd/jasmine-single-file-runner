@@ -1,8 +1,8 @@
 import { Uri, workspace } from "vscode";
 import * as vscode from "vscode";
 import { promises as fs } from "fs";
-import path = require("path");
-import { LineNotFoundInFileError } from "@domain/exceptions/error-index";
+import * as path from "path";
+import { LineNotFoundInFileError } from "@/domain/exceptions/error-index";
 
 // TODO: improve cohesion by extracting methods
 export class TestFileEditor {

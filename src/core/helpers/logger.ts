@@ -1,4 +1,4 @@
-import { LogLevel, TestResult } from "@domain/enums/enum-index";
+import { LogLevel, TestResult } from "@/domain/enums/enum-index";
 import { OutputChannel } from "vscode";
 
 export const OUTPUT_CHANNEL = "Test Explorer Logs";

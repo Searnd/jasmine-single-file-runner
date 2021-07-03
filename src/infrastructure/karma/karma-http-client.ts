@@ -1,4 +1,4 @@
-import { KarmaConfig } from "@domain/types/types-index";
+import { KarmaConfig } from "@/domain/types/types-index";
 import * as http from "http";
 
 export class KarmaHttpClient {

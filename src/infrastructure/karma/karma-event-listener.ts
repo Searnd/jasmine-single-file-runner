@@ -1,10 +1,10 @@
 import * as http from "http";
 import * as express from "express";
-import { KarmaEventName, TestResult, TestState } from "@domain/enums/enum-index";
-import { KarmaEvent } from "@domain/models/karma-event";
-import { EventEmitter } from "@infrastructure/event-emitter/event-emitter";
-import { KarmaTestSuiteInfo } from "@domain/models/karma-test-suite-info";
-import { SpecResponseToTestSuiteInfoMapper } from "@infrastructure/mappers/spec-response-to-test-suite-info.mapper";
+import { KarmaEventName, TestResult, TestState } from "@/domain/enums/enum-index";
+import { KarmaEvent } from "@/domain/models/karma-event";
+import { EventEmitter } from "@/infrastructure/event-emitter/event-emitter";
+import { KarmaTestSuiteInfo } from "@/domain/models/karma-test-suite-info";
+import { SpecResponseToTestSuiteInfoMapper } from "@/infrastructure/mappers/spec-response-to-test-suite-info.mapper";
 
 export class KarmaEventListener {
     private savedSpecs: any[] = [];

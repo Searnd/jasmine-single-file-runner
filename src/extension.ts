@@ -1,8 +1,8 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
-import { CommandRegistrar } from "@core/command-registrar";
-import { Coordinator } from "@core/coordinator";
+import { CommandRegistrar } from "@/core/command-registrar";
+import { Coordinator } from "@/core/coordinator";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
