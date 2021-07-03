@@ -1,10 +1,14 @@
+import { FileNotFoundError } from "@domain/exceptions/error-index";
 import { Uri, workspace } from "vscode";
-import { FileNotFoundError } from "../../domain/exceptions/error-index";
 
 export class FileFinder {
     constructor(
-        private readonly _includePattern: string
+        private _includePattern: string = ""
     ) {}
+
+    public set includePattern(value: string) {
+        this._includePattern = value;
+    }
 
     public async getFileLocation(): Promise<Uri> {
         const files = await workspace.findFiles(this._includePattern, "**/node_modules/**");
