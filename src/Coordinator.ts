@@ -1,12 +1,12 @@
 import path = require('path');
 import * as vscode from 'vscode';
 import { ArgumentInvalidError } from './domain/exceptions/error-index';
+import { FileFinder } from './infrastructure/file-finder/file-finder';
 import { TaskManager } from './TaskManager';
 import { TestFileEditor } from './TestFileEditor';
-import { TestFileFinder } from './TestFileFinder';
 
 export class Coordinator {
-    private _testFileFinder!: TestFileFinder;
+    private _testFileFinder!: FileFinder;
     private _testFileEditor!: TestFileEditor;
     private _taskManager!: TaskManager;
 
@@ -35,8 +35,8 @@ export class Coordinator {
     }
 
     public async initialize(): Promise<void> {
-        this._testFileFinder = new TestFileFinder();
-        const testFileUri = await this._testFileFinder.getTestFileLocation();
+        this._testFileFinder = new FileFinder("**/src/test.ts");
+        const testFileUri = await this._testFileFinder.getFileLocation();
 
         this._testFileEditor = new TestFileEditor(testFileUri, this._document);
 
