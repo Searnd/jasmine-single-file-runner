@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 import { ArgumentInvalidError } from '../domain/exceptions/error-index';
 import { FileFinder } from '../infrastructure/file-finder/file-finder';
 import { VscodeTaskManager } from './vscode-task-manager';
-import { TestFileEditor } from '../TestFileEditor';
+import { TestFileEditor } from './test-file-editor';
 
 export class Coordinator {
     private _testFileFinder!: FileFinder;

@@ -2,7 +2,7 @@ import { Uri, workspace } from "vscode";
 import * as vscode from 'vscode';
 import { promises as fs } from 'fs';
 import path = require("path");
-import { LineNotFoundInFileError } from "./domain/exceptions/error-index";
+import { LineNotFoundInFileError } from "../domain/exceptions/error-index";
 
 // TODO: improve cohesion by extracting methods
 export class TestFileEditor {
@@ -10,9 +10,9 @@ export class TestFileEditor {
 
     private _specFile: vscode.TextDocument;
 
-    private _contextLineRegex: RegExp = /^const context = require\.context.*/m;
+    private _contextLineRegex = /^const context = require\.context.*/m;
 
-    private _contextLineInitialValue: string = "";
+    private _contextLineInitialValue = "";
 
     constructor(testFileUri: Uri, specFile: vscode.TextDocument) {
         this._testFileUri = testFileUri;
