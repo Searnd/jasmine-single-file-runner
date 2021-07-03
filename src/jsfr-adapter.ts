@@ -4,9 +4,9 @@ import { Log } from 'vscode-test-adapter-util';
 import { AngularServer } from './angular-server';
 import { CommandlineProcessHandler } from './cl-process-handler';
 import { EventEmitter } from './event-emitter';
+import { Logger } from './helpers/logger';
 import { KarmaEventListener } from './karma-event-listener';
 import { KarmaHttpClient } from './karma-http-client';
-import { Logger, OUTPUT_CHANNEL } from './logger';
 import { KarmaTestInfo, KarmaTestSuiteInfo } from './models/karma-test-suite-info';
 import { TestLoadEvent, TestStateEvent } from './types/types-index';
 
