@@ -4,10 +4,12 @@ import { FileFinder } from "@infrastructure/file-finder/file-finder";
 import path = require("path");
 import * as vscode from "vscode";
 import { VscodeTaskManager } from "@core/vscode-task-manager";
+import { TsConfigSpecEditor } from "@infrastructure/file-editors/tsconfig-spec-editor";
 
 export class Coordinator {
-    private _testFileFinder!: FileFinder;
     private _testFileEditor!: TestFileEditor;
+    private _tsconfigSpecEditor!: TsConfigSpecEditor;
+
     private _taskManager!: VscodeTaskManager;
 
     private _document: vscode.TextDocument;
@@ -23,7 +25,7 @@ export class Coordinator {
     }
 
     public async executeTests(): Promise<void> {
-        if (!this._testFileFinder || !this._testFileEditor || !this._taskManager) {
+        if (!this._testFileEditor || !this._taskManager) {
             throw new vscode.FileSystemError("Error: test file finder and/or test file editor and/or task manager not initialized");
         }
         this._testFileEditor.addSpecFileToContextLine();
@@ -35,10 +37,11 @@ export class Coordinator {
     }
 
     public async initialize(): Promise<void> {
-        this._testFileFinder = new FileFinder("**/src/test.ts");
-        const testFileUri = await this._testFileFinder.getFileLocation();
-
+        const testFileUri = await FileFinder.getFileLocation("**/src/test.ts");
         this._testFileEditor = new TestFileEditor(testFileUri, this._document);
+
+        const tsconfigSpecFileUri = await FileFinder.getFileLocation("**/tsconfig.spec.json");
+        this._tsconfigSpecEditor = new TsConfigSpecEditor(tsconfigSpecFileUri);
 
         this._taskManager = new VscodeTaskManager(this._taskType);
     }
