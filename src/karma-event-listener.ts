@@ -31,8 +31,6 @@ export class KarmaEventListener {
             // *shrug*
             // eslint-disable-next-line @typescript-eslint/no-var-requires
             const io = require("socket.io")(this.server, { forceNew: true });
-            io.set("heartbeat interval", 24 * 60 * 60 * 1000);
-            io.set("heartbeat timeout", 24 * 60 * 60 * 1000);
     
             const port = defaultSocketPort !== 0 ? defaultSocketPort : 9999;
     
