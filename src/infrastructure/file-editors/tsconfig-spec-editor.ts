@@ -29,6 +29,14 @@ export class TsConfigSpecEditor {
         await fs.writeFile(this._tsconfigSpecFileUri.fsPath, JSON.stringify(tsconfig), "utf8");
     }
 
+    public async restoreFile(): Promise<void> {
+        if (!this._tsconfigInitialData?.length) {
+            throw new FileSystemError("Error: Nothing to restore");
+        }
+
+        await fs.writeFile(this._tsconfigSpecFileUri.fsPath, this._tsconfigInitialData, "utf8");
+    }
+
     private backupFile(data: string): void {
         if (!data.length) {
                 throw new FileSystemError("Error: unable to back up file");
