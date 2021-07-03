@@ -1,6 +1,6 @@
 import * as path from "path";
-import { SpecCompleteResponse } from "../models/spec-complete-response";
-import { KarmaTestInfo, KarmaTestSuiteInfo } from "../models/karma-test-suite-info";
+import { SpecCompleteResponse } from "../../models/spec-complete-response";
+import { KarmaTestInfo, KarmaTestSuiteInfo } from "../../models/karma-test-suite-info";
 
 export class SpecResponseToTestSuiteInfoMapper {
   public constructor(private readonly projectRootPath: string) {}

@@ -9,7 +9,7 @@ import * as vscode from "vscode";
 import { SpecCompleteResponse } from "./models/spec-complete-response";
 import { KarmaEvent } from "./models/karma-event";
 import { TestState } from "./enums/enum-index";
-import { TestResultToTestStateMapper } from "./mappers/test-result-to-test-state.mapper";
+import { TestResultToTestStateMapper } from "./infrastructure/mappers/test-result-to-test-state.mapper";
 import { TestLoadEvent, TestStateEvent } from "./types/types-index";
 
 export class EventEmitter {
