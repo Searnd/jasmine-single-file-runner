@@ -1,5 +1,5 @@
 import * as http from "http";
-import { KarmaConfig } from "./types/types-index";
+import { KarmaConfig } from "./domain/types/types-index";
 
 export class KarmaHttpClient {
   public createKarmaRunCallConfiguration(tests: any) {

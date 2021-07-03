@@ -8,7 +8,7 @@ import { Logger } from './helpers/logger';
 import { KarmaEventListener } from './karma-event-listener';
 import { KarmaHttpClient } from './karma-http-client';
 import { KarmaTestInfo, KarmaTestSuiteInfo } from './models/karma-test-suite-info';
-import { TestLoadEvent, TestStateEvent } from './types/types-index';
+import { TestLoadEvent, TestStateEvent } from './domain/types/types-index';
 
 export class JsfrAdapter implements TestAdapter {
     private _disposables: vscode.Disposable[] = [];
