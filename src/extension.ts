@@ -6,7 +6,7 @@ import { Log, TestAdapterRegistrar } from 'vscode-test-adapter-util';
 import { CommandRegistrar } from './core/command-registrar';
 import { Coordinator } from './core/coordinator';
 import { OUTPUT_CHANNEL } from './core/helpers/logger';
-import { JsfrAdapter } from './jsfr-adapter';
+import { JsfrAdapter } from './core/jsfr-adapter';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
