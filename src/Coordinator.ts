@@ -2,13 +2,13 @@ import path = require('path');
 import * as vscode from 'vscode';
 import { ArgumentInvalidError } from './domain/exceptions/error-index';
 import { FileFinder } from './infrastructure/file-finder/file-finder';
-import { TaskManager } from './TaskManager';
+import { VscodeTaskManager } from './vscode-task-manager';
 import { TestFileEditor } from './TestFileEditor';
 
 export class Coordinator {
     private _testFileFinder!: FileFinder;
     private _testFileEditor!: TestFileEditor;
-    private _taskManager!: TaskManager;
+    private _taskManager!: VscodeTaskManager;
 
     private _document: vscode.TextDocument;
 
@@ -40,7 +40,7 @@ export class Coordinator {
 
         this._testFileEditor = new TestFileEditor(testFileUri, this._document);
 
-        this._taskManager = new TaskManager(this._taskType);
+        this._taskManager = new VscodeTaskManager(this._taskType);
     }
 
     private async startTask(): Promise<void> {

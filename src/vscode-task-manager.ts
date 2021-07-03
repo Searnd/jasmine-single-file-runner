@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 
-export class TaskManager {
+export class VscodeTaskManager {
     private _type: string;
 
     constructor(type: string) {
