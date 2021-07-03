@@ -6,11 +6,11 @@ import {
   TestSuiteInfo,
 } from "vscode-test-adapter-api";
 import * as vscode from "vscode";
-import { SpecCompleteResponse } from "./models/spec-complete-response";
-import { KarmaEvent } from "./models/karma-event";
-import { TestState } from "./enums/enum-index";
-import { TestResultToTestStateMapper } from "./infrastructure/mappers/test-result-to-test-state.mapper";
-import { TestLoadEvent, TestStateEvent } from "./domain/types/types-index";
+import { SpecCompleteResponse } from "../../models/spec-complete-response";
+import { KarmaEvent } from "../../models/karma-event";
+import { TestState } from "../../enums/enum-index";
+import { TestResultToTestStateMapper } from "../mappers/test-result-to-test-state.mapper";
+import { TestLoadEvent, TestStateEvent } from "../../domain/types/types-index";
 
 export class EventEmitter {
   public constructor(
@@ -18,12 +18,12 @@ export class EventEmitter {
     private readonly testLoadedEmitterInterface: vscode.EventEmitter<TestLoadEvent>
   ) {}
 
-  public emitTestStateEvent(testName: string, testState: TestState) {
+  public emitTestStateEvent(testName: string, testState: TestState): void {
     const testEvent = { type: "test", test: testName, state: testState } as TestEvent;
     this.eventEmitterInterface.fire(testEvent);
   }
 
-  public emitTestResultEvent(testName: string, karmaEvent: KarmaEvent) {
+  public emitTestResultEvent(testName: string, karmaEvent: KarmaEvent): void {
     const testState = TestResultToTestStateMapper.map(karmaEvent.results.status);
 
     const testEvent = { type: "test", test: testName, state: testState } as TestEvent;
@@ -36,7 +36,7 @@ export class EventEmitter {
     this.eventEmitterInterface.fire(testEvent);
   }
 
-  public emitTestsLoadedEvent(loadedTests: TestSuiteInfo) {
+  public emitTestsLoadedEvent(loadedTests: TestSuiteInfo): void {
     this.testLoadedEmitterInterface.fire({ type: "started" } as TestLoadStartedEvent);
     this.testLoadedEmitterInterface.fire({ type: "finished", suite: loadedTests } as TestLoadFinishedEvent);
   }

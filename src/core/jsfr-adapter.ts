@@ -3,12 +3,12 @@ import { TestAdapter, TestLoadFinishedEvent, TestLoadStartedEvent, TestRunStarte
 import { Log } from 'vscode-test-adapter-util';
 import { AngularServer } from '../infrastructure/angular/angular-server';
 import { CommandlineProcessHandler } from '../cl-process-handler';
-import { EventEmitter } from '../event-emitter';
+import { EventEmitter } from '../infrastructure/event-emitter/event-emitter';
 import { Logger } from './helpers/logger';
 import { KarmaEventListener } from '../infrastructure/karma/karma-event-listener';
-import { KarmaHttpClient } from './karma-http-client';
 import { KarmaTestInfo, KarmaTestSuiteInfo } from '../models/karma-test-suite-info';
 import { TestLoadEvent, TestStateEvent } from '../domain/types/types-index';
+import { KarmaHttpClient } from '../infrastructure/karma/karma-http-client';
 
 export class JsfrAdapter implements TestAdapter {
     private _disposables: vscode.Disposable[] = [];
