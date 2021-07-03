@@ -1,9 +1,9 @@
 import path = require('path');
 import * as vscode from 'vscode';
-import { ArgumentInvalidError } from './domain/exceptions/error-index';
-import { FileFinder } from './infrastructure/file-finder/file-finder';
-import { VscodeTaskManager } from './core/vscode-task-manager';
-import { TestFileEditor } from './TestFileEditor';
+import { ArgumentInvalidError } from '../domain/exceptions/error-index';
+import { FileFinder } from '../infrastructure/file-finder/file-finder';
+import { VscodeTaskManager } from './vscode-task-manager';
+import { TestFileEditor } from '../TestFileEditor';
 
 export class Coordinator {
     private _testFileFinder!: FileFinder;
