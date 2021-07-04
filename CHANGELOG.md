@@ -3,7 +3,8 @@
 ### [Unreleased]
 
 ### [0.2.6]
-- Spec file detection is no longer recursive in angular.json
+- **Significant execution speed increase**: .spec file detection is no longer recursive in angular.json
+- Add demo to readme
 
 ### [0.2.5]
 - Fix context line not being properly updated
