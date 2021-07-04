@@ -1,6 +1,8 @@
 # Change Log
 
 ### [Unreleased]
+
+### [0.2.6]
 - Spec file detection is no longer recursive in angular.json
 
 ### [0.2.5]
