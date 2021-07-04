@@ -2,6 +2,7 @@
 	"compilerOptions": {
 		"module": "commonjs",
 		"target": "es6",
+		"resolveJsonModule": true,
 		"outDir": "out",
 		"lib": [
 			"es6"
@@ -14,6 +15,7 @@
 		// "noFallthroughCasesInSwitch": true, /* Report errors for fallthrough cases in switch statement. */
 		// "noUnusedParameters": true,  /* Report errors on unused parameters. */
 	},
+	"include": ["src/**/*.ts", "tests/**/*.ts"],
 	"exclude": [
 		"node_modules",
 		".vscode-test"

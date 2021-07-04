@@ -1,20 +1,23 @@
 # Jasmine/Karma Single File Runner README
 
-Or JSFR for short. This extension gives you the ability to provide a single file for testing to the Angular test suite.
+Or JSFR for short. This extension gives you the ability to provide a single file for testing to the Angular test suite, significantly reducing test compilation time.
+
+Below is a comparison between executing a single test file in a moderate-sized project using **JSFR** (top) and using **fdescribe** (bottom):
+![demo](assets/docs/demo.gif)
 
 ## Features
 
-Execute tests by simply right-clicking anywhere in a `.spec.ts` file and selecting the option `JSFR: Test Current File`:
+Execute tests in a `.spec.ts` file by simply right-clicking on it and selecting the option `JSFR: Test Current File`:
 ![right-click-in-text-editor](assets/docs/te-right-click.gif)
 
-Or by right-cliking on the `.spec.ts` file in the file explorer:
+Also possible through the file explorer:
 ![right-click-in-file-explorer](assets/docs/fe-right-click.gif)
 
 ## Requirements
 
 Must have VS Code version 1.57.0 or higher.
 
-Must have VS Code open in an angular project.
+Must have VS Code open in an angular project (contains an `angular.json` file).
 
 ## Known Issues
 
@@ -22,25 +25,6 @@ Changes made to the `test.ts` file while JSFR is running won't be kept, as `test
 
 ---
 
-### 0.2.4
-- 'Preparing' message has progress bar
-- Refactoring
+## Releases
 
-### 0.2.3
-- Add gifs to README
-- Fix async issues with executing tests
-
-### 0.2.2
-- Update README, add license
-
-### 0.2.1
-- Fix bug causing app.component.spec.ts to not be properly added to the context path
-
-### 0.2.0
-- Spec file detection is no longer recursive
-
-### 0.1.1
-- Fix bug where no spec files were being detected
-
-### 0.1.0
-- Initial release of JSFR.
+See the [changelog](CHANGELOG.md).

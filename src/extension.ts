@@ -1,19 +1,41 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
-import { CommandRegistrar } from './CommandRegistrar';
-import { Coordinator } from './Coordinator';
-import { FileNotFoundError, LineNotFoundInFileError } from './exceptions/error-index';
+import * as vscode from "vscode";
+import { CommandRegistrar } from "./core/command-registrar";
+import { Coordinator } from "./core/coordinator";
 
-let ngTestProvider: vscode.Disposable | undefined;
+let coordinator: Coordinator | undefined;
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
+export function activate(context: vscode.ExtensionContext): void {
+
+	// const workspaceFolder = (vscode.workspace.workspaceFolders || [])[0];
+	// const channel = vscode.window.createOutputChannel(OUTPUT_CHANNEL);
+
+	// const log = new Log("JSFR", workspaceFolder, "JSFR Log");
+	// context.subscriptions.push(log);
+
+	// const testExplorerExtension = vscode.extensions.getExtension<TestHub>(testExplorerExtensionId);
+	// if (log.enabled) {
+	// 	log.info(`Test Explorer ${testExplorerExtension ? '' : 'not '}found`);
+	// }
+
+	// if (testExplorerExtension) {
+	// 	const testHub = testExplorerExtension.exports;
+
+	// 	const testAdapterRegistrar = new TestAdapterRegistrar(
+	// 		testHub,
+	// 		workspaceFolder => new JsfrAdapter(workspaceFolder, log, channel),
+	// 		log
+	// 	);
+
+	// 	context.subscriptions.push(testAdapterRegistrar);
+	// }
 
 	const commandRegistrar = new CommandRegistrar(context);
 
-	commandRegistrar.registerTextEditorCommand('jsfr.testCurrentFile', (textEditor) => {
+	commandRegistrar.registerTextEditorCommand("jsfr.testCurrentFile", (textEditor) => {
 		const progressOptions: vscode.ProgressOptions = {
 			title: "JSFR",
 			location: vscode.ProgressLocation.Notification
@@ -22,22 +44,19 @@ export function activate(context: vscode.ExtensionContext) {
 			progress.report({message: "Preparing..."});
 
 			try {
-				const coordinator = new Coordinator(textEditor.document);
+				coordinator = new Coordinator(textEditor.document);
 				await coordinator.initialize();
 				await coordinator.executeTests();
 			}
 			catch(e) {
-				if (e instanceof FileNotFoundError || e instanceof LineNotFoundInFileError) {
-					vscode.window.showErrorMessage(e.message);
-				} else {
-					throw e;
-				}
+				vscode.window.showErrorMessage(e.message);
+				throw e;
 			}
 		});
 	});
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {
-	ngTestProvider?.dispose();
+export function deactivate(): void {
+	coordinator?.dispose();
 }
