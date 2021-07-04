@@ -2,6 +2,9 @@
 
 ### [Unreleased]
 
+### [0.2.7]
+- Adjust gif sizes in readme
+
 ### [0.2.6]
 - **Significant execution speed increase**: .spec file detection is no longer recursive in angular.json
 - Add demo to readme
