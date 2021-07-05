@@ -3,6 +3,7 @@
 import * as vscode from "vscode";
 import { CommandRegistrar } from "./core/command-registrar";
 import { Coordinator } from "./core/coordinator";
+import { IUri } from "./domain/types/types-index";
 
 let coordinator: Coordinator | undefined;
 
@@ -35,16 +36,24 @@ export function activate(context: vscode.ExtensionContext): void {
 
 	const commandRegistrar = new CommandRegistrar(context);
 
-	commandRegistrar.registerTextEditorCommand("jsfr.testCurrentFile", (textEditor) => {
+	commandRegistrar.registerPaletteCommand("jsfr.testCurrentFile", (vscodeResourceUri: vscode.Uri) => {
+		const isFile = /\.spec\.ts$/.test(vscodeResourceUri.path);
+
+		const resourceUri: IUri = {
+			...vscodeResourceUri,
+			with: vscodeResourceUri.with,
+			toJSON: vscodeResourceUri.toJSON,
+			isFolder: !isFile
+		};
+
 		const progressOptions: vscode.ProgressOptions = {
 			title: "JSFR",
 			location: vscode.ProgressLocation.Notification
 		};
 		vscode.window.withProgress(progressOptions, async (progress) => {
 			progress.report({message: "Preparing..."});
-
 			try {
-				coordinator = new Coordinator(textEditor.document);
+				coordinator = new Coordinator(resourceUri);
 				await coordinator.initialize();
 				await coordinator.executeTests();
 			}

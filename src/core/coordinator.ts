@@ -1,7 +1,6 @@
 
 import * as path from "path";
 import * as vscode from "vscode";
-import { ArgumentInvalidError } from "../domain/exceptions/error-index";
 import { IUri } from "../domain/types/types-index";
 import { TestFileEditor } from "../infrastructure/file-editors/test-file-editor";
 import { TsConfigSpecEditor } from "../infrastructure/file-editors/tsconfig-spec-editor";
@@ -14,17 +13,11 @@ export class Coordinator {
 
     private _taskManager!: VscodeTaskManager;
 
-    private _document: vscode.TextDocument;
-
     private readonly _taskType: string = "ngTest";
 
-    constructor(documentOrUri: vscode.TextDocument | IUri) {
-        this._document = documentOrUri as vscode.TextDocument || vscode.workspace.openTextDocument(documentOrUri as IUri);
-
-        if (!this._document) {
-            throw new ArgumentInvalidError();
-        }
-    }
+    constructor(
+        private readonly _resourceUri: IUri
+    ) { }
 
     public async executeTests(): Promise<void> {
         if (!this._testFileEditor || !this._tsconfigSpecEditor || !this._taskManager) {
@@ -34,7 +27,7 @@ export class Coordinator {
         await this._testFileEditor.addSpecFileToContextLine();
         await this._tsconfigSpecEditor.addSpecFile();
 
-        const specFileDirectory = path.dirname(this._document.uri.fsPath);
+        const specFileDirectory = path.dirname(this._resourceUri.fsPath);
         this._taskManager.registerTaskProvider(this._taskType, "ng test", specFileDirectory);
 
         await this.startTask();
@@ -42,10 +35,10 @@ export class Coordinator {
 
     public async initialize(): Promise<void> {
         const testFileUri = await FileFinder.getFileLocation("**/src/test.ts");
-        this._testFileEditor = new TestFileEditor(testFileUri, this._document.uri, false);
+        this._testFileEditor = new TestFileEditor(testFileUri, this._resourceUri, false);
 
         const tsconfigSpecFileUri = await FileFinder.getFileLocation("**/tsconfig.spec.json");
-        this._tsconfigSpecEditor = new TsConfigSpecEditor(tsconfigSpecFileUri, this._document.uri);
+        this._tsconfigSpecEditor = new TsConfigSpecEditor(tsconfigSpecFileUri, this._resourceUri);
 
         this._taskManager = new VscodeTaskManager(this._taskType);
     }

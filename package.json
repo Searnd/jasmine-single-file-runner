@@ -39,7 +39,7 @@
       "explorer/context": [
         {
           "command": "jsfr.testCurrentFile",
-          "when": "resourceFilename =~ /\\.spec\\.ts$/",
+          "when": "resourceFilename =~ /\\.spec\\.ts$/ || explorerResourceIsFolder",
           "group": "0_jsfr"
         }
       ]
