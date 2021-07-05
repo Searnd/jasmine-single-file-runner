@@ -1,3 +1,4 @@
+import { Uri } from "vscode";
 import { TestEvent, TestLoadFinishedEvent, TestLoadStartedEvent, TestRunFinishedEvent, TestRunStartedEvent, TestSuiteEvent } from "vscode-test-adapter-api";
 
 export type TestLoadEvent = TestLoadStartedEvent | TestLoadFinishedEvent;
@@ -16,3 +17,7 @@ export type KarmaConfig = {
     addedFiles?: string[],
     changedFiles?: string[]
 };
+
+export interface IUri extends Uri {
+    isFolder: boolean;
+}

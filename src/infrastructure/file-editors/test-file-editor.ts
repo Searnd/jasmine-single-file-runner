@@ -11,7 +11,8 @@ export class TestFileEditor {
 
     constructor(
         private readonly _testFileUri: Uri,
-        private readonly _specFileUri: Uri
+        private readonly _specFileUri: Uri,
+        private readonly _isFolder: boolean
     ) { }
 
     public async addSpecFileToContextLine(): Promise<void> {
@@ -23,9 +24,9 @@ export class TestFileEditor {
 
         const formattedDirname = this.removePathPrefix(this.getSpecFileDir());
 
-        const formattedSpecFilename = this.cleanupRegexString(this.getSpecFilename());
+        const formattedSpecFilename = this._isFolder ? "\\.spec\\.ts" : this.cleanupRegexString(this.getSpecFilename());
 
-        const newFileContent = data.replace(contextRegex, `context('./${formattedDirname}', false, /${formattedSpecFilename}$/);`);
+        const newFileContent = data.replace(contextRegex, `context('./${formattedDirname}', ${this._isFolder}, /${formattedSpecFilename}$/);`);
 
         await fs.writeFile(this._testFileUri.fsPath, newFileContent, "utf8");
     }

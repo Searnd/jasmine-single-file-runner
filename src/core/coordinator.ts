@@ -2,6 +2,7 @@
 import * as path from "path";
 import * as vscode from "vscode";
 import { ArgumentInvalidError } from "../domain/exceptions/error-index";
+import { IUri } from "../domain/types/types-index";
 import { TestFileEditor } from "../infrastructure/file-editors/test-file-editor";
 import { TsConfigSpecEditor } from "../infrastructure/file-editors/tsconfig-spec-editor";
 import { FileFinder } from "../infrastructure/file-finder/file-finder";
@@ -17,8 +18,8 @@ export class Coordinator {
 
     private readonly _taskType: string = "ngTest";
 
-    constructor(documentOrUri: vscode.TextDocument|vscode.Uri) {
-        this._document = documentOrUri as vscode.TextDocument || vscode.workspace.openTextDocument(documentOrUri as vscode.Uri);
+    constructor(documentOrUri: vscode.TextDocument | IUri) {
+        this._document = documentOrUri as vscode.TextDocument || vscode.workspace.openTextDocument(documentOrUri as IUri);
 
         if (!this._document) {
             throw new ArgumentInvalidError();
@@ -41,7 +42,7 @@ export class Coordinator {
 
     public async initialize(): Promise<void> {
         const testFileUri = await FileFinder.getFileLocation("**/src/test.ts");
-        this._testFileEditor = new TestFileEditor(testFileUri, this._document.uri);
+        this._testFileEditor = new TestFileEditor(testFileUri, this._document.uri, false);
 
         const tsconfigSpecFileUri = await FileFinder.getFileLocation("**/tsconfig.spec.json");
         this._tsconfigSpecEditor = new TsConfigSpecEditor(tsconfigSpecFileUri, this._document.uri);
