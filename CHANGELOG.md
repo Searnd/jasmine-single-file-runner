@@ -2,6 +2,9 @@
 
 ### [Unreleased]
 
+### [0.3.1]
+- Fix bug causing spec files not to be loaded when either tscongig.spec.json or the test.ts file is in a different directory than expected
+
 ### [0.3.0]
 - Add ability to run all tests in a folder by right-clicking it in the file explorer
 
