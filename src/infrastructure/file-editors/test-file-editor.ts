@@ -22,7 +22,7 @@ export class TestFileEditor {
 
         const contextRegex = /context\(.*\);$/m;
 
-        const formattedDirname = this.removePathPrefix(this.getSpecFileDir());
+        const formattedDirname = this.pathReloativeToTestFile(this.getSpecFileDir());
 
         const formattedSpecFilename = this._resourceUri.isFolder ? "\\.spec\\.ts" : this.cleanupRegexString(this.getSpecFilename());
 
@@ -49,18 +49,16 @@ export class TestFileEditor {
         this._contextLineInitialValue = data;
     }
 
-    private removePathPrefix(path: string): string {
-        let relativePath = workspace.asRelativePath(path, false);
-        const matches = relativePath.match(/src\/app.*/);
+    private pathReloativeToTestFile(pathStr: string): string {
+        let specFileRelativePath = path.relative(this._testFileUri.path, pathStr);
 
-        if (!matches) {
-            throw new LineNotFoundInFileError("Error: unable to parse path to spec file");
-        }
+        // remove extra '.' in the path that was added by the call to path.relative
+        specFileRelativePath = specFileRelativePath.slice(1, specFileRelativePath.length);
 
-        relativePath = (matches as RegExpMatchArray)[0];
-        relativePath = relativePath.slice("src/".length);
+        // clean up for windows
+        specFileRelativePath = specFileRelativePath.replace(/\\/g, "/");
 
-        return relativePath;
+        return specFileRelativePath;
     }
 
     private getSpecFileDir(): string {
