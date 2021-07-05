@@ -2,6 +2,7 @@ import { Uri, workspace } from "vscode";
 import { promises as fs } from "fs";
 import * as path from "path";
 import { LineNotFoundInFileError } from "../../domain/exceptions/error-index";
+import { IUri } from "../../domain/types/types-index";
 
 // TODO: improve cohesion by extracting methods
 export class TestFileEditor {
@@ -11,8 +12,7 @@ export class TestFileEditor {
 
     constructor(
         private readonly _testFileUri: Uri,
-        private readonly _specFileUri: Uri,
-        private readonly _isFolder: boolean
+        private readonly _resourceUri: IUri
     ) { }
 
     public async addSpecFileToContextLine(): Promise<void> {
@@ -24,9 +24,9 @@ export class TestFileEditor {
 
         const formattedDirname = this.removePathPrefix(this.getSpecFileDir());
 
-        const formattedSpecFilename = this._isFolder ? "\\.spec\\.ts" : this.cleanupRegexString(this.getSpecFilename());
+        const formattedSpecFilename = this._resourceUri.isFolder ? "\\.spec\\.ts" : this.cleanupRegexString(this.getSpecFilename());
 
-        const newFileContent = data.replace(contextRegex, `context('./${formattedDirname}', ${this._isFolder}, /${formattedSpecFilename}$/);`);
+        const newFileContent = data.replace(contextRegex, `context('./${formattedDirname}', ${this._resourceUri.isFolder}, /${formattedSpecFilename}$/);`);
 
         await fs.writeFile(this._testFileUri.fsPath, newFileContent, "utf8");
     }
@@ -64,12 +64,12 @@ export class TestFileEditor {
     }
 
     private getSpecFileDir(): string {
-        const dirname = path.dirname(this._specFileUri.fsPath);
+        const dirname = this._resourceUri.isFolder ? this._resourceUri.path : path.dirname(this._resourceUri.path);
         return workspace.asRelativePath(dirname);
     }
 
     private getSpecFilename(): string {
-        return path.basename(this._specFileUri.fsPath);
+        return path.basename(this._resourceUri.path);
     }
 
     private cleanupRegexString(regexStr: string): string {

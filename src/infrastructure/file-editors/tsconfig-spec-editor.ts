@@ -1,6 +1,7 @@
-import { FileSystemError, TextDocument, Uri, workspace } from "vscode";
+import { FileSystemError, Uri, workspace } from "vscode";
 import * as fs from "fs/promises";
 import * as stripJsonComments from "strip-json-comments";
+import { IUri } from "../../domain/types/types-index";
 
 type Tsconfig = {
     include: string[]
@@ -11,7 +12,7 @@ export class TsConfigSpecEditor {
 
     constructor(
         private readonly _tsconfigSpecFileUri: Uri,
-        private readonly _specFileUri: Uri
+        private readonly _resourceUri: IUri
     ) {}
 
     public async addSpecFile(): Promise<void> {
@@ -24,7 +25,7 @@ export class TsConfigSpecEditor {
             throw new FileSystemError("Error: unable to fetch tsconfig.spec.json");
         }
 
-        const formattedSpecFilename = this.removePathPrefix(this._specFileUri.fsPath);
+        const formattedSpecFilename = this.removePathPrefix(this._resourceUri.path);
         tsconfig.include = [ formattedSpecFilename ];
 
         await fs.writeFile(this._tsconfigSpecFileUri.fsPath, JSON.stringify(tsconfig), "utf8");
@@ -54,6 +55,10 @@ export class TsConfigSpecEditor {
         }
 
         relativePath = (matches as RegExpMatchArray)[0];
+
+        if (this._resourceUri.isFolder) {
+            relativePath += "/**/*.spec.ts";
+        }
 
         return relativePath;
     }

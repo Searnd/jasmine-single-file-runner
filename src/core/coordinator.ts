@@ -27,7 +27,7 @@ export class Coordinator {
         await this._testFileEditor.addSpecFileToContextLine();
         await this._tsconfigSpecEditor.addSpecFile();
 
-        const specFileDirectory = path.dirname(this._resourceUri.fsPath);
+        const specFileDirectory = path.dirname(this._resourceUri.path);
         this._taskManager.registerTaskProvider(this._taskType, "ng test", specFileDirectory);
 
         await this.startTask();
@@ -35,7 +35,7 @@ export class Coordinator {
 
     public async initialize(): Promise<void> {
         const testFileUri = await FileFinder.getFileLocation("**/src/test.ts");
-        this._testFileEditor = new TestFileEditor(testFileUri, this._resourceUri, false);
+        this._testFileEditor = new TestFileEditor(testFileUri, this._resourceUri);
 
         const tsconfigSpecFileUri = await FileFinder.getFileLocation("**/tsconfig.spec.json");
         this._tsconfigSpecEditor = new TsConfigSpecEditor(tsconfigSpecFileUri, this._resourceUri);
