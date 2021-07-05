@@ -7,7 +7,7 @@
     "email": "andres.flores@outlook.fr"
   },
   "description": "",
-  "version": "0.2.7",
+  "version": "0.3.0",
   "engines": {
     "vscode": "^1.57.0"
   },
@@ -39,7 +39,7 @@
       "explorer/context": [
         {
           "command": "jsfr.testCurrentFile",
-          "when": "resourceFilename =~ /\\.spec\\.ts$/",
+          "when": "resourceFilename =~ /\\.spec\\.ts$/ || explorerResourceIsFolder",
           "group": "0_jsfr"
         }
       ]

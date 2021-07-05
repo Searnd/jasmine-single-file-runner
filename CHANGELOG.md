@@ -2,6 +2,9 @@
 
 ### [Unreleased]
 
+### [0.3.0]
+- Add ability to run all tests in a folder by right-clicking it in the file explorer
+
 ### [0.2.7]
 - Adjust gif sizes in readme
 

@@ -16,11 +16,15 @@ Also possible through the file explorer:
 
 <img src="assets/docs/fe-right-click.gif" width="481px">
 
+To all the tests from a given directory, simply right-click on the corresponding folder instead of a single file.
+
 ## Requirements
 
 Must have VS Code version 1.57.0 or higher.
 
 Must have VS Code open in an angular project (contains an `angular.json` file).
+
+Must have the angular cli installed globally (`npm i -g @angular/cli`).
 
 ## Known Issues
 
