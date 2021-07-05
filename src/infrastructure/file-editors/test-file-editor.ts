@@ -22,11 +22,14 @@ export class TestFileEditor {
 
         const contextRegex = /context\(.*\);$/m;
 
-        const formattedDirname = this.pathReloativeToTestFile(this.getSpecFileDir());
+        const formattedDirname = this.pathRelativeToTestFile(this.getSpecFileDir(), true);
 
-        const formattedSpecFilename = this._resourceUri.isFolder ? "\\.spec\\.ts" : this.cleanupRegexString(this.getSpecFilename());
+        const formattedSpecFilename =
+        this._resourceUri.isFolder ?
+            "\\.spec\\.ts" :
+            this.cleanupRegexString(this.getSpecFilename());
 
-        const newFileContent = data.replace(contextRegex, `context('./${formattedDirname}', ${this._resourceUri.isFolder}, /${formattedSpecFilename}$/);`);
+        const newFileContent = data.replace(contextRegex, `context('${formattedDirname}', ${this._resourceUri.isFolder}, /${formattedSpecFilename}$/);`);
 
         await fs.writeFile(this._testFileUri.fsPath, newFileContent, "utf8");
     }
@@ -49,11 +52,13 @@ export class TestFileEditor {
         this._contextLineInitialValue = data;
     }
 
-    private pathReloativeToTestFile(pathStr: string): string {
+    private pathRelativeToTestFile(pathStr: string, isFolder: boolean): string {
         let specFileRelativePath = path.relative(this._testFileUri.path, pathStr);
 
-        // remove extra '.' in the path that was added by the call to path.relative
-        specFileRelativePath = specFileRelativePath.slice(1, specFileRelativePath.length);
+        if (isFolder) {
+            // remove extra '.' in the path that was added by the call to path.relative
+            specFileRelativePath = specFileRelativePath.slice(1, specFileRelativePath.length);
+        }
 
         // clean up for windows
         specFileRelativePath = specFileRelativePath.replace(/\\/g, "/");
@@ -62,8 +67,7 @@ export class TestFileEditor {
     }
 
     private getSpecFileDir(): string {
-        const dirname = this._resourceUri.isFolder ? this._resourceUri.path : path.dirname(this._resourceUri.path);
-        return workspace.asRelativePath(dirname);
+        return this._resourceUri.isFolder ? this._resourceUri.path : path.dirname(this._resourceUri.path);
     }
 
     private getSpecFilename(): string {
