@@ -1,6 +1,7 @@
 import { FileSystemError, Uri, workspace } from "vscode";
 import * as fs from "fs/promises";
 import * as stripJsonComments from "strip-json-comments";
+import * as path from "path";
 import { IUri } from "../../domain/types/types-index";
 
 type Tsconfig = {
@@ -25,7 +26,7 @@ export class TsConfigSpecEditor {
             throw new FileSystemError("Error: unable to fetch tsconfig.spec.json");
         }
 
-        const formattedSpecFilename = this.removePathPrefix(this._resourceUri.path);
+        const formattedSpecFilename = this.getPathRelativeToTsconfig(this._resourceUri.path);
         tsconfig.include = [ formattedSpecFilename ];
 
         await fs.writeFile(this._tsconfigSpecFileUri.fsPath, JSON.stringify(tsconfig), "utf8");
@@ -46,20 +47,19 @@ export class TsConfigSpecEditor {
         this._tsconfigInitialData = data;
     }
 
-    private removePathPrefix(path: string): string {
-        let relativePath = workspace.asRelativePath(path, false);
-        const matches = relativePath.match(/src\/app.*/);
+    private getPathRelativeToTsconfig(pathStr: string): string {
+        let specFileRelativePath = path.relative(this._tsconfigSpecFileUri.path, pathStr);
 
-        if (!matches) {
-            throw new FileSystemError("Error: unable to parse path to spec file");
-        }
+        // remove extra '.' in the path that was added by the call to path.relative
+        specFileRelativePath = specFileRelativePath.slice(1, specFileRelativePath.length);
 
-        relativePath = (matches as RegExpMatchArray)[0];
+        // clean up for windows
+        specFileRelativePath = specFileRelativePath.replace(/\\/g, "/");
 
         if (this._resourceUri.isFolder) {
-            relativePath += "/**/*.spec.ts";
+            specFileRelativePath += "/**/*.spec.ts";
         }
 
-        return relativePath;
+        return specFileRelativePath;
     }
 }
