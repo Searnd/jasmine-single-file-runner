@@ -24,6 +24,19 @@ jobs:
       - name: Run tests
         run: xvfb-run -a npm test
 
+      - name: Automatic Release
+        if: sucess() && github.event_name == 'push'
+        run: npm run package
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: true
+          title: "Development Build"
+          files: |
+            dist/jsfr.vsix
+            LICENSE
+        uses: marvinpinto/action-automatic-releases@v1.2.1
+
       - name: Publish
         if: success() && github.event_name == 'push'
         run: npm run deploy
