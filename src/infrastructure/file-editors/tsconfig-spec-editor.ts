@@ -1,6 +1,6 @@
-import { FileSystemError, Uri, workspace } from "vscode";
+import { FileSystemError, Uri } from "vscode";
 import * as fs from "fs/promises";
-import * as stripJsonComments from "strip-json-comments";
+import stripJsonComments = require("strip-json-comments");
 import * as path from "path";
 import { IUri } from "../../domain/types/types-index";
 
