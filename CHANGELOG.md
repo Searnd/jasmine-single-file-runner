@@ -2,6 +2,9 @@
 
 ### [Unreleased]
 
+### [0.3.3]
+- Fix error with esbuild causing the extension to not work at all
+
 ### [0.3.2]
 - Add CI
 
