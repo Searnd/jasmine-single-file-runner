@@ -1,4 +1,4 @@
-# Jasmine/Karma Single File Runner README
+# Jasmine/Karma Single File Runner README ![](https://github.com/Searnd/jasmine-single-file-runner/actions/workflows/main.yml/badge.svg)
 
 Or JSFR for short. This extension gives you the ability to provide a single file for testing to the Angular test suite, significantly reducing test compilation time.
 
