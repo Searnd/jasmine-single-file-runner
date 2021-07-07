@@ -23,3 +23,9 @@ jobs:
 
       - name: Run tests
         run: xvfb-run -a npm test
+
+      - name: Publish
+        if: success() && github.event_name == 'push'
+        run: npm run deploy
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
