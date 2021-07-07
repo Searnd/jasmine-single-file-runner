@@ -28,7 +28,7 @@ jobs:
         run: npm run package
 
       - name: Release
-        if: sucess() && github.event_name == 'push'
+        if: success() && github.event_name == 'push'
         uses: marvinpinto/action-automatic-releases@v1.2.1
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
