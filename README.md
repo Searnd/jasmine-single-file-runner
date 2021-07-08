@@ -26,6 +26,12 @@ Must have VS Code open in an angular project (contains an `angular.json` file).
 
 Must have the angular cli installed globally (`npm i -g @angular/cli`).
 
+## How does it work?
+The default configuration for testing with Angular/Karma has the compiler searching recursively for all `.spec.ts` files in the project. This is done both
+in the `test.ts` file and the `tsconfig.spec.json` file. As such, in cases where we simply want to run tests in a few files, we're spending a lot of unecessary time and resources looking for and compiling all these other tests.
+To solve this problem, JSFR modifies the `test.ts` and `tsconfig.spec.json` files so that we're only pointing to a given set of files—those that we actually want
+to test. These changes are reverted as soon as the testing has ended via terminated the task or closing VS Code.
+
 ## Known Issues
 
 Changes made to the `test.ts` file while JSFR is running won't be kept, as `test.ts` is reverted to its initial state before starting JSFR.
