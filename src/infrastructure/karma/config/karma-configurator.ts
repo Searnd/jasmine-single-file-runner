@@ -1,14 +1,8 @@
 import { Config, ConfigOptions } from "karma";
 import * as path from "path";
-import { UtilityHelper } from "../../../core/helpers/utility-helper";
 // import * as TestExplorerCustomReporter from "../core/integration/test-explorer-custom-karma-reporter"; //TODO: implement this
 
 export class KarmaConfigurator {
-  private readonly testExplorerHelper: UtilityHelper;
-  constructor() {
-    this.testExplorerHelper = new UtilityHelper();
-  }
-
   public setMandatoryOptions(config: Config): void {
     // remove 'logLevel' changing
     // https://github.com/karma-runner/karma/issues/614 is ready
@@ -59,7 +53,7 @@ export class KarmaConfigurator {
   }
 
   public cleanUpReporters(config: Config): void {
-    const filteredReporters = this.testExplorerHelper.removeElementsFromArrayWithoutModifyingIt(config.reporters, ["dots", "kjhtml"]);
+    const filteredReporters = config.reporters?.filter(reporter => reporter !== "dots" && reporter !== "kjhtml");
     config.reporters = filteredReporters;
   }
 
