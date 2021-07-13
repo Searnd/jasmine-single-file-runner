@@ -1,5 +1,6 @@
 import { TextDocument, workspace } from "vscode";
 import { KarmaTestInfo, KarmaTestSuiteInfo } from "../domain/models/karma-test-suite-info";
+import { Subject } from "rxjs";
 import * as ts from "typescript";
 
 export class TestDiscoverer {
@@ -14,12 +15,16 @@ export class TestDiscoverer {
         children: []
     };
 
+    public testSuiteUpdated: Subject<KarmaTestSuiteInfo> = new Subject();
+
     constructor() {
         this._openSpecFiles = workspace.textDocuments.filter(doc => /\.spec\.ts$/.test(doc.fileName));
 
         workspace.onDidOpenTextDocument(d => {
             this.getTestsFromSpecFile(d);
             console.log(this._testSuite);
+
+            this.testSuiteUpdated.next(this._testSuite);
         });
 
         workspace.onDidCloseTextDocument((d) => {
@@ -34,6 +39,7 @@ export class TestDiscoverer {
             this.getTestsFromSpecFile(d);
             console.log(this._testSuite);
         });
+        this.testSuiteUpdated.next(this._testSuite);
     }
 
     private getTestsFromSpecFile(specFile: TextDocument): void {
