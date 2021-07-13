@@ -37,30 +37,13 @@ export class TestDiscoverer {
     }
 
     private getTestsFromSpecFile(specFile: TextDocument): void {
-        const data = specFile.getText();
-        const describesList = data.match(/^[ \t]*describe.+/m);
-
-        if (!describesList?.length) {
-            return undefined;
-        }
-
-        const filename = workspace.textDocuments.find(d => /\.spec\.ts$/.test(d.fileName))?.fileName || "";
+        const filename = specFile.fileName;
         const program = ts.createProgram([filename], {});
         const source = program.getSourceFile(filename) as ts.SourceFile;
 
         ts.forEachChild(source, (node) => {
             this.populateTestSuite(source, node, this._testSuite);
         });
-    }
-
-    private getLabelFromLine(line: string): string {
-        const matches = line.match(/["'].*["']/);
-
-        if (matches?.length) {
-            return matches[0];
-        }
-
-        return "";
     }
 
     private populateTestSuite(source: ts.SourceFile, node: ts.Node, testSuite: KarmaTestSuiteInfo): void {
