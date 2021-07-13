@@ -18,6 +18,8 @@ export class JsfrAdapter implements TestAdapter {
 	private readonly _testStatesEmitter = new vscode.EventEmitter<TestStateEvent>();
 	private readonly _autorunEmitter = new vscode.EventEmitter<void>();
 
+    private readonly _testDiscoverer = new TestDiscoverer();
+
     private readonly _karmaEventListener: KarmaEventListener =
         new KarmaEventListener(new EventEmitter(this._testStatesEmitter, this._testsEmitter));
 
@@ -65,9 +67,10 @@ export class JsfrAdapter implements TestAdapter {
         // await this._karmaHttpClient.callKarmaRunWithConfig(config);
         // this.loadedTests = this._karmaEventListener.getLoadedTests(projectPath);
 
-        new TestDiscoverer();
-
-        this._testsEmitter.fire({ type: "finished", suite: this.loadedTests } as TestLoadFinishedEvent);
+        this._testDiscoverer.testSuiteUpdated.subscribe(loadedTests => {
+            this.loadedTests = loadedTests;
+            this._testsEmitter.fire({ type: "finished", suite: this.loadedTests } as TestLoadFinishedEvent);
+        });
     }
 
     public async run(tests: string[]): Promise<void> {

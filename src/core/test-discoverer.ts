@@ -1,6 +1,6 @@
 import { TextDocument, workspace } from "vscode";
 import { KarmaTestInfo, KarmaTestSuiteInfo } from "../domain/models/karma-test-suite-info";
-import { Subject } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 import * as ts from "typescript";
 
 export class TestDiscoverer {
@@ -15,7 +15,7 @@ export class TestDiscoverer {
         children: []
     };
 
-    public testSuiteUpdated: Subject<KarmaTestSuiteInfo> = new Subject();
+    public testSuiteUpdated: BehaviorSubject<KarmaTestSuiteInfo> = new BehaviorSubject(this._testSuite);
 
     constructor() {
         this._openSpecFiles = workspace.textDocuments.filter(doc => /\.spec\.ts$/.test(doc.fileName));
