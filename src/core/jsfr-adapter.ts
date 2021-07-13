@@ -9,6 +9,7 @@ import { KarmaEventListener } from "../infrastructure/karma/karma-event-listener
 import { KarmaTestInfo, KarmaTestSuiteInfo } from "../domain/models/karma-test-suite-info";
 import { TestLoadEvent, TestStateEvent } from "../domain/types/types-index";
 import { KarmaHttpClient } from "../infrastructure/karma/karma-http-client";
+import { TestDiscoverer } from "./test-discoverer";
 
 export class JsfrAdapter implements TestAdapter {
     private _disposables: vscode.Disposable[] = [];
@@ -57,12 +58,14 @@ export class JsfrAdapter implements TestAdapter {
 
         this._testsEmitter.fire({ type: "started" } as TestLoadStartedEvent);
 
-        const projectPath = this.workspaceFolder.uri.fsPath;
-        await this._angularServer.start(projectPath);
+        // const projectPath = this.workspaceFolder.uri.fsPath;
+        // await this._angularServer.start(projectPath);
 
-        const { config } = this._karmaHttpClient.createKarmaRunCallConfiguration("$#%#");
-        await this._karmaHttpClient.callKarmaRunWithConfig(config);
-        this.loadedTests = this._karmaEventListener.getLoadedTests(projectPath);
+        // const { config } = this._karmaHttpClient.createKarmaRunCallConfiguration("$#%#");
+        // await this._karmaHttpClient.callKarmaRunWithConfig(config);
+        // this.loadedTests = this._karmaEventListener.getLoadedTests(projectPath);
+
+        new TestDiscoverer();
 
         this._testsEmitter.fire({ type: "finished", suite: this.loadedTests } as TestLoadFinishedEvent);
     }
@@ -72,15 +75,15 @@ export class JsfrAdapter implements TestAdapter {
 
         this._testStatesEmitter.fire({ type: "started", tests} as TestRunStartedEvent);
         
-        const testSpec = this.findNode(this.loadedTests, tests[0]);
-        const isComponent = testSpec?.type === "suite";
+        // const testSpec = this.findNode(this.loadedTests, tests[0]);
+        // const isComponent = testSpec?.type === "suite";
 
-        const karmaParams = this._karmaHttpClient.createKarmaRunCallConfiguration(tests);
+        // const karmaParams = this._karmaHttpClient.createKarmaRunCallConfiguration(tests);
 
-        this._karmaEventListener.isTestRunning = true;
-        this._karmaEventListener.lastRunTests = karmaParams.tests;
-        this._karmaEventListener.isComponentRun = isComponent;
-        await this._karmaHttpClient.callKarmaRunWithConfig(karmaParams.config);
+        // this._karmaEventListener.isTestRunning = true;
+        // this._karmaEventListener.lastRunTests = karmaParams.tests;
+        // this._karmaEventListener.isComponentRun = isComponent;
+        // await this._karmaHttpClient.callKarmaRunWithConfig(karmaParams.config);
         
         this._testStatesEmitter.fire({ type: "finished"} as TestLoadFinishedEvent);
     }
