@@ -33,7 +33,13 @@ export class TestDiscoverer {
             }
         });
 
-        this._openSpecFiles.forEach(this.getTestsFromSpecFile);
+        this._openSpecFiles.forEach(d => {
+            const testSuite = this.getTestsFromSpecFile(d);
+
+            if (testSuite) {
+                this._testSuite.children.push(testSuite);
+            }
+        });
     }
 
     private getTestsFromSpecFile(specFile: TextDocument): KarmaTestSuiteInfo | undefined {
@@ -47,7 +53,7 @@ export class TestDiscoverer {
         const testSuite: KarmaTestSuiteInfo = {
             type: "suite",
             id: specFile.fileName,
-            label: this.getLabelFromLine(describesList[0]),
+            label: "",
             children: []
         };
 
@@ -56,33 +62,14 @@ export class TestDiscoverer {
         const source = program.getSourceFile(filename) as ts.SourceFile;
 
         ts.forEachChild(source, (node) => {
-            const text = node.getText(source);
-            console.log(text);
             if (ts.isExpressionStatement(node)) {
                 const expression = node.expression;
-                if (ts.isCallExpression(expression)) {
-                    console.log(expression);
-                    const expressionText = expression.expression.getText(source);
-                    if (expressionText === "describe") {
-                        const describeLabel = expression.arguments[0].getText(source);
-                        console.log(describeLabel);
-                        const nextNode = expression.arguments[1];
 
-                        nextNode.forEachChild(childNode => {
-                            if (ts.isCallExpression(childNode)) {
-                                const childExpression = childNode.expression;
-                            }
-                        });
-
-                        if (ts.isExpressionStatement(nextNode)) {
-                            console.log(nextNode);
-                        }
-                    }
-                }
+                this.populateTestSuite(source, expression, testSuite);
             }
         });
 
-        return testSuite;
+        return testSuite.label !== "" ? testSuite : undefined;
     }
 
     private getLabelFromLine(line: string): string {
@@ -96,47 +83,43 @@ export class TestDiscoverer {
     }
 
     private populateTestSuite(source: ts.SourceFile, node: ts.Node, testSuite: KarmaTestSuiteInfo): void {
-        if (ts.isExpressionStatement(node)) {
-            const expression = node.expression;
-            if (ts.isCallExpression(expression)) {
-                console.log(expression);
-                const expressionText = expression.expression.getText(source);
-                switch (expressionText) {
-                    case "describe": {
-                        const describeLabel = expression.arguments[0].getText(source);
-                        const nextNode = expression.arguments[1];
-    
-                        const nextTestSuite: KarmaTestSuiteInfo = {
-                            type: "suite",
-                            id: this.getNextId(),
-                            label: describeLabel,
-                            children: []
-                        };
-    
-                        nextNode.forEachChild(childNode => {
-                            this.populateTestSuite(source, childNode, nextTestSuite);
-                        });
+        if (ts.isCallExpression(node)) {
+            const expressionText = node.expression.getText(source);
+            switch (expressionText) {
+                case "describe": {
+                    const describeLabel = node.arguments[0].getText(source);
+                    const nextNode = node.arguments[1];
 
-                        testSuite.children.push(nextTestSuite);
+                    const nextTestSuite: KarmaTestSuiteInfo = {
+                        type: "suite",
+                        id: this.getNextId(),
+                        label: describeLabel,
+                        children: []
+                    };
 
-                        break;
-                    }
-                    case "it": {
-                        const itLabel = expression.arguments[0].getText(source);
+                    nextNode.forEachChild(childNode => {
+                        this.populateTestSuite(source, childNode, nextTestSuite);
+                    });
 
-                        const testInfo: KarmaTestInfo = {
-                            type: "test",
-                            id: this.getNextId(),
-                            label: itLabel
-                        };
+                    testSuite.children.push(nextTestSuite);
 
-                        testSuite.children.push(testInfo);
-
-                        break;
-                    }
-                    default:
-                        break;
+                    break;
                 }
+                case "it": {
+                    const itLabel = node.arguments[0].getText(source);
+
+                    const testInfo: KarmaTestInfo = {
+                        type: "test",
+                        id: this.getNextId(),
+                        label: itLabel
+                    };
+
+                    testSuite.children.push(testInfo);
+
+                    break;
+                }
+                default:
+                    break;
             }
         }
     }
