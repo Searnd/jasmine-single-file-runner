@@ -1,5 +1,6 @@
 import { Config, ConfigOptions } from "karma";
 import * as path from "path";
+import { JsfrReporter, reporterName } from "./karma-jsfr-reporter";
 // import * as TestExplorerCustomReporter from "../core/integration/test-explorer-custom-karma-reporter"; //TODO: implement this
 
 export class KarmaConfigurator {
@@ -68,11 +69,11 @@ export class KarmaConfigurator {
   }
 
   public configureTestExplorerCustomReporter(config: Config): void {
-    this.addPlugin(config, { [`reporter:${TestExplorerCustomReporter.name}`]: ["type", TestExplorerCustomReporter.instance] });
+    this.addPlugin(config, { [`${reporterName}`]: ["type", JsfrReporter] });
     if (!config.reporters) {
       config.reporters = [];
     }
-    config.reporters.push(TestExplorerCustomReporter.name);
+    config.reporters.push(reporterName);
   }
 
   private addPlugin(karmaConfig: ConfigOptions, karmaPlugin: any): void {
