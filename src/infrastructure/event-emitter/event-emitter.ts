@@ -23,14 +23,14 @@ export class EventEmitter {
     this.testStateEmitter.fire(testEvent);
   }
 
-  public emitTestResultEvent(testName: string, karmaEvent: KarmaEvent): void {
-    const testState = TestResultToTestStateMapper.map(karmaEvent.results.status);
+  public emitTestResultEvent(results: SpecCompleteResponse): void {
+    const testState = TestResultToTestStateMapper.map(results.status);
 
-    const testEvent = { type: "test", test: testName, state: testState } as TestEvent;
+    const testEvent = { type: "test", test: results.id, state: testState } as TestEvent;
 
-    if (karmaEvent.results.failureMessages.length > 0) {
-      testEvent.decorations = this.createDecorations(karmaEvent.results);
-      testEvent.message = this.createErrorMessage(karmaEvent.results);
+    if (results.failureMessages.length > 0) {
+      testEvent.decorations = this.createDecorations(results);
+      testEvent.message = this.createErrorMessage(results);
     }
 
     this.testStateEmitter.fire(testEvent);

@@ -24,7 +24,6 @@ export function JsfrReporter(this: any, baseReporterDecorator: any, config: any,
 
     if (spec.skipped) {
       status = TestResult.skipped;
-      this.specSkipped(browser, spec);
     } else if (spec.success) {
       status = TestResult.success;
     }

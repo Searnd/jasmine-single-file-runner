@@ -66,11 +66,9 @@ export class KarmaEventListener {
         this.io.close();
     }
 
-    private onSpecComplete(event: KarmaEvent) {
-        const { results } = event;
-    
+    private onSpecComplete(results: SpecCompleteResponse) {
         this.eventEmitter.emitTestStateEvent(results.id, TestState.running);
-        this.eventEmitter.emitTestResultEvent(results.id, event);
+        this.eventEmitter.emitTestResultEvent(results);
         this.savedSpecs.push(results);
         this.testStatus = results.status;
     }
