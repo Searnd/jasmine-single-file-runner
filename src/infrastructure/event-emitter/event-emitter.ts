@@ -14,13 +14,13 @@ import { SpecCompleteResponse } from "../../domain/models/spec-complete-response
 
 export class EventEmitter {
   public constructor(
-    private readonly eventEmitterInterface: vscode.EventEmitter<TestStateEvent>,
-    private readonly testLoadedEmitterInterface: vscode.EventEmitter<TestLoadEvent>
+    private readonly testStateEmitter: vscode.EventEmitter<TestStateEvent>,
+    private readonly testLoadEmitter: vscode.EventEmitter<TestLoadEvent>
   ) {}
 
   public emitTestStateEvent(testName: string, testState: TestState): void {
     const testEvent = { type: "test", test: testName, state: testState } as TestEvent;
-    this.eventEmitterInterface.fire(testEvent);
+    this.testStateEmitter.fire(testEvent);
   }
 
   public emitTestResultEvent(testName: string, karmaEvent: KarmaEvent): void {
@@ -33,12 +33,16 @@ export class EventEmitter {
       testEvent.message = this.createErrorMessage(karmaEvent.results);
     }
 
-    this.eventEmitterInterface.fire(testEvent);
+    this.testStateEmitter.fire(testEvent);
   }
 
-  public emitTestsLoadedEvent(loadedTests: TestSuiteInfo): void {
-    this.testLoadedEmitterInterface.fire({ type: "started" } as TestLoadStartedEvent);
-    this.testLoadedEmitterInterface.fire({ type: "finished", suite: loadedTests } as TestLoadFinishedEvent);
+  public emitTestsStartedLoading(): void {
+    this.testLoadEmitter.fire({ type: "started" } as TestLoadStartedEvent);
+  }
+
+  public emitTestsFinishedLoading(loadedTests: TestSuiteInfo): void {
+    this.testLoadEmitter.fire({ type: "started" } as TestLoadStartedEvent);
+    this.testLoadEmitter.fire({ type: "finished", suite: loadedTests } as TestLoadFinishedEvent);
   }
 
   private createErrorMessage(results: SpecCompleteResponse): string {

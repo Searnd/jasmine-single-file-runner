@@ -11,10 +11,13 @@ export class KarmaEventListener {
     private io = new Server(9222);
 
     public isServerLoaded = false;
+
     public isTestRunning = false;
-    public lastRunTests = "";
+
     public testStatus: TestResult | any;
+
     public runCompleteEvent: KarmaEvent | any;
+
     public isComponentRun = false;
 
     constructor(
@@ -65,22 +68,11 @@ export class KarmaEventListener {
     private onSpecComplete(event: KarmaEvent) {
         const { results } = event;
     
-        const testName = results.fullName;
-        const isTestNamePerfectMatch = testName === this.lastRunTests[0];
-        const isRootComponent = this.lastRunTests === "root";
-        const isComponent = this.isComponentRun && testName.includes(this.lastRunTests);
-    
-        if (isTestNamePerfectMatch || isRootComponent || isComponent) {
-          this.eventEmitter.emitTestStateEvent(results.id, TestState.running);
-          this.savedSpecs.push(results);
-    
-          this.eventEmitter.emitTestResultEvent(results.id, event);
-    
-          if (this.lastRunTests !== "") {
-            this.testStatus = results.status;
-          }
-        }
-      }
+        this.eventEmitter.emitTestStateEvent(results.id, TestState.running);
+        this.eventEmitter.emitTestResultEvent(results.id, event);
+        this.savedSpecs.push(results);
+        this.testStatus = results.status;
+    }
 
     private onBrowserConnected(resolve: (value?: void | PromiseLike<void>) => void) {
         this.isServerLoaded = true;
