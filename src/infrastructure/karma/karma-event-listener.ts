@@ -1,5 +1,4 @@
-import * as http from "http";
-import * as express from "express";
+import { Server } from "socket.io";
 import { KarmaEventName, TestResult, TestState } from "../../domain/enums/enum-index";
 import { KarmaEvent } from "../../domain/models/karma-event";
 import { EventEmitter } from "../event-emitter/event-emitter";
@@ -9,7 +8,7 @@ import { SpecResponseToTestSuiteInfoMapper } from "../mappers/spec-response-to-t
 export class KarmaEventListener {
     private savedSpecs: any[] = [];
 
-    private server: http.Server;
+    private io = new Server(9222);
 
     public isServerLoaded = false;
     public isTestRunning = false;
@@ -20,26 +19,16 @@ export class KarmaEventListener {
 
     constructor(
         private readonly eventEmitter: EventEmitter
-    ) {
-        const app = express();
-        this.server = http.createServer(app);
-    }
+    ) { }
 
-    public listenUntilKarmaIsReady(defaultSocketPort?: number): Promise<void> {
+    public listenUntilKarmaIsReady(): Promise<void> {
         return new Promise<void>((resolve) => {
-            // *shrug*
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
-            const io = require("socket.io")(this.server, { forceNew: true });
-            io.set("heartbeat interval", 24 * 60 * 60 * 1000);
-            io.set("heartbeat timeout", 24 * 60 * 60 * 1000);
-    
-            const port = defaultSocketPort !== 0 ? defaultSocketPort : 9999;
     
             const nInterval = setInterval(() => {
                 global.console.log("Waiting to connect to Karma...");
             }, 5000);
 
-            io.on("connection", (socket: any) => {
+            this.io.on("connection", socket => {
                 socket.on(KarmaEventName.browserConnected, () => {
                     clearInterval(nInterval);
                     this.onBrowserConnected(resolve);
@@ -70,7 +59,7 @@ export class KarmaEventListener {
 
     public stopListeningToKarma(): void {
         this.isServerLoaded = false;
-        this.server.close();
+        this.io.close();
     }
 
     private onSpecComplete(event: KarmaEvent) {

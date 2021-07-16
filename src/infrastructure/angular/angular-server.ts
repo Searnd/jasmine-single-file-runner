@@ -34,6 +34,6 @@ export class AngularServer {
 
     this.processHandler.create("npx", ["ng", "test", `--karma-config="${baseKarmaConfigFilePath}"`, "--progress=false"], options);
 
-    await this.karmaEventListener.listenUntilKarmaIsReady(9999);
+    await this.karmaEventListener.listenUntilKarmaIsReady();
   }
 }
