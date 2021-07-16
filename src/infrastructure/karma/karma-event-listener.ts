@@ -4,9 +4,10 @@ import { KarmaEvent } from "../../domain/models/karma-event";
 import { EventEmitter } from "../event-emitter/event-emitter";
 import { KarmaTestSuiteInfo } from "../../domain/models/karma-test-suite-info";
 import { SpecResponseToTestSuiteInfoMapper } from "../mappers/spec-response-to-test-suite-info.mapper";
+import { SpecCompleteResponse } from "../../domain/models/spec-complete-response";
 
 export class KarmaEventListener {
-    private savedSpecs: any[] = [];
+    private savedSpecs: SpecCompleteResponse[] = [];
 
     private io = new Server(9222);
 
@@ -14,9 +15,9 @@ export class KarmaEventListener {
 
     public isTestRunning = false;
 
-    public testStatus: TestResult | any;
+    public testStatus: TestResult | undefined;
 
-    public runCompleteEvent: KarmaEvent | any;
+    public runCompleteEvent: KarmaEvent | undefined;
 
     public isComponentRun = false;
 
@@ -45,9 +46,7 @@ export class KarmaEventListener {
                     this.runCompleteEvent = event;
                 });
 
-                socket.on(KarmaEventName.specComplete, (event: KarmaEvent) => {
-                    this.onSpecComplete(event);
-                });
+                socket.on(KarmaEventName.specComplete, this.onSpecComplete);
             });
     
 
