@@ -1,5 +1,6 @@
 import { TestResults } from "karma";
 import { io } from "socket.io-client";
+import { KarmaEventName } from "../../../domain/enums/enum-index";
 
 export const reporterName = "reporter:jsfr";
 
@@ -18,27 +19,27 @@ export function JsfrReporter(this: any, baseReporterDecorator: any, config: any,
   this.adapters = [];
 
   this.specSuccess = (_: any, result: TestResults) => {
-    emitEvent("spec_success", result);
+    emitEvent(KarmaEventName.specSuccess, result);
   };
 
   this.specFailure = (_: any, result: TestResults) => {
-    emitEvent("spec_failure", result);
+    emitEvent(KarmaEventName.specFailure, result);
   };
 
   this.specSkipped = (_: any, result: TestResults) => {
-    emitEvent("spec_skipped", result);
+    emitEvent(KarmaEventName.specSkipped, result);
   };
 
   this.onRunComplete = (_: any, result: TestResults) => {
-    emitEvent("run_complete", result);
+    emitEvent(KarmaEventName.runComplete, result);
   };
 
   this.onBrowserError = (_: any, error: any) => {
-    emitEvent("browser_error", error);
+    emitEvent(KarmaEventName.browserError, error);
   };
 
   this.onBrowserStart = () => {
-    emitEvent("browser_start");
+    emitEvent(KarmaEventName.browserStart);
   };
 
   this.emitter.on("browsers_change", (capturedBrowsers: any[]) => {
@@ -52,7 +53,7 @@ export function JsfrReporter(this: any, baseReporterDecorator: any, config: any,
     });
 
     if (connected) {
-      emitEvent("browser_connected");
+      emitEvent(KarmaEventName.browserConnected);
     }
   });
 }
