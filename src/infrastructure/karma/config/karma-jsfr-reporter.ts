@@ -1,11 +1,9 @@
 import { TestResults } from "karma";
 import { io } from "socket.io-client";
-import { TestResult } from "../../../domain/enums/enum-index";
-import { SpecCompleteResponse } from "../../../domain/models/spec-complete-response";
 
 export const reporterName = "reporter:jsfr";
 
-export function JsfrReporter(this: any, baseReporterDecorator: any, config: any, emitter: any) {
+export function JsfrReporter(this: any, baseReporterDecorator: any, config: any, emitter: any): void {
   this.config = config;
   this.emitter = emitter;
 
@@ -19,39 +17,20 @@ export function JsfrReporter(this: any, baseReporterDecorator: any, config: any,
 
   this.adapters = [];
 
-  this.onSpecComplete = (browser: any, spec: any) => {
-    let status: TestResult = TestResult.failed;
-    if (spec.skipped) {
-      status = TestResult.skipped;
-      this.specSkipped(browser, spec);
-    } else if (spec.success) {
-      status = TestResult.success;
-    }
-
-    let lineNumber;
-    const filePath = pathFinder.getTestFilePath(paths, spec.suite[0], spec.description);
-
-    if (filePath) {
-      lineNumber = pathFinder.getSpecLine(spec.description, filePath, ENCODING);
-    }
-
-    const result = new SpecCompleteResponse(
-      spec.id,
-      spec.log,
-      spec.suite,
-      spec.description,
-      spec.fullName,
-      status,
-      spec.time,
-      filePath,
-      lineNumber
-    );
-
-    emitEvent("spec_complete", result);
+  this.specSuccess = (_: any, result: TestResults) => {
+    emitEvent("spec_success", result);
   };
 
-  this.onRunComplete = (_: any, result: any) => {
-    emitEvent("run_complete", collectRunState(result));
+  this.specFailure = (_: any, result: TestResults) => {
+    emitEvent("spec_failure", result);
+  };
+
+  this.specSkipped = (_: any, result: TestResults) => {
+    emitEvent("spec_skipped", result);
+  };
+
+  this.onRunComplete = (_: any, result: TestResults) => {
+    emitEvent("run_complete", result);
   };
 
   this.onBrowserError = (_: any, error: any) => {
@@ -62,32 +41,20 @@ export function JsfrReporter(this: any, baseReporterDecorator: any, config: any,
     emitEvent("browser_start");
   };
 
-  this.emitter.on("browsers_change", (capturedBrowsers: any) => {
-    if (!capturedBrowsers.forEach) {
+  this.emitter.on("browsers_change", (capturedBrowsers: any[]) => {
+    if (!capturedBrowsers.length) {
       // filter out events from Browser object
       return;
     }
 
-    let proceed = true;
-    capturedBrowsers.forEach((newBrowser: any) => {
-      if (!newBrowser.id || !newBrowser.name || newBrowser.id === newBrowser.name) {
-        proceed = false;
-      }
+    const connected = capturedBrowsers.every((newBrowser: any) => {
+      return newBrowser.id && newBrowser.name && newBrowser.id !== newBrowser.name;
     });
-    if (proceed) {
+
+    if (connected) {
       emitEvent("browser_connected");
     }
   });
-}
-
-function collectRunState(runResult: TestResults): "timeout" | "error" | "complete" {
-  if (runResult.disconnected) {
-    return "timeout";
-  } else if (runResult.error) {
-    return "error";
-  } else {
-    return "complete";
-  }
 }
 
 JsfrReporter.$inject = ["baseReporterDecorator", "config", "emitter"];

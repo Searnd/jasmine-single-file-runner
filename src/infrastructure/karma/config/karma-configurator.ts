@@ -1,8 +1,6 @@
 import { Config, ConfigOptions } from "karma";
 import * as path from "path";
 import { JsfrReporter, reporterName } from "./karma-jsfr-reporter";
-// import * as TestExplorerCustomReporter from "../core/integration/test-explorer-custom-karma-reporter"; //TODO: implement this
-
 export class KarmaConfigurator {
   public setMandatoryOptions(config: Config): void {
     // remove 'logLevel' changing
