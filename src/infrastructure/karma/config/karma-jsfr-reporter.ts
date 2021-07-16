@@ -1,6 +1,7 @@
 import { TestResults } from "karma";
 import { io } from "socket.io-client";
-import { KarmaEventName } from "../../../domain/enums/enum-index";
+import { KarmaEventName, TestResult } from "../../../domain/enums/enum-index";
+import { SpecCompleteResponse } from "../../../domain/models/spec-complete-response";
 
 export const reporterName = "reporter:jsfr";
 
@@ -10,7 +11,7 @@ export function JsfrReporter(this: any, baseReporterDecorator: any, config: any,
 
   this.socket = io("http://localhost:9222/");
 
-  const emitEvent = (eventName: any, eventResults: any = null) => {
+  const emitEvent = (eventName: string, eventResults: any = null) => {
     this.socket.emit(eventName, { name: eventName, results: eventResults });
   };
   
@@ -18,16 +19,33 @@ export function JsfrReporter(this: any, baseReporterDecorator: any, config: any,
 
   this.adapters = [];
 
-  this.specSuccess = (_: any, result: TestResults) => {
-    emitEvent(KarmaEventName.specSuccess, result);
-  };
+  this.onSpecComplete = (browser: any, spec:any) => {
+    let status: TestResult = TestResult.failed;
 
-  this.specFailure = (_: any, result: TestResults) => {
-    emitEvent(KarmaEventName.specFailure, result);
-  };
+    if (spec.skipped) {
+      status = TestResult.skipped;
+      this.specSkipped(browser, spec);
+    } else if (spec.success) {
+      status = TestResult.success;
+    }
 
-  this.specSkipped = (_: any, result: TestResults) => {
-    emitEvent(KarmaEventName.specSkipped, result);
+    const result = new SpecCompleteResponse(
+      spec.id,
+      spec.log,
+      spec.suite,
+      spec.description,
+      spec.fullName,
+      status,
+      spec.time,
+      // filePath,
+      // lineNumber
+    );
+
+    if (status === TestResult.failed) {
+      result.fullResponse = spec;
+    }
+
+    emitEvent(KarmaEventName.specComplete, result);
   };
 
   this.onRunComplete = (_: any, result: TestResults) => {

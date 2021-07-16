@@ -10,6 +10,7 @@ export class SpecCompleteResponse {
     public status: TestResult,
     public timeSpentInMilliseconds: string,
     public filePath?: string,
-    public line?: number
+    public line?: number,
+    public fullResponse?: string
   ) { }
 }

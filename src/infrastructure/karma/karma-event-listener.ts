@@ -33,6 +33,8 @@ export class KarmaEventListener {
             }, 5000);
 
             this.io.on("connection", socket => {
+                console.log(`socket ${socket.id} connected!`);
+
                 socket.on(KarmaEventName.browserConnected, () => {
                     clearInterval(nInterval);
                     this.onBrowserConnected(resolve);
@@ -76,5 +78,5 @@ export class KarmaEventListener {
     private onBrowserConnected(resolve: (value?: void | PromiseLike<void>) => void) {
         this.isServerLoaded = true;
         resolve();
-      }
+    }
 }
