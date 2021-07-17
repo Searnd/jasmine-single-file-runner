@@ -18,22 +18,28 @@ export class TestDiscoverer {
     public testSuiteUpdated: BehaviorSubject<KarmaTestSuiteInfo> = new BehaviorSubject(this._testSuite);
 
     constructor() {
-        this._openSpecFiles = workspace.textDocuments.filter(doc => /\.spec\.ts$/.test(doc.fileName));
+        const specFileRegex = /\.spec\.ts$/;
+
+        this._openSpecFiles = workspace.textDocuments.filter(doc => specFileRegex.test(doc.fileName));
 
         workspace.onDidOpenTextDocument(d => {
-            const testAdded = this.getTestsFromSpecFile(d);
-
-            if (testAdded) {
-                console.log(this._testSuite);
-                this.testSuiteUpdated.next(this._testSuite);
+            if (specFileRegex.test(d.fileName)) {
+                const testAdded = this.getTestsFromSpecFile(d);
+    
+                if (testAdded) {
+                    console.log(this._testSuite);
+                    this.testSuiteUpdated.next(this._testSuite);
+                }
             }
         });
 
         workspace.onDidCloseTextDocument((d) => {
-            const index = this._testSuite.children.findIndex((t) => t.id === d.fileName);
-
-            if (index !== -1) {
-                this._testSuite.children.splice(index, 1);
+            if (specFileRegex.test(d.fileName)) {
+                const index = this._testSuite.children.findIndex((t) => t.id === d.fileName);
+    
+                if (index !== -1) {
+                    this._testSuite.children.splice(index, 1);
+                }
             }
         });
 
