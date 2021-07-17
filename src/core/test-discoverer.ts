@@ -21,10 +21,12 @@ export class TestDiscoverer {
         this._openSpecFiles = workspace.textDocuments.filter(doc => /\.spec\.ts$/.test(doc.fileName));
 
         workspace.onDidOpenTextDocument(d => {
-            this.getTestsFromSpecFile(d);
-            console.log(this._testSuite);
+            const testAdded = this.getTestsFromSpecFile(d);
 
-            this.testSuiteUpdated.next(this._testSuite);
+            if (testAdded) {
+                console.log(this._testSuite);
+                this.testSuiteUpdated.next(this._testSuite);
+            }
         });
 
         workspace.onDidCloseTextDocument((d) => {
@@ -35,24 +37,33 @@ export class TestDiscoverer {
             }
         });
 
-        this._openSpecFiles.forEach(d => {
-            this.getTestsFromSpecFile(d);
+        const wereTestsAdded = this._openSpecFiles.reduce((acc, specFile) => {
+            return acc || this.getTestsFromSpecFile(specFile);
+        }, false);
+        if (wereTestsAdded) {
             console.log(this._testSuite);
-        });
-        this.testSuiteUpdated.next(this._testSuite);
+            this.testSuiteUpdated.next(this._testSuite);
+        }
     }
 
-    private getTestsFromSpecFile(specFile: TextDocument): void {
+    private getTestsFromSpecFile(specFile: TextDocument): boolean {
+        if (this._testSuite.children.some(t => t.id === specFile.fileName)) {
+            return false;
+        }
+
         const filename = specFile.fileName;
         const program = ts.createProgram([filename], {});
         const source = program.getSourceFile(filename) as ts.SourceFile;
 
         ts.forEachChild(source, (node) => {
-            this.populateTestSuite(source, node, this._testSuite);
+            this.populateTestSuite(source, node, this._testSuite, true);
         });
+
+        return true;
     }
 
-    private populateTestSuite(source: ts.SourceFile, node: ts.Node, testSuite: KarmaTestSuiteInfo): void {
+    // TODO: set fullName for karma (see spec-response-to-test-suite-info.mapper.ts)
+    private populateTestSuite(source: ts.SourceFile, node: ts.Node, testSuite: KarmaTestSuiteInfo, isTopMost = false): void {
         if (ts.isExpressionStatement(node)) {
             const expression = node.expression;
 
@@ -66,7 +77,7 @@ export class TestDiscoverer {
     
                         const nextTestSuite: KarmaTestSuiteInfo = {
                             type: "suite",
-                            id: this.getNextId(source.fileName),
+                            id: this.getNextId(source.fileName, isTopMost),
                             label: describeLabel,
                             children: []
                         };
@@ -86,7 +97,7 @@ export class TestDiscoverer {
     
                         const testInfo: KarmaTestInfo = {
                             type: "test",
-                            id: this.getNextId(source.fileName),
+                            id: this.getNextId(source.fileName, isTopMost),
                             label: itLabel
                         };
     
@@ -101,7 +112,7 @@ export class TestDiscoverer {
         }
     }
 
-    private getNextId(filename: string): string {
-        return `${TestDiscoverer._testIdCounter++} ${filename}`;
+    private getNextId(filename: string, isTopMost: boolean): string {
+        return isTopMost ? filename : `${TestDiscoverer._testIdCounter++} ${filename}`;
     }
 }
