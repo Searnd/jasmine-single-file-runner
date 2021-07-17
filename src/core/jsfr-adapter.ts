@@ -23,11 +23,7 @@ export class JsfrAdapter implements TestAdapter {
     private readonly _karmaEventListener: KarmaEventListener =
         new KarmaEventListener(new EventEmitter(this._testStatesEmitter, this._testsEmitter));
 
-    private readonly _angularServer: AngularServer =
-        new AngularServer(
-            this._karmaEventListener,
-            new CommandlineProcessHandler(new Logger(this._outputChannel), this._karmaEventListener)
-        );
+    private readonly _angularServer: AngularServer = new AngularServer(this._karmaEventListener);
 
     private readonly _karmaHttpClient: KarmaHttpClient = new KarmaHttpClient();
 
@@ -81,7 +77,7 @@ export class JsfrAdapter implements TestAdapter {
         const testSpec = this.findNode(this.loadedTests, tests[0]);
         const isComponent = testSpec?.type === "suite";
 
-        await this._angularServer.start(this.workspaceFolder.uri.fsPath);
+        await this._angularServer.startAsync(this.workspaceFolder.uri.fsPath);
 
         const karmaConfig = this._karmaHttpClient.createKarmaRunCallConfiguration(testSpec?.id || "");
 
@@ -94,7 +90,7 @@ export class JsfrAdapter implements TestAdapter {
     }
 
     public cancel(): void {
-        //stuff
+        this._angularServer.stop();
     }
 
     public dispose(): void {

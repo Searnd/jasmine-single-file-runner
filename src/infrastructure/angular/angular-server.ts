@@ -1,4 +1,3 @@
-import { SpawnOptions } from "child_process";
 import { KarmaEventListener } from "../karma/karma-event-listener";
 import * as path from "path";
 import { VscodeTaskManager } from "../../core/vscode-task-manager";
