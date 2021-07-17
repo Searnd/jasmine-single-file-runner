@@ -28,4 +28,13 @@ export class VscodeTaskManager {
             return task.name === name;
         });
     }
+
+    public killTask(name: string): void {
+        const taskExecution =  vscode.tasks.taskExecutions.find(taskExecution =>
+            taskExecution.task.name === name);
+
+        if (taskExecution) {
+            taskExecution.terminate();
+        }
+    }
 }

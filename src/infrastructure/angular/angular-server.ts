@@ -1,39 +1,37 @@
 import { SpawnOptions } from "child_process";
-import { CommandlineProcessHandler } from "../command-line/cl-process-handler";
 import { KarmaEventListener } from "../karma/karma-event-listener";
 import * as path from "path";
+import { VscodeTaskManager } from "../../core/vscode-task-manager";
 
 export class AngularServer {
+  private static readonly TASK_NAME = "jsfr test explorer";
+
+  private readonly _taskManager: VscodeTaskManager = new VscodeTaskManager(AngularServer.TASK_NAME);
+
   public constructor(
-    private readonly karmaEventListener: KarmaEventListener,
-    private readonly processHandler: CommandlineProcessHandler
+    private readonly karmaEventListener: KarmaEventListener
   ) { }
 
-  public async stopAsync(): Promise<void> {
-    if (this.karmaEventListener.isServerLoaded || this.processHandler.isProcessRunning()) {
-      this.karmaEventListener.stopListeningToKarma();
-      return await this.processHandler.killAsync();
-    }
+  public async stop(): Promise<void> {
+    this._taskManager.killTask(AngularServer.TASK_NAME);
   }
 
-  public stop(): void {
-    if (this.karmaEventListener.isServerLoaded || this.processHandler.isProcessRunning()) {
-      this.karmaEventListener.stopListeningToKarma();
-      this.processHandler.kill();
-    }
-  }
-
-  public async start(): Promise<void> {
+  public async startAsync(angularProjectPath: string): Promise<void> {
     //TODO: dynamically set karma file path
-    const baseKarmaConfigFilePath = "../karma/config/jsfr-karma.conf.js";
+    // "../karma/config/jsfr-karma.conf.js"
+    const baseKarmaConfigFilePath = path.resolve("..", "karma", "config", "jsfr-karma.conf.js");
 
-    const options: SpawnOptions = {
-      cwd: path.resolve(__dirname),
-      shell: true,
-      env: process.env
-    };
+    // const options: SpawnOptions = {
+    //   cwd: angularProjectPath,
+    //   shell: true,
+    //   env: process.env
+    // };
 
-    this.processHandler.create("npx", ["ng", "test", `--karma-config="${baseKarmaConfigFilePath}"`, "--progress=false"], options);
+    this._taskManager.registerTaskProvider(
+      AngularServer.TASK_NAME,
+      `npx ng test --karma-config="${baseKarmaConfigFilePath}" --progress=false`,
+      angularProjectPath);
+    // this.processHandler.create("npx", ["ng", "test", `--karma-config="${baseKarmaConfigFilePath}"`, "--progress=false"], options);
 
     return this.karmaEventListener.listenUntilKarmaIsReady();
   }
