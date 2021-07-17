@@ -1,7 +1,9 @@
-import { TextDocument, workspace } from "vscode";
+import { EventEmitter, TextDocument, workspace } from "vscode";
 import { KarmaTestInfo, KarmaTestSuiteInfo } from "../domain/models/karma-test-suite-info";
 import { BehaviorSubject } from "rxjs";
 import * as ts from "typescript";
+import { TestLoadEvent } from "../domain/types/types-index";
+import { TestLoadFinishedEvent, TestLoadStartedEvent } from "vscode-test-adapter-api";
 
 export class TestDiscoverer {
     private _openSpecFiles: TextDocument[];
@@ -17,18 +19,22 @@ export class TestDiscoverer {
 
     public testSuiteUpdated: BehaviorSubject<KarmaTestSuiteInfo> = new BehaviorSubject(this._testSuite);
 
-    constructor() {
+    constructor(
+        private readonly _testsLoadedEmitter: EventEmitter<TestLoadEvent>
+    ) {
         const specFileRegex = /\.spec\.ts$/;
 
         this._openSpecFiles = workspace.textDocuments.filter(doc => specFileRegex.test(doc.fileName));
 
         workspace.onDidOpenTextDocument(d => {
             if (specFileRegex.test(d.fileName)) {
+                this._testsLoadedEmitter.fire({ type: "started" } as TestLoadStartedEvent);
+
                 const testAdded = this.getTestsFromSpecFile(d);
     
                 if (testAdded) {
                     console.log(this._testSuite);
-                    this.testSuiteUpdated.next(this._testSuite);
+                    this.emitLoadedTests();
                 }
             }
         });
@@ -43,12 +49,15 @@ export class TestDiscoverer {
             }
         });
 
+        this._testsLoadedEmitter.fire({ type: "started" } as TestLoadStartedEvent);
+
         const wereTestsAdded = this._openSpecFiles.reduce((acc, specFile) => {
             return acc || this.getTestsFromSpecFile(specFile);
         }, false);
+
         if (wereTestsAdded) {
             console.log(this._testSuite);
-            this.testSuiteUpdated.next(this._testSuite);
+            this.emitLoadedTests();
         }
     }
 
@@ -120,5 +129,10 @@ export class TestDiscoverer {
 
     private getNextId(filename: string, isTopMost: boolean): string {
         return isTopMost ? filename : `${TestDiscoverer._testIdCounter++} ${filename}`;
+    }
+
+    private emitLoadedTests(): void {
+        this.testSuiteUpdated.next(this._testSuite);
+        this._testsLoadedEmitter.fire({ type: "finished", suite: this._testSuite } as TestLoadFinishedEvent);
     }
 }

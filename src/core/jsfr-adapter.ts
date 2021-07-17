@@ -12,14 +12,12 @@ import { TestDiscoverer } from "./test-discoverer";
 export class JsfrAdapter implements TestAdapter {
     private _disposables: vscode.Disposable[] = [];
 
-	private readonly _testsEmitter = new vscode.EventEmitter<TestLoadEvent>();
+	private readonly _testsLoadedEmitter = new vscode.EventEmitter<TestLoadEvent>();
 	private readonly _testStatesEmitter = new vscode.EventEmitter<TestStateEvent>();
 	private readonly _autorunEmitter = new vscode.EventEmitter<void>();
 
-    private readonly _testDiscoverer = new TestDiscoverer();
-
     private readonly _karmaEventListener: KarmaEventListener =
-        new KarmaEventListener(new EventEmitter(this._testStatesEmitter, this._testsEmitter));
+        new KarmaEventListener(new EventEmitter(this._testStatesEmitter, this._testsLoadedEmitter));
 
     private readonly _angularServer: AngularServer = new AngularServer(this._karmaEventListener);
 
@@ -28,7 +26,7 @@ export class JsfrAdapter implements TestAdapter {
     public loadedTests: KarmaTestSuiteInfo | undefined;
 
     public get tests(): vscode.Event<TestLoadEvent> {
-        return this._testsEmitter.event;
+        return this._testsLoadedEmitter.event;
     }
 
     public get testStates(): vscode.Event<TestStateEvent> {
@@ -42,27 +40,27 @@ export class JsfrAdapter implements TestAdapter {
         this._log.info("Initializing JsfrAdapter");
 
         this._disposables = [
-            this._testsEmitter,
+            this._testsLoadedEmitter,
             this._testStatesEmitter,
             this._autorunEmitter
         ];
     }
 
+    //TODO: implement autoload
     public async load(): Promise<void> {
         this._log.info("Loading tests");
 
-        this._testsEmitter.fire({ type: "started" } as TestLoadStartedEvent);
-
         // const projectPath = this.workspaceFolder.uri.fsPath;
         // await this._angularServer.start(projectPath);
-
+        
         // const { config } = this._karmaHttpClient.createKarmaRunCallConfiguration("$#%#");
         // await this._karmaHttpClient.callKarmaRunWithConfig(config);
         // this.loadedTests = this._karmaEventListener.getLoadedTests(projectPath);
 
-        this._testDiscoverer.testSuiteUpdated.subscribe(loadedTests => {
+        const testDiscoverer = new TestDiscoverer(this._testsLoadedEmitter);
+
+        testDiscoverer.testSuiteUpdated.subscribe(loadedTests => {
             this.loadedTests = loadedTests;
-            this._testsEmitter.fire({ type: "finished", suite: this.loadedTests } as TestLoadFinishedEvent);
         });
     }
 
