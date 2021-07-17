@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { TestAdapter, TestLoadFinishedEvent, TestLoadStartedEvent, TestRunStartedEvent } from "vscode-test-adapter-api";
+import { TestAdapter, TestLoadFinishedEvent, TestLoadStartedEvent, TestRunFinishedEvent, TestRunStartedEvent } from "vscode-test-adapter-api";
 import { Log } from "vscode-test-adapter-util";
 import { AngularServer } from "../infrastructure/angular/angular-server";
 import { EventEmitter } from "../infrastructure/event-emitter/event-emitter";
@@ -83,11 +83,12 @@ export class JsfrAdapter implements TestAdapter {
         this._karmaEventListener.isComponentRun = isComponent;
         await this._karmaHttpClient.callKarmaRunWithConfig(karmaConfig);
         
-        this._testStatesEmitter.fire({ type: "finished"} as TestLoadFinishedEvent);
+        this._testStatesEmitter.fire({ type: "finished"} as TestRunFinishedEvent);
     }
 
     public cancel(): void {
         this._angularServer.stop();
+        this._testStatesEmitter.fire({ type: "finished"} as TestRunFinishedEvent);
     }
 
     public dispose(): void {

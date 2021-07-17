@@ -1,7 +1,8 @@
 import { KarmaEventListener } from "../karma/karma-event-listener";
-import * as path from "path";
 import { VscodeTaskManager } from "../../core/vscode-task-manager";
 import { GLOBAL_LOGGER } from "../../extension";
+import * as path from "path";
+import * as fs from "fs";
 
 export class AngularServer {
   private static readonly TASK_NAME = "jsfr test explorer";
@@ -19,7 +20,16 @@ export class AngularServer {
   public async startAsync(angularProjectPath: string): Promise<void> {
     //TODO: dynamically set karma file path
     // "../karma/config/jsfr-karma.conf.js"
-    const baseKarmaConfigFilePath = path.resolve("..", "karma", "config", "jsfr-karma.conf.js");
+    
+    const baseKarmaConfigFilePath = path.resolve(__dirname, "..", "karma", "config", "jsfr-karma.conf.js");
+    fs.readdir(path.resolve(__dirname, "..", "karma"), (err, files) => {
+      if (err) {
+        console.error(err);
+      } else {
+        files.forEach(file => console.log(file));
+      }
+    });
+    // const baseKarmaConfigFilePath = "../karma/config/jsfr-karma.conf.js";
 
     // const options: SpawnOptions = {
     //   cwd: angularProjectPath,

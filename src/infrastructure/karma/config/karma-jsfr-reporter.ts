@@ -9,7 +9,7 @@ export function JsfrReporter(this: any, baseReporterDecorator: any, config: any,
   this.config = config;
   this.emitter = emitter;
 
-  this.socket = io("http://localhost:9999/");
+  this.socket = io("http://localhost:9999");
 
   const emitEvent = (eventName: string, eventResults: any = null) => {
     this.socket.emit(eventName, { name: eventName, results: eventResults });
