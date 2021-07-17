@@ -46,7 +46,6 @@ export class JsfrAdapter implements TestAdapter {
         ];
     }
 
-    //TODO: implement autoload
     public async load(): Promise<void> {
         this._log.info("Loading tests");
 

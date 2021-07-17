@@ -2,7 +2,7 @@ import { KarmaEventListener } from "../karma/karma-event-listener";
 import { VscodeTaskManager } from "../../core/vscode-task-manager";
 import { GLOBAL_LOGGER } from "../../extension";
 import * as path from "path";
-import * as fs from "fs";
+import { FileFinder } from "../file-finder/file-finder";
 
 export class AngularServer {
   private static readonly TASK_NAME = "jsfr test explorer";
@@ -22,13 +22,6 @@ export class AngularServer {
     // "../karma/config/jsfr-karma.conf.js"
     
     const baseKarmaConfigFilePath = path.resolve(__dirname, "..", "karma", "config", "jsfr-karma.conf.js");
-    fs.readdir(path.resolve(__dirname, "..", "karma"), (err, files) => {
-      if (err) {
-        console.error(err);
-      } else {
-        files.forEach(file => console.log(file));
-      }
-    });
     // const baseKarmaConfigFilePath = "../karma/config/jsfr-karma.conf.js";
 
     // const options: SpawnOptions = {
@@ -36,11 +29,15 @@ export class AngularServer {
     //   shell: true,
     //   env: process.env
     // };
+    const karmaConfPath = (await FileFinder.getFileLocation("**/karma.conf.js")).path;
 
     this._taskManager.registerTaskProvider(
       AngularServer.TASK_NAME,
-      `npx ng test --karma-config="${baseKarmaConfigFilePath}" --progress=false`,
-      angularProjectPath);
+      `npx ng test --karma-config="${baseKarmaConfigFilePath}" --progress=false`, {
+        cwd: angularProjectPath,
+        env: { karmaConfPath }
+      }
+    );
 
     await this._taskManager.startTask(AngularServer.TASK_NAME).catch( (err: string) => GLOBAL_LOGGER.error(err));
     // this.processHandler.create("npx", ["ng", "test", `--karma-config="${baseKarmaConfigFilePath}"`, "--progress=false"], options);

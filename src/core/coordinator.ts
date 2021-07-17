@@ -28,7 +28,7 @@ export class Coordinator {
         await this._tsconfigSpecEditor.addSpecFile();
 
         const specFileDirectory = path.dirname(this._resourceUri.path);
-        this._taskManager.registerTaskProvider(this._taskType, "ng test", specFileDirectory);
+        this._taskManager.registerTaskProvider(this._taskType, "ng test", {cwd: specFileDirectory});
 
         await this.startTask();
     }

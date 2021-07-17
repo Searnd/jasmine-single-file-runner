@@ -10,6 +10,7 @@ export function JsfrReporter(this: any, baseReporterDecorator: any, config: any,
   this.emitter = emitter;
 
   this.socket = io("http://localhost:9999");
+  global.console.log("Attempting to connect socket to karma event listener...");
 
   const emitEvent = (eventName: string, eventResults: any = null) => {
     this.socket.emit(eventName, { name: eventName, results: eventResults });
