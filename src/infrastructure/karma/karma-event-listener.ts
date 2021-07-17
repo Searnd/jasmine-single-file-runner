@@ -66,10 +66,11 @@ export class KarmaEventListener {
     private onSpecComplete(results: SpecCompleteResponse) {
         // FIXME: this stuff isn't working, i just extracted some parts that i thought would be useful
         // for when this is actually implemented
-        this.eventEmitter.emitTestStateEvent(results.id, TestState.running);
-        this.eventEmitter.emitTestResultEvent(results);
-        this.savedSpecs.push(results);
-        this.testStatus = results.status;
+        // this.eventEmitter.emitTestStateEvent(results.id, TestState.running);
+        // this.eventEmitter.emitTestResultEvent(results);
+        // this.savedSpecs.push(results);
+        // this.testStatus = results.status;
+        console.log(results);
     }
 
     private onBrowserConnected(resolve: (value?: void | PromiseLike<void>) => void) {

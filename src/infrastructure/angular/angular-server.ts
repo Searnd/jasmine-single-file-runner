@@ -24,7 +24,7 @@ export class AngularServer {
 
   public async start(projectAbsolutePath: string): Promise<void> {
     //TODO: dynamically set karma file path
-    const baseKarmaConfigFilePath = "./karma.conf.js";
+    const baseKarmaConfigFilePath = "../karma/config/jsfr-karma.conf.js";
 
     const options: SpawnOptions = {
       cwd: projectAbsolutePath,
