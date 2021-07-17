@@ -78,15 +78,17 @@ export class JsfrAdapter implements TestAdapter {
 
         this._testStatesEmitter.fire({ type: "started", tests} as TestRunStartedEvent);
         
-        // const testSpec = this.findNode(this.loadedTests, tests[0]);
-        // const isComponent = testSpec?.type === "suite";
+        const testSpec = this.findNode(this.loadedTests, tests[0]);
+        const isComponent = testSpec?.type === "suite";
 
-        // const karmaParams = this._karmaHttpClient.createKarmaRunCallConfiguration(tests);
+        await this._angularServer.start();
 
-        // this._karmaEventListener.isTestRunning = true;
+        const karmaParams = this._karmaHttpClient.createKarmaRunCallConfiguration(tests);
+
+        this._karmaEventListener.isTestRunning = true;
         // this._karmaEventListener.lastRunTests = karmaParams.tests;
-        // this._karmaEventListener.isComponentRun = isComponent;
-        // await this._karmaHttpClient.callKarmaRunWithConfig(karmaParams.config);
+        this._karmaEventListener.isComponentRun = isComponent;
+        await this._karmaHttpClient.callKarmaRunWithConfig(karmaParams.config);
         
         this._testStatesEmitter.fire({ type: "finished"} as TestLoadFinishedEvent);
     }

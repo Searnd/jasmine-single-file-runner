@@ -2,11 +2,11 @@ import * as http from "http";
 import { KarmaConfig } from "../../domain/types/types-index";
 
 export class KarmaHttpClient {
-  public createKarmaRunCallConfiguration(tests: any) {
+  public createKarmaRunCallConfiguration(tests: string[]): { config: KarmaConfig, tests: string[] } {
     // if testName is undefined, reset jasmine.getEnv().specFilter function
     // otherwise, last specified specFilter will be used
     if (tests[0] === "root" || tests[0] === undefined) {
-      tests = "";
+      tests = [];
     }
 
     const config: KarmaConfig = {

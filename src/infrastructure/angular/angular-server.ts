@@ -1,6 +1,7 @@
 import { SpawnOptions } from "child_process";
 import { CommandlineProcessHandler } from "../command-line/cl-process-handler";
 import { KarmaEventListener } from "../karma/karma-event-listener";
+import * as path from "path";
 
 export class AngularServer {
   public constructor(
@@ -22,18 +23,18 @@ export class AngularServer {
     }
   }
 
-  public async start(projectAbsolutePath: string): Promise<void> {
+  public async start(): Promise<void> {
     //TODO: dynamically set karma file path
     const baseKarmaConfigFilePath = "../karma/config/jsfr-karma.conf.js";
 
     const options: SpawnOptions = {
-      cwd: projectAbsolutePath,
+      cwd: path.resolve(__dirname),
       shell: true,
       env: process.env
     };
 
     this.processHandler.create("npx", ["ng", "test", `--karma-config="${baseKarmaConfigFilePath}"`, "--progress=false"], options);
 
-    await this.karmaEventListener.listenUntilKarmaIsReady();
+    return this.karmaEventListener.listenUntilKarmaIsReady();
   }
 }

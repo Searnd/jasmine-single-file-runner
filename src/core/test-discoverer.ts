@@ -66,7 +66,7 @@ export class TestDiscoverer {
     
                         const nextTestSuite: KarmaTestSuiteInfo = {
                             type: "suite",
-                            id: this.getNextId(),
+                            id: this.getNextId(source.fileName),
                             label: describeLabel,
                             children: []
                         };
@@ -86,7 +86,7 @@ export class TestDiscoverer {
     
                         const testInfo: KarmaTestInfo = {
                             type: "test",
-                            id: this.getNextId(),
+                            id: this.getNextId(source.fileName),
                             label: itLabel
                         };
     
@@ -101,7 +101,7 @@ export class TestDiscoverer {
         }
     }
 
-    private getNextId(): string {
-        return "" + TestDiscoverer._testIdCounter++;
+    private getNextId(filename: string): string {
+        return `${TestDiscoverer._testIdCounter++} ${filename}`;
     }
 }

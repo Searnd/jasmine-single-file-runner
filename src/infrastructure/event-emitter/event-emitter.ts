@@ -8,7 +8,6 @@ import {
 import * as vscode from "vscode";
 import { TestLoadEvent, TestStateEvent } from "../../domain/types/types-index";
 import { TestState } from "../../domain/enums/enum-index";
-import { KarmaEvent } from "../../domain/models/karma-event";
 import { TestResultToTestStateMapper } from "../mappers/test-result-to-test-state.mapper";
 import { SpecCompleteResponse } from "../../domain/models/spec-complete-response";
 
