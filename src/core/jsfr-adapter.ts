@@ -2,9 +2,7 @@ import * as vscode from "vscode";
 import { TestAdapter, TestLoadFinishedEvent, TestLoadStartedEvent, TestRunStartedEvent } from "vscode-test-adapter-api";
 import { Log } from "vscode-test-adapter-util";
 import { AngularServer } from "../infrastructure/angular/angular-server";
-import { CommandlineProcessHandler } from "../infrastructure/command-line/cl-process-handler";
 import { EventEmitter } from "../infrastructure/event-emitter/event-emitter";
-import { Logger } from "./helpers/logger";
 import { KarmaEventListener } from "../infrastructure/karma/karma-event-listener";
 import { KarmaTestInfo, KarmaTestSuiteInfo } from "../domain/models/karma-test-suite-info";
 import { TestLoadEvent, TestStateEvent } from "../domain/types/types-index";
@@ -39,8 +37,7 @@ export class JsfrAdapter implements TestAdapter {
 
     constructor(
         public readonly workspaceFolder: vscode.WorkspaceFolder,
-        private readonly _log: Log,
-        private readonly _outputChannel: vscode.OutputChannel
+        private readonly _log: Log
     ) {
         this._log.info("Initializing JsfrAdapter");
 

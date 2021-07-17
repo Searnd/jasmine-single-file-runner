@@ -1,6 +1,7 @@
 import { KarmaEventListener } from "../karma/karma-event-listener";
 import * as path from "path";
 import { VscodeTaskManager } from "../../core/vscode-task-manager";
+import { GLOBAL_LOGGER } from "../../extension";
 
 export class AngularServer {
   private static readonly TASK_NAME = "jsfr test explorer";
@@ -30,6 +31,8 @@ export class AngularServer {
       AngularServer.TASK_NAME,
       `npx ng test --karma-config="${baseKarmaConfigFilePath}" --progress=false`,
       angularProjectPath);
+
+    await this._taskManager.startTask(AngularServer.TASK_NAME).catch( (err: string) => GLOBAL_LOGGER.error(err));
     // this.processHandler.create("npx", ["ng", "test", `--karma-config="${baseKarmaConfigFilePath}"`, "--progress=false"], options);
 
     return this.karmaEventListener.listenUntilKarmaIsReady();

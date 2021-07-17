@@ -2,7 +2,6 @@ import { OutputChannel } from "vscode";
 import { LogLevel, TestResult } from "../../domain/enums/enum-index";
 
 export const OUTPUT_CHANNEL = "Test Explorer Logs";
-
 interface Ilog {
   message: string;
   date: Date;

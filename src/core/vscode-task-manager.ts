@@ -21,6 +21,16 @@ export class VscodeTaskManager {
         });
     }
 
+    public async startTask(name: string): Promise<vscode.TaskExecution> {
+        const task = await this.getTask(name);
+
+        if (task) {
+            return vscode.tasks.executeTask(task);
+        }
+
+        return Promise.reject(`Unable to start task. No task found with name ${name}.`);
+    }
+
     public async getTask(name: string): Promise<vscode.Task|undefined> {
         const tasks = await vscode.tasks.fetchTasks({type: this._type});
 
