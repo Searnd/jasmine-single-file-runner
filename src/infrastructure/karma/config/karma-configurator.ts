@@ -8,16 +8,17 @@ export class KarmaConfigurator {
     config.logLevel = config.LOG_INFO;
     config.autoWatch = false;
     config.autoWatchBatchDelay = 0;
-    config.browsers = ["ChromeTestExplorer"];
+    // config.browsers = ["ChromeTestExplorer"];
+    config.browsers = ["ChromeHeadless"];
     config.browserNoActivityTimeout = undefined;
     config.singleRun = false;
-    config.customLaunchers = {
-      ChromeTestExplorer: {
-        base: "ChromeHeadless",
-        debug: true,
-        flags: ["--remote-debugging-port=9222"],
-      },
-    };
+    // config.customLaunchers = {
+    //   ChromeTestExplorer: {
+    //     base: "ChromeHeadless",
+    //     debug: true,
+    //     flags: ["--remote-debugging-port=9222"],
+    //   },
+    // };
   }
 
   public dontLoadOriginalConfigurationFileIntoBrowser(config: Config, originalConfigPath: string): void {

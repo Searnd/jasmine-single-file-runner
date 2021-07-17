@@ -9,7 +9,7 @@ import { SpecCompleteResponse } from "../../domain/models/spec-complete-response
 export class KarmaEventListener {
     private savedSpecs: SpecCompleteResponse[] = [];
 
-    private io = new Server(9222);
+    private io = new Server(9999);
 
     public isServerLoaded = false;
 
@@ -50,9 +50,6 @@ export class KarmaEventListener {
 
                 socket.on(KarmaEventName.specComplete, this.onSpecComplete);
             });
-    
-
-
         });
     }
 
@@ -67,6 +64,8 @@ export class KarmaEventListener {
     }
 
     private onSpecComplete(results: SpecCompleteResponse) {
+        // FIXME: this stuff isn't working, i just extracted some parts that i thought would be useful
+        // for when this is actually implemented
         this.eventEmitter.emitTestStateEvent(results.id, TestState.running);
         this.eventEmitter.emitTestResultEvent(results);
         this.savedSpecs.push(results);
