@@ -58,18 +58,14 @@ export class JsfrAdapter implements TestAdapter {
 
     public async run(tests: string[]): Promise<void> {
         this._log.info(`Running tests ${JSON.stringify(tests)}`);
-
         this._testStatesEmitter.fire({ type: "started", tests} as TestRunStartedEvent);
         
         const testSpec = this.findNode(this.loadedTests, tests[0]);
-        const isComponent = testSpec?.type === "suite";
 
         await this._angularServer.startAsync(this.workspaceFolder.uri.fsPath);
 
         const karmaConfig = this._karmaHttpClient.createKarmaRunCallConfiguration(testSpec?.id || "");
 
-        this._karmaEventListener.isTestRunning = true;
-        this._karmaEventListener.isComponentRun = isComponent;
         await this._karmaHttpClient.callKarmaRunWithConfig(karmaConfig);
         
         this._testStatesEmitter.fire({ type: "finished"} as TestRunFinishedEvent);

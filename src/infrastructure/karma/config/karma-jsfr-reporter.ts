@@ -21,32 +21,17 @@ export function JsfrReporter(this: any, baseReporterDecorator: any, config: any,
 
   this.adapters = [];
 
-  this.onSpecComplete = (_: any, spec: any) => {
-    let status: TestResult = TestResult.failed;
+  this.onSpecComplete = (_: any, spec: SpecCompleteResponse) => {
+    spec.status = TestResult.failed;
 
+    // required as both flags are set when the the test is skipped
     if (spec.skipped) {
-      status = TestResult.skipped;
+      spec.status = TestResult.skipped;
     } else if (spec.success) {
-      status = TestResult.success;
+      spec.status = TestResult.success;
     }
 
-    const result = new SpecCompleteResponse(
-      spec.id,
-      spec.log,
-      spec.suite,
-      spec.description,
-      spec.fullName,
-      status,
-      spec.time,
-      // filePath,
-      // lineNumber
-    );
-
-    if (status === TestResult.failed) {
-      result.fullResponse = spec;
-    }
-
-    emitEvent(KarmaEventName.specComplete, result);
+    emitEvent(KarmaEventName.specComplete, spec);
   };
 
   this.onRunComplete = (_: any, result: TestResults) => {

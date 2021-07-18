@@ -7,7 +7,7 @@ import {
 } from "vscode-test-adapter-api";
 import * as vscode from "vscode";
 import { TestLoadEvent, TestStateEvent } from "../../domain/types/types-index";
-import { TestState } from "../../domain/enums/enum-index";
+import { TestResult, TestState } from "../../domain/enums/enum-index";
 import { TestResultToTestStateMapper } from "../mappers/test-result-to-test-state.mapper";
 import { SpecCompleteResponse } from "../../domain/models/spec-complete-response";
 
@@ -23,11 +23,11 @@ export class EventEmitter {
   }
 
   public emitTestResultEvent(results: SpecCompleteResponse): void {
-    const testState = TestResultToTestStateMapper.map(results.status);
+    const testState = TestResultToTestStateMapper.map(results.status || TestResult.skipped);
 
     const testEvent = { type: "test", test: results.id, state: testState } as TestEvent;
 
-    if (results.failureMessages.length > 0) {
+    if (results.log.length > 0) {
       testEvent.decorations = this.createDecorations(results);
       testEvent.message = this.createErrorMessage(results);
     }
@@ -45,7 +45,7 @@ export class EventEmitter {
   }
 
   private createErrorMessage(results: SpecCompleteResponse): string {
-    const failureMessage = results.failureMessages[0];
+    const failureMessage = results.log[0];
     const message = failureMessage.split("\n")[0];
 
     if (!results.filePath) {
@@ -73,7 +73,7 @@ export class EventEmitter {
     }
 
     try {
-      const decorations = results.failureMessages.map((failureMessage: string) => {
+      const decorations = results.log.map((failureMessage: string) => {
         const errorLineAndColumnCollection = failureMessage.substring(failureMessage.indexOf(results.filePath as string)).split(":");
         const lineNumber = parseInt(errorLineAndColumnCollection[1], undefined);
         return {
