@@ -57,8 +57,7 @@ export class KarmaConfigurator {
     config.reporters = filteredReporters;
   }
 
-  public async loadOriginalUserConfiguration(config: Config, originalConfigPath: string): Promise<void> {
-    // let originalConfigModule = await import(originalConfigPath);
+  public loadOriginalUserConfiguration(config: Config, originalConfigPath: string): void {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     let originalConfigModule = require(originalConfigPath);
     // https://github.com/karma-runner/karma/blob/v1.7.0/lib/config.js#L364
@@ -70,9 +69,8 @@ export class KarmaConfigurator {
   }
 
   public configureTestExplorerCustomReporter(config: Config): void {
-    const jsfrPluginDef: InlinePluginDef = {
-      [pluginName]: ["type", JsfrReporter]
-    };
+    const jsfrPluginDef: InlinePluginDef = {};
+    jsfrPluginDef[pluginName] = ["type", JsfrReporter];
 
     this.addPlugin(config, jsfrPluginDef);
     if (!config.reporters) {
