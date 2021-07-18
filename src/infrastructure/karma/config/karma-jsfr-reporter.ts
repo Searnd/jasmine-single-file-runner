@@ -3,8 +3,8 @@ import { io } from "socket.io-client";
 import { KarmaEventName, TestResult } from "../../../domain/enums/enum-index";
 import { SpecCompleteResponse } from "../../../domain/models/spec-complete-response";
 
-export const reporterName = "reporter:jsfr";
-
+export const reporterName = "jsfr";
+export const pluginName = `reporter:${reporterName}`;
 export function JsfrReporter(this: any, baseReporterDecorator: any, config: any, emitter: any): void {
   this.config = config;
   this.emitter = emitter;

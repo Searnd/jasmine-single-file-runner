@@ -1,6 +1,6 @@
-import { Config, ConfigOptions } from "karma";
+import { Config, ConfigOptions, InlinePluginDef } from "karma";
 import * as path from "path";
-import { JsfrReporter, reporterName } from "./karma-jsfr-reporter";
+import { JsfrReporter, pluginName, reporterName } from "./karma-jsfr-reporter";
 export class KarmaConfigurator {
   public setMandatoryOptions(config: Config): void {
     // remove 'logLevel' changing
@@ -58,7 +58,9 @@ export class KarmaConfigurator {
   }
 
   public async loadOriginalUserConfiguration(config: Config, originalConfigPath: string): Promise<void> {
-    let originalConfigModule = await import(originalConfigPath);
+    // let originalConfigModule = await import(originalConfigPath);
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    let originalConfigModule = require(originalConfigPath);
     // https://github.com/karma-runner/karma/blob/v1.7.0/lib/config.js#L364
     if (typeof originalConfigModule === "object" && typeof originalConfigModule.default !== "undefined") {
       originalConfigModule = originalConfigModule.default;
@@ -68,14 +70,19 @@ export class KarmaConfigurator {
   }
 
   public configureTestExplorerCustomReporter(config: Config): void {
-    this.addPlugin(config, { [`${reporterName}`]: ["type", JsfrReporter] });
+    const jsfrPluginDef: InlinePluginDef = {
+      [pluginName]: ["type", JsfrReporter]
+    };
+
+    this.addPlugin(config, jsfrPluginDef);
     if (!config.reporters) {
       config.reporters = [];
     }
+
     config.reporters.push(reporterName);
   }
 
-  private addPlugin(karmaConfig: ConfigOptions, karmaPlugin: any): void {
+  private addPlugin(karmaConfig: ConfigOptions, karmaPlugin: InlinePluginDef): void {
     karmaConfig.plugins = karmaConfig.plugins || ["karma-*"];
     karmaConfig.plugins.push(karmaPlugin);
   }
