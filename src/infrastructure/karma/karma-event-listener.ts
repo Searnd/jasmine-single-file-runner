@@ -70,7 +70,7 @@ export class KarmaEventListener {
         // this.eventEmitter.emitTestResultEvent(results);
         // this.savedSpecs.push(results);
         // this.testStatus = results.status;
-        console.log(results);
+        console.log(`${results.fullName}: ${results.status}`);
     }
 
     private onBrowserConnected(resolve: (value?: void | PromiseLike<void>) => void) {

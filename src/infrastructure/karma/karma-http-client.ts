@@ -12,9 +12,9 @@ export class KarmaHttpClient {
     const config: KarmaConfig = {
       port: 9876,
       refresh: true,
-      urlRoot: "/run",
+      path: "/run",
       hostname: "localhost",
-      clientArgs: [`--grep=${[tests]}`],
+      args: [`--grep=${[tests]}`],  // tells karma which test(s) to run based on test's fullName
     };
 
     return config;
@@ -22,10 +22,21 @@ export class KarmaHttpClient {
 
   public callKarmaRunWithConfig(config: KarmaConfig): Promise<void> {
     return new Promise<void>(resolve => {
+      const {
+        hostname,
+        path,
+        port,
+        args,
+        removedFiles,
+        changedFiles,
+        addedFiles,
+        refresh
+      } = config;
+
       const options = {
-        hostname: config.hostname,
-        path: config.urlRoot,
-        port: config.port,
+        hostname,
+        path,
+        port,
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -42,11 +53,11 @@ export class KarmaHttpClient {
 
       request.end(
         JSON.stringify({
-          args: config.clientArgs,
-          removedFiles: config.removedFiles,
-          changedFiles: config.changedFiles,
-          addedFiles: config.addedFiles,
-          refresh: config.refresh,
+          args,
+          removedFiles,
+          changedFiles,
+          addedFiles,
+          refresh
         })
       );
 

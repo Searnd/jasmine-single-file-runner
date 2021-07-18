@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { TestAdapter, TestLoadFinishedEvent, TestLoadStartedEvent, TestRunFinishedEvent, TestRunStartedEvent } from "vscode-test-adapter-api";
+import { TestAdapter, TestRunFinishedEvent, TestRunStartedEvent } from "vscode-test-adapter-api";
 import { Log } from "vscode-test-adapter-util";
 import { AngularServer } from "../infrastructure/angular/angular-server";
 import { EventEmitter } from "../infrastructure/event-emitter/event-emitter";
@@ -49,13 +49,6 @@ export class JsfrAdapter implements TestAdapter {
     public async load(): Promise<void> {
         this._log.info("Loading tests");
 
-        // const projectPath = this.workspaceFolder.uri.fsPath;
-        // await this._angularServer.start(projectPath);
-        
-        // const { config } = this._karmaHttpClient.createKarmaRunCallConfiguration("$#%#");
-        // await this._karmaHttpClient.callKarmaRunWithConfig(config);
-        // this.loadedTests = this._karmaEventListener.getLoadedTests(projectPath);
-
         const testDiscoverer = new TestDiscoverer(this._testsLoadedEmitter);
 
         testDiscoverer.testSuiteUpdated.subscribe(loadedTests => {
@@ -76,7 +69,6 @@ export class JsfrAdapter implements TestAdapter {
         const karmaConfig = this._karmaHttpClient.createKarmaRunCallConfiguration(testSpec?.id || "");
 
         this._karmaEventListener.isTestRunning = true;
-        // this._karmaEventListener.lastRunTests = karmaParams.tests;
         this._karmaEventListener.isComponentRun = isComponent;
         await this._karmaHttpClient.callKarmaRunWithConfig(karmaConfig);
         
