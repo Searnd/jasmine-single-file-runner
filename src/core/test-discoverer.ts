@@ -14,6 +14,7 @@ export class TestDiscoverer {
         type: "suite",
         id: "root",
         label: "Jasmine",
+        fullName: "",
         children: []
     };
 
@@ -71,16 +72,22 @@ export class TestDiscoverer {
         const filename = specFile.fileName;
         const program = ts.createProgram([filename], {});
         const source = program.getSourceFile(filename) as ts.SourceFile;
+        const typechecker = program.getTypeChecker();
 
         ts.forEachChild(source, (node) => {
-            this.populateTestSuite(source, node, this._testSuite, true);
+            this.populateTestSuite(source, node, this._testSuite, typechecker, true);
         });
 
         return true;
     }
 
     // TODO: set fullName for karma (see spec-response-to-test-suite-info.mapper.ts)
-    private populateTestSuite(source: ts.SourceFile, node: ts.Node, testSuite: KarmaTestSuiteInfo, isTopMost = false): void {
+    private populateTestSuite(
+        source: ts.SourceFile,
+        node: ts.Node, testSuite: KarmaTestSuiteInfo,
+        typechecker: ts.TypeChecker,
+        isTopMost = false
+    ): void {
         if (ts.isExpressionStatement(node)) {
             const expression = node.expression;
 
@@ -96,12 +103,17 @@ export class TestDiscoverer {
                             type: "suite",
                             id: this.getNextId(source.fileName, isTopMost),
                             label: describeLabel,
+                            fullName: this.getFullName(testSuite.fullName, describeLabel),
                             children: []
                         };
+
+                        if (ts.isFunctionDeclaration(nextNode)) {
+                            console.log(nextNode);
+                        }
     
                         if (ts.isArrowFunction(nextNode)) {
                             nextNode.body.forEachChild(childNode => {
-                                this.populateTestSuite(source, childNode, nextTestSuite);
+                                this.populateTestSuite(source, childNode, nextTestSuite, typechecker);
                             });
                         }
     
@@ -110,11 +122,24 @@ export class TestDiscoverer {
                         break;
                     }
                     case "it": {
-                        const itLabel = expression.arguments[0].getText(source);
+                        const labelNode = expression.arguments[0];
+                        
+                        let itLabel = "";
+
+                        if (ts.isIdentifier(labelNode)) {
+                            const declarations = typechecker.getSymbolAtLocation(labelNode)?.declarations;
+                            if (declarations?.length) {
+                                const decl = (declarations[0] as ts.VariableDeclaration);
+                                itLabel = (declarations[0] as ts.VariableDeclaration).initializer?.getText(source) || "";
+                            }
+                        } else if (ts.isToken(labelNode)) {
+                            itLabel = labelNode.getText(source);
+                        }
     
                         const testInfo: KarmaTestInfo = {
                             type: "test",
                             id: this.getNextId(source.fileName, isTopMost),
+                            fullName: this.getFullName(testSuite.fullName, itLabel),
                             label: itLabel
                         };
     
@@ -131,6 +156,10 @@ export class TestDiscoverer {
 
     private getNextId(filename: string, isTopMost: boolean): string {
         return isTopMost ? filename : `${TestDiscoverer._testIdCounter++} ${filename}`;
+    }
+
+    private getFullName(fullName: string, label: string) {
+        return fullName === "" ? label : fullName + " " + label;
     }
 
     private emitLoadedTests(): void {
