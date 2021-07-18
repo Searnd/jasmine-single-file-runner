@@ -1,11 +1,8 @@
-import { Config, ConfigOptions, InlinePluginDef } from "karma";
+import { ConfigOptions, InlinePluginDef } from "karma";
 import * as path from "path";
 import { JsfrReporter, pluginName, reporterName } from "./karma-jsfr-reporter";
 export class KarmaConfigurator {
-  public setMandatoryOptions(config: Config): void {
-    // remove 'logLevel' changing
-    // https://github.com/karma-runner/karma/issues/614 is ready
-    config.logLevel = config.LOG_INFO;
+  public setMandatoryOptions(config: ConfigOptions): void {
     config.autoWatch = false;
     config.autoWatchBatchDelay = 0;
     // config.browsers = ["ChromeTestExplorer"];
@@ -21,13 +18,13 @@ export class KarmaConfigurator {
     // };
   }
 
-  public dontLoadOriginalConfigurationFileIntoBrowser(config: Config, originalConfigPath: string): void {
+  public dontLoadOriginalConfigurationFileIntoBrowser(config: ConfigOptions, originalConfigPath: string): void {
     // https://github.com/karma-runner/karma-intellij/issues/9
     config.exclude = config.exclude || [];
     config.exclude.push(originalConfigPath);
   }
 
-  public setBasePath(config: Config, originalConfigPath: string): void {
+  public setBasePath(config: ConfigOptions, originalConfigPath: string): void {
     if (!config.basePath) {
       // We need to set the base path, so karma won't use this file to base everything of
       if (originalConfigPath) {
@@ -38,26 +35,12 @@ export class KarmaConfigurator {
     }
   }
 
-  public disableSingleRunPermanently(config: Config): void {
-    const prevSet = config.set;
-    if (typeof prevSet === "function") {
-      config.set = (newConfig: ConfigOptions) => {
-        if (newConfig != null) {
-          if (newConfig.singleRun === true) {
-            newConfig.singleRun = false;
-          }
-          prevSet(newConfig);
-        }
-      };
-    }
-  }
-
-  public cleanUpReporters(config: Config): void {
+  public cleanUpReporters(config: ConfigOptions): void {
     const filteredReporters = config.reporters?.filter(reporter => reporter !== "dots" && reporter !== "kjhtml");
     config.reporters = filteredReporters;
   }
 
-  public loadOriginalUserConfiguration(config: Config, originalConfigPath: string): void {
+  public loadOriginalUserConfiguration(config: ConfigOptions, originalConfigPath: string): void {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     let originalConfigModule = require(originalConfigPath);
     // https://github.com/karma-runner/karma/blob/v1.7.0/lib/config.js#L364
@@ -68,7 +51,7 @@ export class KarmaConfigurator {
     originalConfigModule(config);
   }
 
-  public configureTestExplorerCustomReporter(config: Config): void {
+  public configureTestExplorerCustomReporter(config: ConfigOptions): void {
     const jsfrPluginDef: InlinePluginDef = {};
     jsfrPluginDef[pluginName] = ["type", JsfrReporter];
 

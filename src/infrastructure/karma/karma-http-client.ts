@@ -3,8 +3,6 @@ import { KarmaConfig } from "../../domain/types/types-index";
 
 export class KarmaHttpClient {
   public createKarmaRunCallConfiguration(tests: string): KarmaConfig {
-    // if testName is undefined, reset jasmine.getEnv().specFilter function
-    // otherwise, last specified specFilter will be used
     if (tests === "root" || tests === undefined) {
       tests = "";
     }

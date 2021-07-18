@@ -61,9 +61,11 @@ export class KarmaEventListener {
     public stopListeningToKarma(): void {
         this.isServerLoaded = false;
         this.io.close();
+        console.log("Browser disconnected, closing socket...");
     }
 
-    private onSpecComplete(results: SpecCompleteResponse) {
+    private onSpecComplete(e: KarmaEvent) {
+        const {results} = e;
         // FIXME: this stuff isn't working, i just extracted some parts that i thought would be useful
         // for when this is actually implemented
         // this.eventEmitter.emitTestStateEvent(results.id, TestState.running);
