@@ -106,12 +106,8 @@ export class TestDiscoverer {
                             fullName: this.getFullName(testSuite.fullName, describeLabel),
                             children: []
                         };
-
-                        if (ts.isFunctionDeclaration(nextNode)) {
-                            console.log(nextNode);
-                        }
     
-                        if (ts.isArrowFunction(nextNode)) {
+                        if (ts.isFunctionExpression(nextNode) || ts.isArrowFunction(nextNode)) {
                             nextNode.body.forEachChild(childNode => {
                                 this.populateTestSuite(source, childNode, nextTestSuite, typechecker);
                             });
