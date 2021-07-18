@@ -1,4 +1,4 @@
-import { EventEmitter, TextDocument, workspace } from "vscode";
+import { EventEmitter, TextDocument, window, workspace } from "vscode";
 import { KarmaTestInfo, KarmaTestSuiteInfo } from "../domain/models/karma-test-suite-info";
 import { BehaviorSubject } from "rxjs";
 import * as ts from "typescript";
@@ -22,9 +22,9 @@ export class TestDiscoverer {
     constructor(
         private readonly _testsLoadedEmitter: EventEmitter<TestLoadEvent>
     ) {
-        const specFileRegex = /\.spec\.ts$/;
+        this._testsLoadedEmitter.fire({ type: "started" } as TestLoadStartedEvent);
 
-        this._openSpecFiles = workspace.textDocuments.filter(doc => specFileRegex.test(doc.fileName));
+        const specFileRegex = /\.spec\.ts$/;
 
         workspace.onDidOpenTextDocument(d => {
             if (specFileRegex.test(d.fileName)) {
@@ -49,7 +49,9 @@ export class TestDiscoverer {
             }
         });
 
-        this._testsLoadedEmitter.fire({ type: "started" } as TestLoadStartedEvent);
+        this._openSpecFiles = window.visibleTextEditors
+            .map(te => te.document)
+            .filter(doc => specFileRegex.test(doc.fileName));
 
         const wereTestsAdded = this._openSpecFiles.reduce((acc, specFile) => {
             return acc || this.getTestsFromSpecFile(specFile);
