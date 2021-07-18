@@ -1,6 +1,7 @@
 import { TestResults } from "karma";
 import { io } from "socket.io-client";
 import { KarmaEventName, TestResult } from "../../../domain/enums/enum-index";
+import { Browser, BrowserChangedEvent } from "../../../domain/models/karma-browser";
 import { SpecCompleteResponse } from "../../../domain/models/spec-complete-response";
 
 export const reporterName = "jsfr";
@@ -60,14 +61,15 @@ export function JsfrReporter(this: any, baseReporterDecorator: any, config: any,
     emitEvent(KarmaEventName.browserStart);
   };
 
-  this.emitter.on("browsers_change", (capturedBrowsers: any[]) => {
-    if (!capturedBrowsers.length) {
-      // filter out events from Browser object
+  this.emitter.on("browsers_change", (browserChangedEvent: BrowserChangedEvent) => {
+    const { browsers } = browserChangedEvent;
+    // filter out events from Browser object
+    if (!browsers.every) {
       return;
     }
 
-    const connected = capturedBrowsers.every((newBrowser: any) => {
-      return newBrowser.id && newBrowser.name && newBrowser.id !== newBrowser.name;
+    const connected = browsers.every((newBrowser: Browser) => {
+      return newBrowser.state === "CONNECTED";
     });
 
     if (connected) {
