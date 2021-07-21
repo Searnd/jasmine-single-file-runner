@@ -17,7 +17,13 @@ export class Coordinator {
 
     constructor(
         private readonly _resourceUri: IUri
-    ) { }
+    ) {
+        vscode.tasks.onDidEndTask((e) => {
+            if (e.execution.task.name === this._taskType) {
+                this.dispose();
+            }
+        });
+    }
 
     public async executeTests(): Promise<void> {
         await this.prepare();
@@ -64,11 +70,5 @@ export class Coordinator {
         } else {
             vscode.window.showErrorMessage("Error: task not properly registered");
         }
-
-        vscode.tasks.onDidEndTask((e) => {
-            if (e.execution.task.name === this._taskType) {
-                this.dispose();
-            }
-        });
     }
 }
