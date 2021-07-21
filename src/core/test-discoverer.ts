@@ -10,8 +10,6 @@ export class TestDiscoverer {
 
     private static _testIdCounter = 0;
 
-    private static readonly SupportedExpressions = ["describe", "it", "fdescribe", "fit"];
-
     private _testSuite: KarmaTestSuiteInfo = {
         type: "suite",
         id: "root",
@@ -94,10 +92,6 @@ export class TestDiscoverer {
 
             if (ts.isCallExpression(expression)) {
                 const expressionText = expression.expression.getText(source);
-
-                if (!TestDiscoverer.SupportedExpressions.some(e => e === expressionText)) {
-                    return;
-                }
 
                 switch (expressionText) {
                     case "fdescribe":
