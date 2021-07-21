@@ -2,6 +2,9 @@
 
 ### [Unreleased]
 
+### [0.3.5]
+- Add `.d.ts` files from `node_modules` to the inclusion list in `tsconfig.spec.ts`
+
 ### [0.3.4]
 - Update readme
 - Add automatic release

@@ -3,6 +3,7 @@ import * as fs from "fs/promises";
 import stripJsonComments = require("strip-json-comments");
 import * as path from "path";
 import { IUri } from "../../domain/types/types-index";
+import { FileFinder } from "../file-finder/file-finder";
 
 type Tsconfig = {
     include: string[]
@@ -26,8 +27,15 @@ export class TsConfigSpecEditor {
             throw new FileSystemError("Error: unable to fetch tsconfig.spec.json");
         }
 
+        const projectRootAbsolutePath = await FileFinder.getAngularProjectRootPath();
+        
+        let projectRootRelativePath = path.relative(this._tsconfigSpecFileUri.path, projectRootAbsolutePath);
+        // remove extra '.' in the path that was added by the call to path.relative
+        projectRootRelativePath = projectRootRelativePath.slice(1);
+
         const formattedSpecFilename = this.getPathRelativeToTsconfig(this._resourceUri.path);
-        tsconfig.include = [ formattedSpecFilename ];
+
+        tsconfig.include = [ formattedSpecFilename, `${projectRootRelativePath}/node_modules/@types/**/*.d.ts` ];
 
         await fs.writeFile(this._tsconfigSpecFileUri.fsPath, JSON.stringify(tsconfig), "utf8");
     }
@@ -51,7 +59,7 @@ export class TsConfigSpecEditor {
         let specFileRelativePath = path.relative(this._tsconfigSpecFileUri.path, pathStr);
 
         // remove extra '.' in the path that was added by the call to path.relative
-        specFileRelativePath = specFileRelativePath.slice(1, specFileRelativePath.length);
+        specFileRelativePath = specFileRelativePath.slice(1);
 
         // clean up for windows
         specFileRelativePath = specFileRelativePath.replace(/\\/g, "/");
