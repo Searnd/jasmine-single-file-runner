@@ -1,4 +1,3 @@
-import { Uri } from "vscode";
 import { KarmaTestInfo, KarmaTestSuiteInfo } from "../../domain/models/karma-test-suite-info";
 
 export class TestSuiteHelper {

@@ -61,7 +61,6 @@ export function activate(context: vscode.ExtensionContext): void {
 			progress.report({message: "Preparing..."});
 			try {
 				coordinator = new Coordinator(resourceUri);
-				await coordinator.initialize();
 				await coordinator.executeTests();
 			}
 			catch(e) {

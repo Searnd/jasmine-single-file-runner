@@ -5,10 +5,11 @@ import { AngularServer } from "../infrastructure/angular/angular-server";
 import { EventEmitter } from "../infrastructure/event-emitter/event-emitter";
 import { KarmaEventListener } from "../infrastructure/karma/karma-event-listener";
 import { KarmaTestInfo, KarmaTestSuiteInfo } from "../domain/models/karma-test-suite-info";
-import { TestLoadEvent, TestStateEvent } from "../domain/types/types-index";
+import { IUri, TestLoadEvent, TestStateEvent } from "../domain/types/types-index";
 import { KarmaHttpClient } from "../infrastructure/karma/karma-http-client";
 import { TestDiscoverer } from "./test-discoverer";
 import { TestSuiteHelper } from "./helpers/test-suite-helper";
+import { Coordinator } from "./coordinator";
 
 export class JsfrAdapter implements TestAdapter {
     private _disposables: vscode.Disposable[] = [];
@@ -62,6 +63,16 @@ export class JsfrAdapter implements TestAdapter {
         this._testStatesEmitter.fire({ type: "started", tests} as TestRunStartedEvent);
         
         const testSpec = TestSuiteHelper.findNode(this.loadedTests, tests[0]);
+
+        let specFileUri: Partial<IUri> = vscode.Uri.parse(testSpec?.file || "");
+        specFileUri = {
+            ...specFileUri,
+            with: specFileUri.with,
+            toJSON: specFileUri.toJSON,
+            isFolder: false
+        };
+        const coordinator = new Coordinator(specFileUri as IUri);
+        await coordinator.prepare();
 
         await this._angularServer.startAsync(this.workspaceFolder.uri.fsPath);
 
