@@ -8,6 +8,7 @@ import { KarmaTestInfo, KarmaTestSuiteInfo } from "../domain/models/karma-test-s
 import { TestLoadEvent, TestStateEvent } from "../domain/types/types-index";
 import { KarmaHttpClient } from "../infrastructure/karma/karma-http-client";
 import { TestDiscoverer } from "./test-discoverer";
+import { TestSuiteHelper } from "./helpers/test-suite-helper";
 
 export class JsfrAdapter implements TestAdapter {
     private _disposables: vscode.Disposable[] = [];
@@ -60,7 +61,7 @@ export class JsfrAdapter implements TestAdapter {
         this._log.info(`Running tests ${JSON.stringify(tests)}`);
         this._testStatesEmitter.fire({ type: "started", tests} as TestRunStartedEvent);
         
-        const testSpec = this.findNode(this.loadedTests, tests[0]);
+        const testSpec = TestSuiteHelper.findNode(this.loadedTests, tests[0]);
 
         await this._angularServer.startAsync(this.workspaceFolder.uri.fsPath);
 
@@ -80,20 +81,5 @@ export class JsfrAdapter implements TestAdapter {
         this._disposables.forEach(disposable => disposable.dispose());
 
         this._disposables = [];
-    }
-
-    private findNode(searchNode: KarmaTestSuiteInfo | KarmaTestInfo | undefined, id: string): KarmaTestSuiteInfo | KarmaTestInfo | undefined {
-        if (searchNode?.id === id) {
-            return searchNode;
-        } else if (searchNode?.type === "suite") {
-            for (const child of searchNode.children) {
-                const found = this.findNode(child, id);
-                if (found){
-                    return found;
-                }
-            }
-        }
-
-        return undefined;
     }
 }
