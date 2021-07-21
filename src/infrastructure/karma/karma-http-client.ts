@@ -2,23 +2,9 @@ import * as http from "http";
 import { KarmaConfig } from "../../domain/types/types-index";
 
 export class KarmaHttpClient {
-  public createKarmaRunCallConfiguration(tests: string): KarmaConfig {
-    if (tests === "root" || tests === undefined) {
-      tests = "";
-    }
+  public startAsync(tests: string): Promise<void> {
+    const config = this.createKarmaRunCallConfiguration(tests);
 
-    const config: KarmaConfig = {
-      port: 9876,
-      refresh: true,
-      path: "/run",
-      hostname: "localhost",
-      args: [`--grep=${[tests]}`],  // tells karma which test(s) to run based on test's fullName
-    };
-
-    return config;
-  }
-
-  public callKarmaRunWithConfig(config: KarmaConfig): Promise<void> {
     return new Promise<void>(resolve => {
       const {
         hostname,
@@ -63,5 +49,21 @@ export class KarmaHttpClient {
         resolve();
       });
     });
+  }
+
+  private createKarmaRunCallConfiguration(tests: string): KarmaConfig {
+    if (tests === "root" || tests === undefined) {
+      tests = "";
+    }
+
+    const config: KarmaConfig = {
+      port: 9876,
+      refresh: true,
+      path: "/run",
+      hostname: "localhost",
+      args: [`--grep=${[tests]}`],  // tells karma which test(s) to run based on test's fullName
+    };
+
+    return config;
   }
 }
