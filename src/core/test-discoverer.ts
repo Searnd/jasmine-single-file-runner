@@ -10,6 +10,8 @@ export class TestDiscoverer {
 
     private static _testIdCounter = 0;
 
+    private static readonly SupportedExpressions = ["describe", "it", "fdescribe", "fit"];
+
     private _testSuite: KarmaTestSuiteInfo = {
         type: "suite",
         id: "root",
@@ -81,7 +83,6 @@ export class TestDiscoverer {
         return true;
     }
 
-    // TODO: set fullName for karma (see spec-response-to-test-suite-info.mapper.ts)
     private populateTestSuite(
         source: ts.SourceFile,
         node: ts.Node, testSuite: KarmaTestSuiteInfo,
@@ -94,9 +95,16 @@ export class TestDiscoverer {
             if (ts.isCallExpression(expression)) {
                 const expressionText = expression.expression.getText(source);
 
+                if (!TestDiscoverer.SupportedExpressions.some(e => e === expressionText)) {
+                    return;
+                }
+
                 switch (expressionText) {
+                    case "fdescribe":
                     case "describe": {
-                        const describeLabel = expression.arguments[0].getText(source);
+                        let describeLabel = expression.arguments[0].getText(source);
+                        describeLabel = this.tidyUpLabel(describeLabel);
+
                         const nextNode = expression.arguments[1];
     
                         const nextTestSuite: KarmaTestSuiteInfo = {
@@ -117,6 +125,7 @@ export class TestDiscoverer {
     
                         break;
                     }
+                    case "fit":
                     case "it": {
                         const labelNode = expression.arguments[0];
                         
@@ -125,18 +134,18 @@ export class TestDiscoverer {
                         if (ts.isIdentifier(labelNode)) {
                             const declarations = typechecker.getSymbolAtLocation(labelNode)?.declarations;
                             if (declarations?.length) {
-                                const decl = (declarations[0] as ts.VariableDeclaration);
                                 itLabel = (declarations[0] as ts.VariableDeclaration).initializer?.getText(source) || "";
                             }
                         } else if (ts.isToken(labelNode)) {
                             itLabel = labelNode.getText(source);
                         }
+                        itLabel = this.tidyUpLabel(itLabel);
     
                         const testInfo: KarmaTestInfo = {
                             type: "test",
                             id: this.getNextId(source.fileName, isTopMost),
-                            fullName: this.getFullName(testSuite.fullName, itLabel),
-                            label: itLabel
+                            label: this.tidyUpLabel(itLabel),
+                            fullName: this.getFullName(testSuite.fullName, itLabel)
                         };
     
                         testSuite.children.push(testInfo);
@@ -161,5 +170,9 @@ export class TestDiscoverer {
     private emitLoadedTests(): void {
         this.testSuiteUpdated.next(this._testSuite);
         this._testsLoadedEmitter.fire({ type: "finished", suite: this._testSuite } as TestLoadFinishedEvent);
+    }
+
+    private tidyUpLabel(label: string): string {
+        return label.replace(/(^['"`]|['"`]$)/g, "");
     }
 }
