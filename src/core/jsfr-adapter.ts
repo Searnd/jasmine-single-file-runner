@@ -64,7 +64,7 @@ export class JsfrAdapter implements TestAdapter {
 
         await this._angularServer.startAsync(this.workspaceFolder.uri.fsPath);
 
-        const karmaConfig = this._karmaHttpClient.createKarmaRunCallConfiguration(testSpec?.id || "");
+        const karmaConfig = this._karmaHttpClient.createKarmaRunCallConfiguration(testSpec?.fullName || "");
 
         await this._karmaHttpClient.callKarmaRunWithConfig(karmaConfig);
         
