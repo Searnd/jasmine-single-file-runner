@@ -103,9 +103,10 @@ export class TestDiscoverer {
     
                         const nextTestSuite: KarmaTestSuiteInfo = {
                             type: "suite",
-                            id: this.getNextId(source.fileName, isTopMost),
+                            id: this.getNextId(),
                             label: describeLabel,
                             fullName: this.getFullName(testSuite.fullName, describeLabel),
+                            file: source.fileName,
                             children: []
                         };
     
@@ -137,9 +138,10 @@ export class TestDiscoverer {
     
                         const testInfo: KarmaTestInfo = {
                             type: "test",
-                            id: this.getNextId(source.fileName, isTopMost),
+                            id: this.getNextId(),
                             label: this.tidyUpLabel(itLabel),
-                            fullName: this.getFullName(testSuite.fullName, itLabel)
+                            fullName: this.getFullName(testSuite.fullName, itLabel),
+                            file: source.fileName
                         };
     
                         testSuite.children.push(testInfo);
@@ -153,8 +155,8 @@ export class TestDiscoverer {
         }
     }
 
-    private getNextId(filename: string, isTopMost: boolean): string {
-        return isTopMost ? filename : `${TestDiscoverer._testIdCounter++} ${filename}`;
+    private getNextId(): string {
+        return "" + TestDiscoverer._testIdCounter++;
     }
 
     private getFullName(fullName: string, label: string) {
