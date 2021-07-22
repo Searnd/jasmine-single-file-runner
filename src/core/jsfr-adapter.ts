@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { TestAdapter, TestRunFinishedEvent, TestRunStartedEvent } from "vscode-test-adapter-api";
+import { TestAdapter, TestEvent, TestRunFinishedEvent, TestRunStartedEvent, TestSuiteEvent } from "vscode-test-adapter-api";
 import { Log } from "vscode-test-adapter-util";
 import { AngularServer } from "../infrastructure/angular/angular-server";
 import { EventEmitter } from "../infrastructure/event-emitter/event-emitter";
@@ -10,6 +10,7 @@ import { KarmaHttpClient } from "../infrastructure/karma/karma-http-client";
 import { TestDiscoverer } from "./test-discoverer";
 import { TestSuiteHelper } from "./helpers/test-suite-helper";
 import { Coordinator } from "./coordinator";
+import { TestState } from "../domain/enums/enum-index";
 
 export class JsfrAdapter implements TestAdapter {
     private _disposables: vscode.Disposable[] = [];
@@ -63,7 +64,10 @@ export class JsfrAdapter implements TestAdapter {
         this._testStatesEmitter.fire({ type: "started", tests} as TestRunStartedEvent);
         
         const testSpec = TestSuiteHelper.findNode(this.loadedTests, tests[0]);
-
+        if (!testSpec) {
+            return;
+        }
+        
         let specFileUri: Partial<IUri> = vscode.Uri.parse(testSpec?.file || "");
         specFileUri = {
             ...specFileUri,
@@ -75,6 +79,13 @@ export class JsfrAdapter implements TestAdapter {
         await coordinator.prepare();
 
         await this._angularServer.startAsync(this.workspaceFolder.uri.fsPath);
+
+        this.fireTestRunning(testSpec);
+
+        this._karmaEventListener.specCompletedSubject.subscribe(spec => {
+            console.log("HELELEO");
+            this._testStatesEmitter.fire({ type: "test", test: spec.id, state: spec.status } as TestEvent);
+        });
 
         await this._karmaHttpClient.startAsync(testSpec?.fullName || "");
         
@@ -92,5 +103,14 @@ export class JsfrAdapter implements TestAdapter {
         this._disposables.forEach(disposable => disposable.dispose());
 
         this._disposables = [];
+    }
+
+    private fireTestRunning(test: KarmaTestSuiteInfo | KarmaTestInfo): void {
+        if (test.type === "suite") {
+            this._testStatesEmitter.fire({ type: "suite", suite: test?.id, state: TestState.running } as TestSuiteEvent);
+            test.children.forEach(child => this.fireTestRunning(child));
+        } else if (test.type === "test") {
+            this._testStatesEmitter.fire({ type: "test", test: test?.id, state: TestState.running } as TestEvent);
+        }
     }
 }

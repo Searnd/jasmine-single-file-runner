@@ -1,9 +1,3 @@
-export enum TestResult {
-    failed = "Failed",
-    skipped = "Skipped",
-    success = "Success"
-}
-
 export enum TestState {
     running = "running",
     failed = "failed",

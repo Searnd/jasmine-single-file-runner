@@ -7,8 +7,7 @@ import {
 } from "vscode-test-adapter-api";
 import * as vscode from "vscode";
 import { TestLoadEvent, TestStateEvent } from "../../domain/types/types-index";
-import { TestResult, TestState } from "../../domain/enums/enum-index";
-import { TestResultToTestStateMapper } from "../mappers/test-result-to-test-state.mapper";
+import { TestState } from "../../domain/enums/enum-index";
 import { SpecCompleteResponse } from "../../domain/models/spec-complete-response";
 
 export class EventEmitter {
@@ -23,16 +22,16 @@ export class EventEmitter {
   }
 
   public emitTestResultEvent(results: SpecCompleteResponse): void {
-    const testState = TestResultToTestStateMapper.map(results.status || TestResult.skipped);
+    // const testState = TestResultToTestStateMapper.map(results.status || TestResult.skipped);
 
-    const testEvent = { type: "test", test: results.id, state: testState } as TestEvent;
+    // const testEvent = { type: "test", test: results.id, state: testState } as TestEvent;
 
-    if (results.log.length > 0) {
-      testEvent.decorations = this.createDecorations(results);
-      testEvent.message = this.createErrorMessage(results);
-    }
+    // if (results.log.length > 0) {
+    //   testEvent.decorations = this.createDecorations(results);
+    //   testEvent.message = this.createErrorMessage(results);
+    // }
 
-    this.testStateEmitter.fire(testEvent);
+    // this.testStateEmitter.fire(testEvent);
   }
 
   public emitTestsStartedLoading(): void {

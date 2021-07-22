@@ -1,4 +1,4 @@
-import { TestResult } from "../enums/enum-index";
+import { TestState } from "../enums/enum-index";
 
 export interface SpecCompleteResponse {
   id: string,
@@ -6,7 +6,7 @@ export interface SpecCompleteResponse {
   suite: string[],
   description: string,
   fullName: string,
-  status?: TestResult,
+  status?: TestState,
   time: string,
   skipped: boolean,
   success: boolean,

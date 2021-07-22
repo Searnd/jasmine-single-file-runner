@@ -1,10 +1,11 @@
 import { Server } from "socket.io";
-import { KarmaEventName, TestResult, TestState } from "../../domain/enums/enum-index";
+import { KarmaEventName, TestState } from "../../domain/enums/enum-index";
 import { KarmaEvent } from "../../domain/models/karma-event";
 import { EventEmitter } from "../event-emitter/event-emitter";
 import { KarmaTestSuiteInfo } from "../../domain/models/karma-test-suite-info";
 import { SpecResponseToTestSuiteInfoMapper } from "../mappers/spec-response-to-test-suite-info.mapper";
 import { SpecCompleteResponse } from "../../domain/models/spec-complete-response";
+import { Subject } from "rxjs";
 
 export class KarmaEventListener {
     private savedSpecs: SpecCompleteResponse[] = [];
@@ -15,11 +16,13 @@ export class KarmaEventListener {
 
     public isTestRunning = false;
 
-    public testStatus: TestResult | undefined;
+    public testStatus: TestState | undefined;
 
     public runCompleteEvent: KarmaEvent | undefined;
 
     public isComponentRun = false;
+
+    public specCompletedSubject: Subject<SpecCompleteResponse> = new Subject<SpecCompleteResponse>();
 
     constructor(
         private readonly eventEmitter: EventEmitter
@@ -73,6 +76,7 @@ export class KarmaEventListener {
         // this.savedSpecs.push(results);
         // this.testStatus = results.status;
         console.log(`${results.fullName}: ${results.status}`);
+        this.specCompletedSubject.next(results);
     }
 
     private onBrowserConnected(resolve: (value?: void | PromiseLike<void>) => void) {

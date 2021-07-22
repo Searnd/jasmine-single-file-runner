@@ -1,6 +1,6 @@
 import { TestResults } from "karma";
 import { io } from "socket.io-client";
-import { KarmaEventName, TestResult } from "../../../domain/enums/enum-index";
+import { KarmaEventName, TestState } from "../../../domain/enums/enum-index";
 import { Browser, BrowserChangedEvent } from "../../../domain/models/karma-browser";
 import { SpecCompleteResponse } from "../../../domain/models/spec-complete-response";
 
@@ -22,13 +22,13 @@ export function JsfrReporter(this: any, baseReporterDecorator: any, config: any,
   this.adapters = [];
 
   this.onSpecComplete = (_: any, spec: SpecCompleteResponse) => {
-    spec.status = TestResult.failed;
+    spec.status = TestState.failed;
 
     // required as both flags are set when the the test is skipped
     if (spec.skipped) {
-      spec.status = TestResult.skipped;
+      spec.status = TestState.skipped;
     } else if (spec.success) {
-      spec.status = TestResult.success;
+      spec.status = TestState.passed;
     }
 
     emitEvent(KarmaEventName.specComplete, spec);

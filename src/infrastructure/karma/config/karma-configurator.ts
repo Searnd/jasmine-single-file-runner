@@ -8,7 +8,7 @@ export class KarmaConfigurator {
     // config.browsers = ["ChromeTestExplorer"];
     config.browsers = ["ChromeHeadless"];
     config.browserNoActivityTimeout = undefined;
-    config.singleRun = false;
+    config.singleRun = true;
     // config.customLaunchers = {
     //   ChromeTestExplorer: {
     //     base: "ChromeHeadless",
