@@ -21,7 +21,7 @@ export class TestSuiteHelper {
             return searchNode;
         } else if (searchNode?.type === "suite") {
             for (const child of searchNode.children) {
-                const found = this.findNode(child, fullName);
+                const found = this.findNodeByFullName(child, fullName);
                 if (found){
                     return found;
                 }

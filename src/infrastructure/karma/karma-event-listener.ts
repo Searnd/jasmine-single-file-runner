@@ -1,7 +1,6 @@
 import { Server } from "socket.io";
 import { KarmaEventName, TestState } from "../../domain/enums/enum-index";
 import { KarmaEvent } from "../../domain/models/karma-event";
-import { EventEmitter } from "../event-emitter/event-emitter";
 import { KarmaTestSuiteInfo } from "../../domain/models/karma-test-suite-info";
 import { SpecResponseToTestSuiteInfoMapper } from "../mappers/spec-response-to-test-suite-info.mapper";
 import { SpecCompleteResponse } from "../../domain/models/spec-complete-response";
@@ -22,11 +21,7 @@ export class KarmaEventListener {
 
     public isComponentRun = false;
 
-    public specCompletedSubject: Subject<SpecCompleteResponse> = new Subject<SpecCompleteResponse>();
-
-    constructor(
-        private readonly eventEmitter: EventEmitter
-    ) { }
+    public specCompletedSubject: Subject<SpecCompleteResponse> = new Subject();
 
     public listenUntilKarmaIsReady(): Promise<void> {
         return new Promise<void>((resolve) => {
@@ -51,7 +46,7 @@ export class KarmaEventListener {
                     this.runCompleteEvent = event;
                 });
 
-                socket.on(KarmaEventName.specComplete, this.onSpecComplete);
+                socket.on(KarmaEventName.specComplete, (event: KarmaEvent) => this.onSpecComplete(event));
             });
         });
     }
@@ -75,7 +70,7 @@ export class KarmaEventListener {
         // this.eventEmitter.emitTestResultEvent(results);
         // this.savedSpecs.push(results);
         // this.testStatus = results.status;
-        console.log(`${results.fullName}: ${results.status}`);
+        // console.log(`${results.fullName}: ${results.status}`);
         this.specCompletedSubject.next(results);
     }
 

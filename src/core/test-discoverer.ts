@@ -75,7 +75,7 @@ export class TestDiscoverer {
         const typechecker = program.getTypeChecker();
 
         ts.forEachChild(source, (node) => {
-            this.populateTestSuite(source, node, this._testSuite, typechecker, true);
+            this.populateTestSuite(source, node, this._testSuite, typechecker);
         });
 
         return true;
@@ -84,8 +84,7 @@ export class TestDiscoverer {
     private populateTestSuite(
         source: ts.SourceFile,
         node: ts.Node, testSuite: KarmaTestSuiteInfo,
-        typechecker: ts.TypeChecker,
-        isTopMost = false
+        typechecker: ts.TypeChecker
     ): void {
         if (ts.isExpressionStatement(node)) {
             const expression = node.expression;

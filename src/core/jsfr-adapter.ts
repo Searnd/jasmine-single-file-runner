@@ -2,7 +2,6 @@ import * as vscode from "vscode";
 import { TestAdapter, TestEvent, TestRunFinishedEvent, TestRunStartedEvent, TestSuiteEvent } from "vscode-test-adapter-api";
 import { Log } from "vscode-test-adapter-util";
 import { AngularServer } from "../infrastructure/angular/angular-server";
-import { EventEmitter } from "../infrastructure/event-emitter/event-emitter";
 import { KarmaEventListener } from "../infrastructure/karma/karma-event-listener";
 import { KarmaTestInfo, KarmaTestSuiteInfo } from "../domain/models/karma-test-suite-info";
 import { IUri, TestLoadEvent, TestStateEvent } from "../domain/types/types-index";
@@ -11,6 +10,7 @@ import { TestDiscoverer } from "./test-discoverer";
 import { TestSuiteHelper } from "./helpers/test-suite-helper";
 import { Coordinator } from "./coordinator";
 import { TestState } from "../domain/enums/enum-index";
+import { SpecCompleteResponse } from "../domain/models/spec-complete-response";
 
 export class JsfrAdapter implements TestAdapter {
     private _disposables: vscode.Disposable[] = [];
@@ -19,8 +19,9 @@ export class JsfrAdapter implements TestAdapter {
 	private readonly _testStatesEmitter = new vscode.EventEmitter<TestStateEvent>();
 	private readonly _autorunEmitter = new vscode.EventEmitter<void>();
 
-    private readonly _karmaEventListener: KarmaEventListener =
-        new KarmaEventListener(new EventEmitter(this._testStatesEmitter, this._testsLoadedEmitter));
+    // private readonly _karmaEventListener: KarmaEventListener =
+    //     new KarmaEventListener(new EventEmitter(this._testStatesEmitter, this._testsLoadedEmitter));
+    private readonly _karmaEventListener: KarmaEventListener = new KarmaEventListener();
 
     private readonly _angularServer: AngularServer = new AngularServer(this._karmaEventListener);
 
@@ -67,6 +68,14 @@ export class JsfrAdapter implements TestAdapter {
         if (!testSpec) {
             return;
         }
+
+        this._karmaEventListener.specCompletedSubject.subscribe(spec => {
+            this.onSpecCompleted(spec);
+
+            if (spec.id === testSpec.id) {
+                this._testStatesEmitter.fire({ type: "finished"} as TestRunFinishedEvent);
+            }
+        });
         
         let specFileUri: Partial<IUri> = vscode.Uri.parse(testSpec?.file || "");
         specFileUri = {
@@ -79,17 +88,9 @@ export class JsfrAdapter implements TestAdapter {
         await coordinator.prepare();
 
         await this._angularServer.startAsync(this.workspaceFolder.uri.fsPath);
-
         this.fireTestRunning(testSpec);
-
-        this._karmaEventListener.specCompletedSubject.subscribe(spec => {
-            console.log("HELELEO");
-            this._testStatesEmitter.fire({ type: "test", test: spec.id, state: spec.status } as TestEvent);
-        });
-
         await this._karmaHttpClient.startAsync(testSpec?.fullName || "");
-        
-        this._testStatesEmitter.fire({ type: "finished"} as TestRunFinishedEvent);
+
     }
 
     public cancel(): void {
@@ -111,6 +112,19 @@ export class JsfrAdapter implements TestAdapter {
             test.children.forEach(child => this.fireTestRunning(child));
         } else if (test.type === "test") {
             this._testStatesEmitter.fire({ type: "test", test: test?.id, state: TestState.running } as TestEvent);
+        }
+    }
+
+    private onSpecCompleted(spec: SpecCompleteResponse): void {
+        const correspondingTest = TestSuiteHelper.findNodeByFullName(this.loadedTests, spec.fullName);
+
+        if (!correspondingTest) {
+            return;
+        }
+        if (correspondingTest.type === "suite") {
+            this._testStatesEmitter.fire({ type: "suite", suite: correspondingTest.id, state: "completed" });
+        } else if (correspondingTest.type === "test") {
+            this._testStatesEmitter.fire({ type: "test", test: correspondingTest.id, state: spec.status } as TestEvent);
         }
     }
 }
