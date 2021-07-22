@@ -1,11 +1,6 @@
+import { TestResults } from "karma";
 import { SpecCompleteResponse } from "./spec-complete-response";
 
 export class KarmaEvent {
-  public name: string;
-  public results: SpecCompleteResponse;
-
-  public constructor(_name: string, _results: any) {
-    this.name = _name;
-    this.results = _results;
-  }
+  public constructor(public name: string, public results: SpecCompleteResponse | TestResults) { }
 }

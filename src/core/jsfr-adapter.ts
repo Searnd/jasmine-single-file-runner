@@ -71,10 +71,9 @@ export class JsfrAdapter implements TestAdapter {
 
         this._karmaEventListener.specCompletedSubject.subscribe(spec => {
             this.onSpecCompleted(spec);
-
-            if (spec.id === testSpec.id) {
-                this._testStatesEmitter.fire({ type: "finished"} as TestRunFinishedEvent);
-            }
+        });
+        this._karmaEventListener.runCompleted.subscribe(() => {
+            this._testStatesEmitter.fire({ type: "finished"} as TestRunFinishedEvent);
         });
         
         let specFileUri: Partial<IUri> = vscode.Uri.parse(testSpec?.file || "");

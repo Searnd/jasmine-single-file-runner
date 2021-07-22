@@ -34,8 +34,8 @@ export function JsfrReporter(this: any, baseReporterDecorator: any, config: any,
     emitEvent(KarmaEventName.specComplete, spec);
   };
 
-  this.onRunComplete = (_: any, result: TestResults) => {
-    emitEvent(KarmaEventName.runComplete, result);
+  this.onRunComplete = (_: any, results: TestResults) => {
+    emitEvent(KarmaEventName.runComplete, results);
   };
 
   this.onBrowserError = (_: any, error: any) => {

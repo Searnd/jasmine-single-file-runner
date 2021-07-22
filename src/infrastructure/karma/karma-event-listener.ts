@@ -1,5 +1,5 @@
 import { Server } from "socket.io";
-import { KarmaEventName, TestState } from "../../domain/enums/enum-index";
+import { KarmaEventName } from "../../domain/enums/enum-index";
 import { KarmaEvent } from "../../domain/models/karma-event";
 import { KarmaTestSuiteInfo } from "../../domain/models/karma-test-suite-info";
 import { SpecResponseToTestSuiteInfoMapper } from "../mappers/spec-response-to-test-suite-info.mapper";
@@ -15,13 +15,11 @@ export class KarmaEventListener {
 
     public isTestRunning = false;
 
-    public testStatus: TestState | undefined;
-
-    public runCompleteEvent: KarmaEvent | undefined;
-
     public isComponentRun = false;
 
     public specCompletedSubject: Subject<SpecCompleteResponse> = new Subject();
+
+    public runCompleted: Subject<void> = new Subject();
 
     public listenUntilKarmaIsReady(): Promise<void> {
         return new Promise<void>((resolve) => {
@@ -42,8 +40,8 @@ export class KarmaEventListener {
                     this.savedSpecs = [];
                 });
 
-                socket.on(KarmaEventName.runComplete, (event: KarmaEvent) => {
-                    this.runCompleteEvent = event;
+                socket.on(KarmaEventName.runComplete, () => {
+                    this.runCompleted.next();
                 });
 
                 socket.on(KarmaEventName.specComplete, (event: KarmaEvent) => this.onSpecComplete(event));
@@ -64,14 +62,8 @@ export class KarmaEventListener {
 
     private onSpecComplete(e: KarmaEvent) {
         const {results} = e;
-        // FIXME: this stuff isn't working, i just extracted some parts that i thought would be useful
-        // for when this is actually implemented
-        // this.eventEmitter.emitTestStateEvent(results.id, TestState.running);
-        // this.eventEmitter.emitTestResultEvent(results);
-        // this.savedSpecs.push(results);
-        // this.testStatus = results.status;
-        // console.log(`${results.fullName}: ${results.status}`);
-        this.specCompletedSubject.next(results);
+
+        this.specCompletedSubject.next(results as SpecCompleteResponse);
     }
 
     private onBrowserConnected(resolve: (value?: void | PromiseLike<void>) => void) {
