@@ -1,9 +1,3 @@
-export enum TestResult {
-    failed = "Failed",
-    skipped = "Skipped",
-    success = "Success"
-}
-
 export enum TestState {
     running = "running",
     failed = "failed",
@@ -18,6 +12,9 @@ export enum KarmaEventName {
   specComplete = "spec_complete",
   browserStart = "browser_start",
   browserError = "browser_error",
+  specSuccess = "spec_success",
+  specFailure = "spec_failure",
+  specSkipped = "spec_skipped"
 }
 
 export enum LogLevel {

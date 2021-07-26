@@ -10,9 +10,9 @@ export type TestStateEvent = TestRunEvent | TestSuiteEvent | TestEvent;
 export type KarmaConfig = {
     port: number,
     refresh: boolean,
-    urlRoot: string,
+    path: string,
     hostname: string,
-    clientArgs: string[],
+    args: string[],
     removedFiles?: string[],
     addedFiles?: string[],
     changedFiles?: string[]

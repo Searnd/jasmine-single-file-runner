@@ -32,6 +32,58 @@ in the `test.ts` file and the `tsconfig.spec.json` file. As such, in cases where
 To solve this problem, JSFR modifies the `test.ts` and `tsconfig.spec.json` files so that we're only pointing to a given set of files—those that we actually want
 to test. These changes are reverted as soon as the testing has ended via terminated the task or closing VS Code.
 
+## Limitations
+To ensure that specs are properly discovered and displayed in the test explorer, `describe` and `it` statements must have their labels defined inline using a string literal, or by a variable whose last assignment is a string literal.
+
+e.g.
+
+### Works:
+
+```typescript
+describe("AppComponent", () => {});
+```
+
+```typescript
+const label = "AppComponent";
+describe(label, () => {});
+```
+### Doesn't work:
+```typescript
+let doMagic = "do magic";
+const label = "should" + doMagic;
+it(label, () => {});
+```
+
+Furthermore, the callback function can only be defined inline.
+
+e.g.
+
+### Works
+```typescript
+describe("", () => {
+    // do stuff
+});
+```
+
+```typescript
+describe("", function () {
+    // do stuff
+});
+```
+
+### Doesn't work
+```typescript
+const doStuff = () {
+    // do stuff
+}
+describe("", doStuff);
+```
+```typescript
+function doStuff() {
+    // do stuff
+}
+describe("", doStuff);
+```
 ## Known Issues
 
 Changes made to the `test.ts` file while JSFR is running won't be kept, as `test.ts` is reverted to its initial state before starting JSFR.

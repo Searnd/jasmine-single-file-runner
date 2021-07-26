@@ -1,39 +1,37 @@
-import { SpawnOptions } from "child_process";
-import { CommandlineProcessHandler } from "../command-line/cl-process-handler";
 import { KarmaEventListener } from "../karma/karma-event-listener";
+import { VscodeTaskManager } from "../../core/vscode-task-manager";
+import { GLOBAL_LOGGER } from "../../extension";
+import * as path from "path";
+import { FileFinder } from "../file-finder/file-finder";
 
 export class AngularServer {
+  private static readonly TASK_NAME = "jsfr test explorer";
+
+  private readonly _taskManager: VscodeTaskManager = new VscodeTaskManager(AngularServer.TASK_NAME);
+
   public constructor(
-    private readonly karmaEventListener: KarmaEventListener,
-    private readonly processHandler: CommandlineProcessHandler
+    private readonly karmaEventListener: KarmaEventListener
   ) { }
 
-  public async stopAsync(): Promise<void> {
-    if (this.karmaEventListener.isServerLoaded || this.processHandler.isProcessRunning()) {
-      this.karmaEventListener.stopListeningToKarma();
-      return await this.processHandler.killAsync();
-    }
+  public async stop(): Promise<void> {
+    this._taskManager.killTask(AngularServer.TASK_NAME);
   }
 
-  public stop(): void {
-    if (this.karmaEventListener.isServerLoaded || this.processHandler.isProcessRunning()) {
-      this.karmaEventListener.stopListeningToKarma();
-      this.processHandler.kill();
-    }
-  }
+  public async startAsync(angularProjectPath: string): Promise<void> {
+    const baseKarmaConfigFilePath = path.resolve(__dirname, "..", "karma", "config", "jsfr-karma.conf.js");
 
-  public async start(projectAbsolutePath: string): Promise<void> {
-    //TODO: dynamically set karma file path
-    const baseKarmaConfigFilePath = "./karma.conf.js";
+    const karmaConfPath = (await FileFinder.getFileLocation("**/karma.conf.js")).path;
 
-    const options: SpawnOptions = {
-      cwd: projectAbsolutePath,
-      shell: true,
-      env: process.env
-    };
+    this._taskManager.registerTaskProvider(
+      AngularServer.TASK_NAME,
+      `npx ng test --karma-config="${baseKarmaConfigFilePath}" --progress=false`, {
+        cwd: angularProjectPath,
+        env: { karmaConfPath }
+      }
+    );
 
-    this.processHandler.create("npx", ["ng", "test", `--karma-config="${baseKarmaConfigFilePath}"`, "--progress=false"], options);
+    await this._taskManager.startTask(AngularServer.TASK_NAME).catch( (err: string) => GLOBAL_LOGGER.error(err));
 
-    await this.karmaEventListener.listenUntilKarmaIsReady(9999);
+    return this.karmaEventListener.listenUntilKarmaIsReady();
   }
 }
