@@ -2,13 +2,16 @@
 
 ### [Unreleased]
 
+### [0.4.0]
+- Remove `.ts` files from inclusion list in `tsconfig.spec.json`
+- Version bump to reflect addition of the Test Explorer functionality
 ### [0.3.7]
 - Clean up backslashes in `tsconfig.spec.ts`
 - Remove some unecessary files
 ### [0.3.6]
-- Add `.d.ts` files from `src` instead of `node_modules` to the inclusion list in `tsconfig.spec.ts`
+- Add `.d.ts` files from `src` instead of `node_modules` to the inclusion list in `tsconfig.spec.json`
 ### [0.3.5]
-- Add `.d.ts` files from `node_modules` to the inclusion list in `tsconfig.spec.ts`
+- Add `.d.ts` files from `node_modules` to the inclusion list in `tsconfig.spec.json`
 ### [0.3.4]
 - Update readme
 - Add automatic release
