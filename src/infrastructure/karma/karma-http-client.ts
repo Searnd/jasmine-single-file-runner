@@ -2,30 +2,25 @@ import * as http from "http";
 import { KarmaConfig } from "../../domain/types/types-index";
 
 export class KarmaHttpClient {
-  public createKarmaRunCallConfiguration(tests: any) {
-    // if testName is undefined, reset jasmine.getEnv().specFilter function
-    // otherwise, last specified specFilter will be used
-    if (tests[0] === "root" || tests[0] === undefined) {
-      tests = "";
-    }
+  public startAsync(tests: string): Promise<void> {
+    const config = this.createKarmaRunCallConfiguration(tests);
 
-    const config: KarmaConfig = {
-      port: 9876,
-      refresh: true,
-      urlRoot: "/run",
-      hostname: "localhost",
-      clientArgs: [`--grep=${tests}`],
-    };
-
-    return { config, tests };
-  }
-
-  public callKarmaRunWithConfig(config: KarmaConfig): Promise<void> {
     return new Promise<void>(resolve => {
+      const {
+        hostname,
+        path,
+        port,
+        args,
+        removedFiles,
+        changedFiles,
+        addedFiles,
+        refresh
+      } = config;
+
       const options = {
-        hostname: config.hostname,
-        path: config.urlRoot,
-        port: config.port,
+        hostname,
+        path,
+        port,
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -42,11 +37,11 @@ export class KarmaHttpClient {
 
       request.end(
         JSON.stringify({
-          args: config.clientArgs,
-          removedFiles: config.removedFiles,
-          changedFiles: config.changedFiles,
-          addedFiles: config.addedFiles,
-          refresh: config.refresh,
+          args,
+          removedFiles,
+          changedFiles,
+          addedFiles,
+          refresh
         })
       );
 
@@ -54,5 +49,21 @@ export class KarmaHttpClient {
         resolve();
       });
     });
+  }
+
+  private createKarmaRunCallConfiguration(tests: string): KarmaConfig {
+    if (tests === "root" || tests === undefined) {
+      tests = "";
+    }
+
+    const config: KarmaConfig = {
+      port: 9876,
+      refresh: true,
+      path: "/run",
+      hostname: "localhost",
+      args: [`--grep=${[tests]}`],  // tells karma which test(s) to run based on test's fullName
+    };
+
+    return config;
   }
 }

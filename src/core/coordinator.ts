@@ -17,23 +17,40 @@ export class Coordinator {
 
     constructor(
         private readonly _resourceUri: IUri
-    ) { }
+    ) {
+        vscode.tasks.onDidEndTask((e) => {
+            if (e.execution.task.name === this._taskType) {
+                this.dispose();
+            }
+        });
+    }
 
     public async executeTests(): Promise<void> {
+        await this.prepare();
+
+        const specFileDirectory = path.dirname(this._resourceUri.path);
+        this._taskManager.registerTaskProvider(this._taskType, "ng test", {cwd: specFileDirectory});
+
+        await this.startTask();
+    }
+
+    public async prepare(): Promise<void> {
+        await this.initialize();
+
         if (!this._testFileEditor || !this._tsconfigSpecEditor || !this._taskManager) {
             throw new vscode.FileSystemError("Error: test file editor and/or tsconfig editor and/or task manager not initialized");
         }
 
         await this._testFileEditor.addSpecFileToContextLine();
         await this._tsconfigSpecEditor.addSpecFile();
-
-        const specFileDirectory = path.dirname(this._resourceUri.path);
-        this._taskManager.registerTaskProvider(this._taskType, "ng test", specFileDirectory);
-
-        await this.startTask();
     }
 
-    public async initialize(): Promise<void> {
+    public dispose(): void {
+        this._testFileEditor.restoreContextLine();
+        this._tsconfigSpecEditor.restoreFile();
+    }
+
+    private async initialize(): Promise<void> {
         const testFileUri = await FileFinder.getFileLocation("**/src/test.ts");
         this._testFileEditor = new TestFileEditor(testFileUri, this._resourceUri);
 
@@ -41,11 +58,6 @@ export class Coordinator {
         this._tsconfigSpecEditor = new TsConfigSpecEditor(tsconfigSpecFileUri, this._resourceUri);
 
         this._taskManager = new VscodeTaskManager(this._taskType);
-    }
-
-    public dispose(): void {
-        this._testFileEditor.restoreContextLine();
-        this._tsconfigSpecEditor.restoreFile();
     }
 
     private async startTask(): Promise<void> {
@@ -58,11 +70,5 @@ export class Coordinator {
         } else {
             vscode.window.showErrorMessage("Error: task not properly registered");
         }
-
-        vscode.tasks.onDidEndTask((e) => {
-            if (e.execution.task.name === this._taskType) {
-                this.dispose();
-            }
-        });
     }
 }

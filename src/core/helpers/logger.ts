@@ -1,8 +1,7 @@
 import { OutputChannel } from "vscode";
-import { LogLevel, TestResult } from "../../domain/enums/enum-index";
+import { LogLevel, TestState } from "../../domain/enums/enum-index";
 
 export const OUTPUT_CHANNEL = "Test Explorer Logs";
-
 interface Ilog {
   message: string;
   date: Date;
@@ -64,11 +63,11 @@ export class Logger {
     }
   }
 
-  public status(status: TestResult): void {
+  public status(status: TestState): void {
     let msg;
-    if (status === TestResult.success) {
+    if (status === TestState.passed) {
       msg = "[SUCCESS] ✅ Passed";
-    } else if (status === TestResult.failed) {
+    } else if (status === TestState.failed) {
       msg = "[FAILURE] ❌ failed";
     } else {
       msg = "[SKIPPED] Test Skipped";
