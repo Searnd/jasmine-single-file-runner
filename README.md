@@ -33,7 +33,8 @@ To solve this problem, JSFR modifies the `test.ts` and `tsconfig.spec.json` file
 to test. These changes are reverted as soon as the testing has ended via terminated the task or closing VS Code.
 
 ## Limitations
-To ensure that specs are properly discovered and displayed in the test explorer, `describe` and `it` statements must have their labels defined inline using a string literal, or by a variable whose last assignment is a string literal.
+Changes made to the `test.ts` file while JSFR is running won't be kept, as `test.ts` is reverted to its initial state before starting JSFR.
+<!-- To ensure that specs are properly discovered and displayed in the test explorer, `describe` and `it` statements must have their labels defined inline using a string literal, or by a variable whose last assignment is a string literal.
 
 e.g.
 
@@ -83,10 +84,7 @@ function doStuff() {
     // do stuff
 }
 describe("", doStuff);
-```
-## Known Issues
-
-Changes made to the `test.ts` file while JSFR is running won't be kept, as `test.ts` is reverted to its initial state before starting JSFR.
+``` -->
 
 ---
 
