@@ -30,15 +30,15 @@ export function activate(context: vscode.ExtensionContext): void {
 	}
 
 	if (testExplorerExtension) {
-		const testHub = testExplorerExtension.exports;
+		// const testHub = testExplorerExtension.exports;
 
-		const testAdapterRegistrar = new TestAdapterRegistrar(
-			testHub,
-			workspaceFolder => new JsfrAdapter(workspaceFolder, log),
-			log
-		);
+		// const testAdapterRegistrar = new TestAdapterRegistrar(
+		// 	testHub,
+		// 	workspaceFolder => new JsfrAdapter(workspaceFolder, log),
+		// 	log
+		// );
 
-		context.subscriptions.push(testAdapterRegistrar);
+		// context.subscriptions.push(testAdapterRegistrar);
 	}
 
 	const commandRegistrar = new CommandRegistrar(context);

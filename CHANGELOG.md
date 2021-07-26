@@ -2,6 +2,8 @@
 
 ### [Unreleased]
 
+### [0.4.1]
+- Remove test explorer component from the development build
 ### [0.4.0]
 - Remove `.ts` files from inclusion list in `tsconfig.spec.json`
 - Version bump to reflect addition of the Test Explorer functionality
