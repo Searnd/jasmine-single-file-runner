@@ -3,7 +3,6 @@ import { TestAdapter, TestLoadFinishedEvent, TestLoadStartedEvent, TestRunStarte
 import { Log } from "vscode-test-adapter-util";
 import { AngularServer } from "../infrastructure/angular/angular-server";
 import { CommandlineProcessHandler } from "../infrastructure/command-line/cl-process-handler";
-import { EventEmitter } from "../infrastructure/event-emitter/event-emitter";
 import { Logger } from "./helpers/logger";
 import { KarmaEventListener } from "../infrastructure/karma/karma-event-listener";
 import { KarmaTestInfo, KarmaTestSuiteInfo } from "../domain/models/karma-test-suite-info";
@@ -17,8 +16,7 @@ export class JsfrAdapter implements TestAdapter {
 	private readonly _testStatesEmitter = new vscode.EventEmitter<TestStateEvent>();
 	private readonly _autorunEmitter = new vscode.EventEmitter<void>();
 
-    private readonly _karmaEventListener: KarmaEventListener =
-        new KarmaEventListener(new EventEmitter(this._testStatesEmitter, this._testsEmitter));
+    private readonly _karmaEventListener: KarmaEventListener = new KarmaEventListener();
 
     private readonly _angularServer: AngularServer =
         new AngularServer(
@@ -78,7 +76,6 @@ export class JsfrAdapter implements TestAdapter {
         const karmaParams = this._karmaHttpClient.createKarmaRunCallConfiguration(tests);
 
         this._karmaEventListener.isTestRunning = true;
-        this._karmaEventListener.lastRunTests = karmaParams.tests;
         this._karmaEventListener.isComponentRun = isComponent;
         await this._karmaHttpClient.callKarmaRunWithConfig(karmaParams.config);
         

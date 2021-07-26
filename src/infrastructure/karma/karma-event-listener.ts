@@ -1,45 +1,36 @@
-import * as http from "http";
-import * as express from "express";
-import { KarmaEventName, TestResult, TestState } from "../../domain/enums/enum-index";
+import { Server } from "socket.io";
+import { KarmaEventName } from "../../domain/enums/enum-index";
 import { KarmaEvent } from "../../domain/models/karma-event";
-import { EventEmitter } from "../event-emitter/event-emitter";
 import { KarmaTestSuiteInfo } from "../../domain/models/karma-test-suite-info";
 import { SpecResponseToTestSuiteInfoMapper } from "../mappers/spec-response-to-test-suite-info.mapper";
+import { SpecCompleteResponse } from "../../domain/models/spec-complete-response";
+import { Subject } from "rxjs";
 
 export class KarmaEventListener {
-    private savedSpecs: any[] = [];
+    private savedSpecs: SpecCompleteResponse[] = [];
 
-    private server: http.Server;
+    private io = new Server(9999);
 
     public isServerLoaded = false;
+
     public isTestRunning = false;
-    public lastRunTests = "";
-    public testStatus: TestResult | any;
-    public runCompleteEvent: KarmaEvent | any;
+
     public isComponentRun = false;
 
-    constructor(
-        private readonly eventEmitter: EventEmitter
-    ) {
-        const app = express();
-        this.server = http.createServer(app);
-    }
+    public specCompletedSubject: Subject<SpecCompleteResponse> = new Subject();
 
-    public listenUntilKarmaIsReady(defaultSocketPort?: number): Promise<void> {
+    public runCompleted: Subject<void> = new Subject();
+
+    public listenUntilKarmaIsReady(): Promise<void> {
         return new Promise<void>((resolve) => {
-            // *shrug*
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
-            const io = require("socket.io")(this.server, { forceNew: true });
-            io.set("heartbeat interval", 24 * 60 * 60 * 1000);
-            io.set("heartbeat timeout", 24 * 60 * 60 * 1000);
-    
-            const port = defaultSocketPort !== 0 ? defaultSocketPort : 9999;
     
             const nInterval = setInterval(() => {
                 global.console.log("Waiting to connect to Karma...");
             }, 5000);
 
-            io.on("connection", (socket: any) => {
+            this.io.on("connection", socket => {
+                console.log(`socket ${socket.id} connected!`);
+
                 socket.on(KarmaEventName.browserConnected, () => {
                     clearInterval(nInterval);
                     this.onBrowserConnected(resolve);
@@ -49,17 +40,12 @@ export class KarmaEventListener {
                     this.savedSpecs = [];
                 });
 
-                socket.on(KarmaEventName.runComplete, (event: KarmaEvent) => {
-                    this.runCompleteEvent = event;
+                socket.on(KarmaEventName.runComplete, () => {
+                    this.runCompleted.next();
                 });
 
-                socket.on(KarmaEventName.specComplete, (event: KarmaEvent) => {
-                    this.onSpecComplete(event);
-                });
+                socket.on(KarmaEventName.specComplete, (event: KarmaEvent) => this.onSpecComplete(event));
             });
-    
-
-
         });
     }
 
@@ -70,31 +56,18 @@ export class KarmaEventListener {
 
     public stopListeningToKarma(): void {
         this.isServerLoaded = false;
-        this.server.close();
+        this.io.close();
+        console.log("Browser disconnected, closing socket...");
     }
 
-    private onSpecComplete(event: KarmaEvent) {
-        const { results } = event;
-    
-        const testName = results.fullName;
-        const isTestNamePerfectMatch = testName === this.lastRunTests[0];
-        const isRootComponent = this.lastRunTests === "root";
-        const isComponent = this.isComponentRun && testName.includes(this.lastRunTests);
-    
-        if (isTestNamePerfectMatch || isRootComponent || isComponent) {
-          this.eventEmitter.emitTestStateEvent(results.id, TestState.running);
-          this.savedSpecs.push(results);
-    
-          this.eventEmitter.emitTestResultEvent(results.id, event);
-    
-          if (this.lastRunTests !== "") {
-            this.testStatus = results.status;
-          }
-        }
-      }
+    private onSpecComplete(e: KarmaEvent) {
+        const {results} = e;
+
+        this.specCompletedSubject.next(results as SpecCompleteResponse);
+    }
 
     private onBrowserConnected(resolve: (value?: void | PromiseLike<void>) => void) {
         this.isServerLoaded = true;
         resolve();
-      }
+    }
 }
