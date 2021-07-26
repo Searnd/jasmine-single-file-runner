@@ -29,7 +29,10 @@ export class TsConfigSpecEditor {
 
         const projectRootAbsolutePath = await FileFinder.getAngularProjectRootPath();
         
-        let projectRootRelativePath = path.relative(this._tsconfigSpecFileUri.path, projectRootAbsolutePath);
+        let projectRootRelativePath = path
+            .relative(this._tsconfigSpecFileUri.path, projectRootAbsolutePath)
+            .replace(/\\/g, "/");
+        
         // remove extra '.' in the path that was added by the call to path.relative
         projectRootRelativePath = projectRootRelativePath.slice(1);
 

@@ -19,8 +19,6 @@ export class JsfrAdapter implements TestAdapter {
 	private readonly _testStatesEmitter = new vscode.EventEmitter<TestStateEvent>();
 	private readonly _autorunEmitter = new vscode.EventEmitter<void>();
 
-    // private readonly _karmaEventListener: KarmaEventListener =
-    //     new KarmaEventListener(new EventEmitter(this._testStatesEmitter, this._testsLoadedEmitter));
     private readonly _karmaEventListener: KarmaEventListener = new KarmaEventListener();
 
     private readonly _angularServer: AngularServer = new AngularServer(this._karmaEventListener);
