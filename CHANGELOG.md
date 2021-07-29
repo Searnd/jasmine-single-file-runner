@@ -2,6 +2,8 @@
 
 ### [Unreleased]
 
+### [0.4.2]
+- Restore `.ts` files to the inclusion list in `tsconfig.spec.json`
 ### [0.4.1]
 - Remove test explorer component from the development build
 ### [0.4.0]
