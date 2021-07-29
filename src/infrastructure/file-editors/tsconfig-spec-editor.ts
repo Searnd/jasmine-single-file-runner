@@ -38,7 +38,7 @@ export class TsConfigSpecEditor {
 
         const formattedSpecFilename = this.getPathRelativeToTsconfig(this._resourceUri.path);
 
-        tsconfig.include = [ formattedSpecFilename, `${projectRootRelativePath}/src/*.d.ts` ];
+        tsconfig.include = [ formattedSpecFilename, `${projectRootRelativePath}/src/*.d.ts`, `${projectRootRelativePath}/src/*.ts` ];
 
         await fs.writeFile(this._tsconfigSpecFileUri.fsPath, JSON.stringify(tsconfig), "utf8");
     }
