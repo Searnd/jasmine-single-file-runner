@@ -2,6 +2,11 @@
 
 ### [Unreleased]
 
+### [0.5.1]
+- Add logo
+### [0.5.0]
+- Update npm dependencies
+
 ### [0.4.2]
 - Restore `.ts` files to the inclusion list in `tsconfig.spec.json`
 ### [0.4.1]
