@@ -2,7 +2,10 @@
 
 # 0.5
 
-<!-- ### 0.5.3 -->
+<!-- ### 0.5.4 -->
+
+### 0.5.3
+- Update npm dependencies
 
 ### 0.5.2
 - Center logo
