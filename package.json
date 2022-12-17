@@ -90,7 +90,7 @@
     "cross-spawn": "^7.0.3",
     "express": "^4.17.1",
     "karma": "^6.3.16",
-    "rxjs": "^7.2.0",
+    "rxjs": "^7.5.5",
     "socket.io": "^4.5.1",
     "socket.io-client": "^4.5.1",
     "strip-json-comments": "^3.1.1",
