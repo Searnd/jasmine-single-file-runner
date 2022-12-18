@@ -1,0 +1,21 @@
+name: CD
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: "Publish this version of the extension"
+        type: boolean
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download packaged extension
+        uses: actions/download-artifact@v3
+        with:
+          mame: packaged-extension
+      - name: Publish extension
+        run: npm run deploy
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
