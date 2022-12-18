@@ -36,8 +36,9 @@ jobs:
             dist/jsfr.vsix
             LICENSE
 
-      - name: Publish
+      - name: Upload artifact
         if: success() && github.event_name == 'push'
-        run: npm run deploy
-        env:
-          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: jsfr
+          path: dist/jsfr.vsix
