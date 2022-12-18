@@ -1,9 +1,7 @@
-name: CI
+name: Build (master)
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
     branches: [ master ]
 
 jobs:
@@ -11,26 +9,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Use Node 16.4.1
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16.4.1
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Package
-        run: mkdir -p dist && npm run package
+      - name: Build
+        uses: ./.github/workflows/build.yml
 
       - name: Get current package version
-        if: success() && github.event_name == 'push'
         id: package-version
         uses: martinbeentjes/npm-get-version-action@main
 
       - name: Release
-        if: success() && github.event_name == 'push'
         uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
@@ -42,7 +28,6 @@ jobs:
             LICENSE
 
       - name: Upload artifact
-        if: success() && github.event_name == 'push'
         uses: actions/upload-artifact@v3
         with:
           name: jsfr
