@@ -6,4 +6,18 @@ on:
 
 jobs:
   build-pr:
-    uses: ./.github/workflows/build.yml
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node 16.4.1
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.4.1
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Package
+        run: mkdir -p dist && npm run package
