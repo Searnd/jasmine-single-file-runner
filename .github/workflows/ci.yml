@@ -24,12 +24,17 @@ jobs:
       - name: Package
         run: mkdir -p dist && npm run package
 
+      - name: Get current package version
+        if: success() && github.event_name == 'push'
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@main
+
       - name: Release
         if: success() && github.event_name == 'push'
         uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest"
+          automatic_release_tag: "${{ steps.package-version.outputs.current-version }}"
           prerelease: true
           title: "Development Build"
           files: |
