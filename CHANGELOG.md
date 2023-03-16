@@ -2,8 +2,10 @@
 
 # 0.5
 
-<!-- ### 0.5.5 -->
+<!-- ### 0.5.6 -->
 
+### 0.5.5
+- Update npm dependencies
 ### 0.5.4
 - Update actions used in build job
 ### 0.5.3
