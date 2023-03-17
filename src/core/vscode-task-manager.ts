@@ -15,9 +15,7 @@ export class VscodeTaskManager {
 
                 return [task];
             },
-            resolveTask: (task) => {
-                return task;
-            }
+            resolveTask: (task) => task
         });
     }
 
