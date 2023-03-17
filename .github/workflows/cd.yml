@@ -22,12 +22,6 @@ jobs:
       - name: Get current package version
         id: package-version
         uses: martinbeentjes/npm-get-version-action@main
-        
-      - name: Upload node_modules
-        uses: actions/upload-artifact@v3
-        with:
-          name: node_modules
-          path: node_modules
 
     outputs:
       package-version: ${{ steps.package-version.outputs.current-version }}
@@ -42,10 +36,8 @@ jobs:
         with:
           node-version: 18
 
-      - name: Download node_modules
-        uses: actions/download-artifact@v3
-        with:
-          name: node_modules
+      - name: Install dependencies
+        run: npm ci
 
       - name: Package
         run: mkdir -p dist && npm run package
@@ -87,16 +79,14 @@ jobs:
         with:
           node-version: 18
 
-      - name: Download node_modules
-        uses: actions/download-artifact@v3
-        with:
-          name: node_modules
+      - name: Install dependencies
+        run: npm ci
 
       - name: Download packaged extension
         uses: actions/download-artifact@v3
         with:
           name: jsfr
-          
+
       - name: Publish extension
         run: npm run deploy
         env:
