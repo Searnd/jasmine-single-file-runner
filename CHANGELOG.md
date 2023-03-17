@@ -4,8 +4,11 @@
 
 <!-- ### 0.6.0 -->
 
+### 0.6.2
+- Merge CI and CD workflows
+
 ### 0.6.1
-- Update node version in build pipelines
+- Update node version in workflows
 ### 0.6.0
 - Remove test explorer dependency
 - Clean up code
