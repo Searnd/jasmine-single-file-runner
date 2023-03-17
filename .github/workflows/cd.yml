@@ -11,10 +11,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Use Node 18.15.0
+      - name: Use Node 18
         uses: actions/setup-node@v3
         with:
-          node-version: 18.15.0
+          node-version: 18
 
       - name: Install dependencies
         run: npm ci
@@ -23,11 +23,11 @@ jobs:
         id: package-version
         uses: martinbeentjes/npm-get-version-action@main
         
-      - name: Upload packaged extension
+      - name: Upload node_modules
         uses: actions/upload-artifact@v3
         with:
-          name: jsfr
-          path: dist/jsfr.vsix
+          name: node_modules
+          path: node_modules
 
     outputs:
       package-version: ${{ steps.package-version.outputs.current-version }}
@@ -37,6 +37,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Use Node 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Download node_modules
+        uses: actions/download-artifact@v3
+        with:
+          name: node_modules
+
       - name: Package
         run: mkdir -p dist && npm run package
 
@@ -72,10 +82,21 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+      - name: Use Node 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Download node_modules
+        uses: actions/download-artifact@v3
+        with:
+          name: node_modules
+
       - name: Download packaged extension
         uses: actions/download-artifact@v3
         with:
           name: jsfr
+          
       - name: Publish extension
         run: npm run deploy
         env:
