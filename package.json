@@ -8,13 +8,11 @@
   },
   "description": "",
   "icon": "assets/images/logo-128-centered.png",
-  "version": "0.5.4",
+  "version": "0.6.0",
   "engines": {
     "vscode": "^1.57.0"
   },
-  "extensionDependencies": [
-    "hbenl.vscode-test-explorer"
-  ],
+  "extensionDependencies": [],
   "categories": [
     "Other"
   ],
@@ -92,13 +90,9 @@
     "karma": "^6.3.20",
     "rxjs": "^7.5.7",
     "socket.io": "^4.5.4",
-    "socket.io-client": "^4.5.4",
-    "socket.io": "^4.5.4",
     "socket.io-client": "^4.5.1",
     "strip-json-comments": "^3.1.1",
     "tree-kill": "^1.2.2",
-    "typescript": "^4.9.3",
-    "vscode-test-adapter-api": "^1.9.0",
-    "vscode-test-adapter-util": "^0.7.1"
+    "typescript": "^4.9.3"
   }
 }

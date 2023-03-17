@@ -2,7 +2,7 @@ import { FileSystemError, Uri } from "vscode";
 import * as fs from "fs/promises";
 import stripJsonComments = require("strip-json-comments");
 import * as path from "path";
-import { IUri } from "../../domain/types/types-index";
+import { IUri } from "../../domain/types/file-system";
 import { FileFinder } from "../file-finder/file-finder";
 
 type Tsconfig = {
@@ -17,7 +17,7 @@ export class TsConfigSpecEditor {
         private readonly _resourceUri: IUri
     ) {}
 
-    public async addSpecFile(): Promise<void> {
+    public async addSpecFileAsync(): Promise<void> {
         const data = await fs.readFile(this._tsconfigSpecFileUri.fsPath, {encoding: "utf8"});
 
         this.backupFile(data);

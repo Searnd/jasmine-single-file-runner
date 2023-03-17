@@ -2,7 +2,7 @@ import { Uri, workspace } from "vscode";
 import { promises as fs } from "fs";
 import * as path from "path";
 import { LineNotFoundInFileError } from "../../domain/exceptions/error-index";
-import { IUri } from "../../domain/types/types-index";
+import { IUri } from "../../domain/types/file-system";
 
 // TODO: improve cohesion by extracting methods
 export class TestFileEditor {
@@ -15,7 +15,7 @@ export class TestFileEditor {
         private readonly _resourceUri: IUri
     ) { }
 
-    public async addSpecFileToContextLine(): Promise<void> {
+    public async addSpecFileToContextLineAsync(): Promise<void> {
         const data = await fs.readFile(this._testFileUri.fsPath, {encoding: "utf8"});
 
         this.backUpTestFile(data);

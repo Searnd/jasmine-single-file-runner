@@ -1,9 +1,16 @@
 # Change Log
 
+# 0.6
+
+<!-- ### 0.6.0 -->
+### 0.6.0
+- Remove test explorer dependency
+- Clean up code
+
 # 0.5
 
-<!-- ### 0.5.5 -->
-
+### 0.5.5
+- Update npm dependencies
 ### 0.5.4
 - Update actions used in build job
 ### 0.5.3
