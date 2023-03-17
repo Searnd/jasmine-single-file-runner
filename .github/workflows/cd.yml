@@ -9,7 +9,7 @@ jobs:
       - name: Download packaged extension
         uses: actions/download-artifact@v3
         with:
-          mame: jsfr
+          name: jsfr
       - name: Publish extension
         run: npm run deploy
         env:

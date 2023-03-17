@@ -3,6 +3,9 @@
 # 0.6
 
 <!-- ### 0.6.0 -->
+
+### 0.6.1
+- Update node version in build pipelines
 ### 0.6.0
 - Remove test explorer dependency
 - Clean up code
