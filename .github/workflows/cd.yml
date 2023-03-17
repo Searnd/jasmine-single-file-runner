@@ -5,7 +5,7 @@ on:
     branches: [ master ]
 
 jobs:
-  package:
+  publish:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,6 +26,11 @@ jobs:
       - name: Package
         run: mkdir -p dist && npm run package
 
+      - name: Publish extension
+        run: npm run deploy
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+
       - name: Upload packaged extension
         uses: actions/upload-artifact@v3
         with:
@@ -36,8 +41,11 @@ jobs:
       package-version: ${{ steps.package-version.outputs.current-version }}
 
   release:
-    needs: [package]
+    needs: [publish]
     runs-on: ubuntu-latest
+
+    env:
+      PACKAGE_VERSION: ${{ needs.publish.outputs.package-version }}
     
     steps:
       - name: Download packaged extension
@@ -48,33 +56,10 @@ jobs:
       - name: Release
         uses: marvinpinto/action-automatic-releases@latest
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "${{ needs.package.outputs.package-version }}"
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          automatic_release_tag: ${{ env.PACKAGE_VERSION }}
           prerelease: true
-          title: "Development Build"
+          title: ${{ env.PACKAGE_VERSION }}
           files: |
             dist/jsfr.vsix
             LICENSE
-
-  publish:
-    needs: [package]
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Use Node 18
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Download packaged extension
-        uses: actions/download-artifact@v3
-        with:
-          name: jsfr
-
-      - name: Publish extension
-        run: npm run deploy
-        env:
-          VSCE_PAT: ${{ secrets.VSCE_PAT }}
