@@ -5,7 +5,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  pre-package:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,34 +18,49 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+        
+      - name: Get current package version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@main
+        
+      - name: Upload packaged extension
+        uses: actions/upload-artifact@v3
+        with:
+          name: jsfr
+          path: dist/jsfr.vsix
 
+    outputs:
+      package-version: ${{ steps.package-version.outputs.current-version }}
+
+  package:
+    needs: [pre-package]
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Package
         run: mkdir -p dist && npm run package
 
-      - name: Upload artifact
+      - name: Upload packaged extension
         uses: actions/upload-artifact@v3
         with:
           name: jsfr
           path: dist/jsfr.vsix
 
   release:
-    needs: [build]
+    needs: [package]
     runs-on: ubuntu-latest
+    
     steps:
       - name: Download packaged extension
         uses: actions/download-artifact@v3
         with:
           name: jsfr
 
-      - name: Get current package version
-        id: package-version
-        uses: martinbeentjes/npm-get-version-action@main
-
       - name: Release
         uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "${{ steps.package-version.outputs.current-version }}"
+          automatic_release_tag: "${{ needs.pre-package.outputs.package-version }}"
           prerelease: true
           title: "Development Build"
           files: |
@@ -53,8 +68,9 @@ jobs:
             LICENSE
 
   publish:
-    needs: [build]
+    needs: [package]
     runs-on: ubuntu-latest
+    
     steps:
       - name: Download packaged extension
         uses: actions/download-artifact@v3
