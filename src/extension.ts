@@ -34,10 +34,11 @@ export function activate(context: vscode.ExtensionContext): void {
 
 		vscode.window.withProgress(progressOptions, async (progress) => {
 			progress.report({message: "Preparing..."});
+			
 			try {
 				coordinator = new Coordinator(resourceUri);
-				
-				await coordinator.executeTests();
+
+				await coordinator.executeTestsAsync(progress);
 			}
 			catch(e) {
 				if (e instanceof Error) {
