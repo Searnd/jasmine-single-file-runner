@@ -30,7 +30,7 @@ export class Coordinator {
         await this.prepareAsync();
 
         const specFileDirectory = path.dirname(this._resourceUri.path);
-        this._taskManager.registerTaskProvider(this._taskType, "ng test", {cwd: specFileDirectory});
+        this._taskManager.registerTaskProvider(this._taskType, "npx ng test", {cwd: specFileDirectory});
 
         await this.startTaskAsync(progress);
     }
@@ -59,8 +59,8 @@ export class Coordinator {
             throw new vscode.FileSystemError("Error: test file editor and/or tsconfig editor and/or task manager not initialized");
         }
 
-        await this._testFileEditor.addSpecFileToContextLine();
-        await this._tsconfigSpecEditor.addSpecFile();
+        await this._testFileEditor.addSpecFileToContextLineAsync();
+        await this._tsconfigSpecEditor.addSpecFileAsync();
     }
 
     private async startTaskAsync(progress: VsCodeProgress): Promise<void> {

@@ -15,7 +15,7 @@ export class TestFileEditor {
         private readonly _resourceUri: IUri
     ) { }
 
-    public async addSpecFileToContextLine(): Promise<void> {
+    public async addSpecFileToContextLineAsync(): Promise<void> {
         const data = await fs.readFile(this._testFileUri.fsPath, {encoding: "utf8"});
 
         this.backUpTestFile(data);

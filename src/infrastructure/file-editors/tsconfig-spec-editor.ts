@@ -17,7 +17,7 @@ export class TsConfigSpecEditor {
         private readonly _resourceUri: IUri
     ) {}
 
-    public async addSpecFile(): Promise<void> {
+    public async addSpecFileAsync(): Promise<void> {
         const data = await fs.readFile(this._tsconfigSpecFileUri.fsPath, {encoding: "utf8"});
 
         this.backupFile(data);
