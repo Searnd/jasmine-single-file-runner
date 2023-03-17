@@ -3,14 +3,9 @@
 import * as vscode from "vscode";
 import { CommandRegistrar } from "./core/command-registrar";
 import { Coordinator } from "./core/coordinator";
-import { Logger, OUTPUT_CHANNEL } from "./core/helpers/logger";
 import { IUri } from "./domain/types/file-system";
 
 let coordinator: Coordinator | undefined;
-
-const channel = vscode.window.createOutputChannel(OUTPUT_CHANNEL);
-export const GLOBAL_LOGGER: Logger = new Logger(channel);
-
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
