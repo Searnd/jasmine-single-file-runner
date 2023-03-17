@@ -2,7 +2,7 @@ import { Uri, workspace } from "vscode";
 import { promises as fs } from "fs";
 import * as path from "path";
 import { LineNotFoundInFileError } from "../../domain/exceptions/error-index";
-import { IUri } from "../../domain/types/types-index";
+import { IUri } from "../../domain/types/file-system";
 
 // TODO: improve cohesion by extracting methods
 export class TestFileEditor {

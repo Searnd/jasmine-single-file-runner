@@ -4,7 +4,7 @@ import * as vscode from "vscode";
 import { CommandRegistrar } from "./core/command-registrar";
 import { Coordinator } from "./core/coordinator";
 import { Logger, OUTPUT_CHANNEL } from "./core/helpers/logger";
-import { IUri } from "./domain/types/types-index";
+import { IUri } from "./domain/types/file-system";
 
 let coordinator: Coordinator | undefined;
 
@@ -34,7 +34,7 @@ export function activate(context: vscode.ExtensionContext): void {
 
 		vscode.window.withProgress(progressOptions, async (progress) => {
 			progress.report({message: "Preparing..."});
-			
+
 			try {
 				coordinator = new Coordinator(resourceUri);
 

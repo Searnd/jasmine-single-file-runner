@@ -1,7 +1,7 @@
 
 import * as path from "path";
 import * as vscode from "vscode";
-import { IUri } from "../domain/types/types-index";
+import { IUri } from "../domain/types/file-system";
 import { VsCodeProgress } from "../domain/types/vscode";
 import { TestFileEditor } from "../infrastructure/file-editors/test-file-editor";
 import { TsConfigSpecEditor } from "../infrastructure/file-editors/tsconfig-spec-editor";
