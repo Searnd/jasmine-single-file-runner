@@ -1,22 +1,22 @@
-import { Uri, workspace } from "vscode";
+import { Uri } from "vscode";
 import { promises as fs } from "fs";
 import * as path from "path";
-import { LineNotFoundInFileError } from "../../domain/exceptions/error-index";
-import { IUri } from "../../domain/types/file-system";
+import { LineNotFoundInFileError } from "../exceptions/error-index";
+import { IUri } from "../types/file-system";
 
 // TODO: improve cohesion by extracting methods
 export class TestFileEditor {
-    private _contextLineRegex = /^const context = require\.context.*/m;
+    private contextLineRegex = /^const context = require\.context.*/m;
 
-    private _contextLineInitialValue = "";
+    private contextLineInitialValue = "";
 
     constructor(
-        private readonly _testFileUri: Uri,
-        private readonly _resourceUri: IUri
+        private readonly testFileUri: Uri,
+        private readonly resourceUri: IUri
     ) { }
 
     public async addSpecFileToContextLineAsync(): Promise<void> {
-        const data = await fs.readFile(this._testFileUri.fsPath, {encoding: "utf8"});
+        const data = await fs.readFile(this.testFileUri.fsPath, {encoding: "utf8"});
 
         this.backUpTestFile(data);
 
@@ -25,35 +25,35 @@ export class TestFileEditor {
         const formattedDirname = this.pathRelativeToTestFile(this.getSpecFileDir(), true);
 
         const formattedSpecFilename =
-        this._resourceUri.isFolder ?
+        this.resourceUri.isFolder ?
             "\\.spec\\.ts" :
             this.cleanupRegexString(this.getSpecFilename());
 
-        const newFileContent = data.replace(contextRegex, `context('${formattedDirname}', ${this._resourceUri.isFolder}, /${formattedSpecFilename}$/);`);
+        const newFileContent = data.replace(contextRegex, `context('${formattedDirname}', ${this.resourceUri.isFolder}, /${formattedSpecFilename}$/);`);
 
-        await fs.writeFile(this._testFileUri.fsPath, newFileContent, "utf8");
+        await fs.writeFile(this.testFileUri.fsPath, newFileContent, "utf8");
     }
 
     public async restoreContextLine(): Promise<void> {
-        if (!this._contextLineInitialValue.length) {
+        if (!this.contextLineInitialValue.length) {
             throw new LineNotFoundInFileError("Error: line not found. Nothing to restore.");
         }
 
-        await fs.writeFile(this._testFileUri.fsPath, this._contextLineInitialValue, "utf8");
+        await fs.writeFile(this.testFileUri.fsPath, this.contextLineInitialValue, "utf8");
     }
 
     private backUpTestFile(data: string): void {
-        const matches = data.match(this._contextLineRegex);
+        const matches = data.match(this.contextLineRegex);
 
         if (matches === null) {
             throw new LineNotFoundInFileError("Error: unable to find require.context in test.ts");
         }
 
-        this._contextLineInitialValue = data;
+        this.contextLineInitialValue = data;
     }
 
     private pathRelativeToTestFile(pathStr: string, isFolder: boolean): string {
-        let specFileRelativePath = path.relative(this._testFileUri.path, pathStr);
+        let specFileRelativePath = path.relative(this.testFileUri.path, pathStr);
 
         if (isFolder) {
             // remove extra '.' in the path that was added by the call to path.relative
@@ -67,11 +67,11 @@ export class TestFileEditor {
     }
 
     private getSpecFileDir(): string {
-        return this._resourceUri.isFolder ? this._resourceUri.path : path.dirname(this._resourceUri.path);
+        return this.resourceUri.isFolder ? this.resourceUri.path : path.dirname(this.resourceUri.path);
     }
 
     private getSpecFilename(): string {
-        return path.basename(this._resourceUri.path);
+        return path.basename(this.resourceUri.path);
     }
 
     private cleanupRegexString(regexStr: string): string {

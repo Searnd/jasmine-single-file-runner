@@ -1,17 +1,14 @@
 import * as vscode from "vscode";
 
-export class VscodeTaskManager {
-    private _type: string;
-
-    constructor(type: string) {
-        this._type = type;
+export class VscodeTaskRunner {
+    constructor(private readonly type: string) {
     }
 
     public registerTaskProvider(name: string, commandLine: string, options: vscode.ShellExecutionOptions): vscode.Disposable {
-        return vscode.tasks.registerTaskProvider(this._type, {
+        return vscode.tasks.registerTaskProvider(this.type, {
             provideTasks: () => {
                 const execution = new vscode.ShellExecution(commandLine, options);
-                const task = new vscode.Task({type: this._type}, vscode.TaskScope.Workspace, name, "jsfr", execution);
+                const task = new vscode.Task({type: this.type}, vscode.TaskScope.Workspace, name, "jsfr", execution);
 
                 return [task];
             },
@@ -30,7 +27,7 @@ export class VscodeTaskManager {
     }
 
     public async getTask(name: string): Promise<vscode.Task|undefined> {
-        const tasks = await vscode.tasks.fetchTasks({type: this._type});
+        const tasks = await vscode.tasks.fetchTasks({type: this.type});
 
         return tasks.find((task) => {
             return task.name === name;
