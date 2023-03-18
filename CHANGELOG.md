@@ -3,6 +3,9 @@
 # 0.7
 
 <!-- ### 0.7.0 -->
+### 0.7.2
+- No longer crash if `test.ts` file is not found
+
 ### 0.7.1
 - Fix extension name
 
