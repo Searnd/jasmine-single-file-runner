@@ -1,17 +1,26 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-import * as vscode from "vscode";
-import { CommandRegistrar } from "./core/commands/command-registrar";
-import { Coordinator } from "./core/coordinator";
-import { UriWrapper } from "./core/file-system/types/file-system";
-
 import "reflect-metadata";
 
-let coordinator: Coordinator | undefined;
+import * as vscode from "vscode";
+import { CommandRegistrar } from "./core/commands/command-registrar";
+import { Coordinator } from "./core/commands/coordinator";
+import { UriWrapper } from "./core/file-system/types/file-system";
+import { container } from "tsyringe";
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
+
+import { CoordinatorFactory } from "./core/commands/coordinator.factory";
+
+let coordinator: Coordinator;
+
+
+/**
+ * Called when the extension is activated.
+ *
+ * @export
+ * @param {vscode.ExtensionContext} context
+ */
 export function activate(context: vscode.ExtensionContext): void {
+	registerDependencies();
+
 	const commandRegistrar = new CommandRegistrar(context);
 
 	commandRegistrar.registerPaletteCommand("jsfr.testCurrentFile", (vscodeResourceUri: vscode.Uri) => {
@@ -28,7 +37,9 @@ export function activate(context: vscode.ExtensionContext): void {
 			progress.report({message: "Preparing..."});
 
 			try {
-				coordinator = new Coordinator(resourceUri);
+				const coordinatorFactory = container.resolve(CoordinatorFactory);
+
+				coordinator = await coordinatorFactory.createAsync(resourceUri);
 
 				await coordinator.executeTestsAsync(progress);
 			}
@@ -43,7 +54,21 @@ export function activate(context: vscode.ExtensionContext): void {
 	});
 }
 
-// this method is called when your extension is deactivated
+
+/**
+ * Called when the extension is deactivated.
+ *
+ * @export
+ */
 export function deactivate(): void {
 	coordinator?.dispose();
+}
+
+
+/**
+ * Register dependencies for injection.
+ *
+ */
+function registerDependencies(): void {
+	container.register<CoordinatorFactory>(CoordinatorFactory, { useClass: CoordinatorFactory });
 }
