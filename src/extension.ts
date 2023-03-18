@@ -3,7 +3,7 @@
 import * as vscode from "vscode";
 import { CommandRegistrar } from "./core/command-registrar";
 import { Coordinator } from "./core/coordinator";
-import { IUri } from "./domain/types/file-system";
+import { IUri } from "./file-system/types/file-system";
 
 let coordinator: Coordinator | undefined;
 

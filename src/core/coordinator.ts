@@ -1,18 +1,18 @@
 
 import * as path from "path";
 import * as vscode from "vscode";
-import { IUri } from "../domain/types/file-system";
-import { VsCodeProgress } from "../domain/types/vscode";
-import { TestFileEditor } from "../infrastructure/file-editors/test-file-editor";
-import { TsConfigSpecEditor } from "../infrastructure/file-editors/tsconfig-spec-editor";
-import { FileFinder } from "../infrastructure/file-finder/file-finder";
-import { VscodeTaskManager } from "./vscode-task-manager";
+import { IUri } from "../file-system/types/file-system";
+import { VsCodeProgress } from "../shared/types/vscode";
+import { TestFileEditor } from "../file-system/edit/test-file-editor";
+import { TsConfigSpecEditor } from "../file-system/edit/tsconfig-spec-editor";
+import { FileFinder } from "../file-system/find/file-finder";
+import { VscodeTaskRunner } from "../task-management/vscode-task-runner";
 
 export class Coordinator {
     private _testFileEditor!: TestFileEditor;
     private _tsconfigSpecEditor!: TsConfigSpecEditor;
 
-    private _taskManager!: VscodeTaskManager;
+    private _taskRunner!: VscodeTaskRunner;
 
     private readonly _taskType: string = "ngTest";
 
@@ -30,12 +30,10 @@ export class Coordinator {
         await this.prepareAsync();
 
         const specFileDirectory = path.dirname(this._resourceUri.path);
-        this._taskManager.registerTaskProvider(this._taskType, "npx ng test", {cwd: specFileDirectory});
+        this._taskRunner.registerTaskProvider(this._taskType, "npx ng test", {cwd: specFileDirectory});
 
         await this.startTaskAsync(progress);
     }
-
-
 
     public dispose(): void {
         this._testFileEditor.restoreContextLine();
@@ -49,13 +47,13 @@ export class Coordinator {
         const tsconfigSpecFileUri = await FileFinder.getFileLocation("**/tsconfig.spec.json");
         this._tsconfigSpecEditor = new TsConfigSpecEditor(tsconfigSpecFileUri, this._resourceUri);
 
-        this._taskManager = new VscodeTaskManager(this._taskType);
+        this._taskRunner = new VscodeTaskRunner(this._taskType);
     }
 
     private async prepareAsync(): Promise<void> {
         await this.initializeAsync();
 
-        if (!this._testFileEditor || !this._tsconfigSpecEditor || !this._taskManager) {
+        if (!this._testFileEditor || !this._tsconfigSpecEditor || !this._taskRunner) {
             throw new vscode.FileSystemError("Error: test file editor and/or tsconfig editor and/or task manager not initialized");
         }
 
@@ -64,7 +62,7 @@ export class Coordinator {
     }
 
     private async startTaskAsync(progress: VsCodeProgress): Promise<void> {
-        const ngTestTask = await this._taskManager.getTask(this._taskType);
+        const ngTestTask = await this._taskRunner.getTask(this._taskType);
 
         if(!ngTestTask) {
             vscode.window.showErrorMessage("Error: task not properly registered");
