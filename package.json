@@ -24,7 +24,15 @@
     "commands": [
       {
         "command": "jsfr.testCurrentFile",
-        "title": "JSFR: Test Current File"
+        "title": "JSFR: Test current file"
+      },
+      {
+        "command": "jsfr.testCurrentSelection",
+        "title": "JSFR: Test currently selected file(s)"
+      },
+      {
+        "command": "jsfr.testCurrentDirectory",
+        "title": "JSFR: Test currenttly selected directory(ies)"
       }
     ],
     "menus": {
@@ -37,8 +45,13 @@
       ],
       "explorer/context": [
         {
-          "command": "jsfr.testCurrentFile",
-          "when": "resourceFilename =~ /\\.spec\\.ts$/ || explorerResourceIsFolder",
+          "command": "jsfr.testCurrentSelection",
+          "when": "resourceFilename =~ /\\.spec\\.ts$/",
+          "group": "0_jsfr"
+        },
+        {
+          "command": "jsfr.testCurrentDirectory",
+          "when": "explorerResourceIsFolder",
           "group": "0_jsfr"
         }
       ]

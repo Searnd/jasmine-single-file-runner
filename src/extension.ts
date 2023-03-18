@@ -8,9 +8,9 @@ import { Coordinator } from "./core/coordtinator/coordinator";
 import { CoordinatorFactory } from "./core/coordtinator/coordinator.factory";
 import { FileFinder } from "./core/file-system/find/file-finder";
 import { AngularFileFinder } from "./core/file-system/find/angular-file-finder";
+import { PaletteCommand } from "./core/commands/types/command";
 
 let coordinator: Coordinator;
-
 
 /**
  * Called when the extension is activated.
@@ -23,7 +23,23 @@ export function activate(context: vscode.ExtensionContext): void {
 
 	const commandRegistrar = new CommandRegistrar(context);
 
-	commandRegistrar.registerPaletteCommand("jsfr.testCurrentFile", (vscodeResourceUri: vscode.Uri) => {
+	commandRegistrar.registerPaletteCommand("jsfr.testCurrentFile", mainCommand);
+	commandRegistrar.registerPaletteCommand("jsfr.testCurrentSelection", mainCommand);
+	commandRegistrar.registerPaletteCommand("jsfr.testCurrentDirectory", mainCommand);
+}
+
+/**
+ * Called when the extension is deactivated.
+ *
+ * @export
+ */
+export function deactivate(): void {
+	coordinator?.dispose();
+}
+
+const mainCommand: PaletteCommand = (vscodeResourceUri: vscode.Uri) => {
+		coordinator?.dispose();
+
 		const isFile = /\.spec\.ts$/.test(vscodeResourceUri.path);
 
 		const resourceUri = new UriWrapper(vscodeResourceUri, !isFile);
@@ -51,19 +67,7 @@ export function activate(context: vscode.ExtensionContext): void {
 				throw e;
 			}
 		});
-	});
-}
-
-
-/**
- * Called when the extension is deactivated.
- *
- * @export
- */
-export function deactivate(): void {
-	coordinator?.dispose();
-}
-
+	};
 
 /**
  * Register dependencies for injection.
