@@ -1,7 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
-import { CommandRegistrar } from "./core/command-registrar";
+import { CommandRegistrar } from "./core/commands/command-registrar";
 import { Coordinator } from "./core/coordinator";
 import { IUri } from "./core/file-system/types/file-system";
 
