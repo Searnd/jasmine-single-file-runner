@@ -1,12 +1,12 @@
 
 import * as path from "path";
 import * as vscode from "vscode";
-import { IUri } from "../file-system/types/file-system";
-import { VsCodeProgress } from "../shared/types/vscode";
-import { TestFileEditor } from "../file-system/edit/test-file-editor";
-import { TsConfigSpecEditor } from "../file-system/edit/tsconfig-spec-editor";
-import { FileFinder } from "../file-system/find/file-finder";
-import { VscodeTaskRunner } from "../task-management/vscode-task-runner";
+import { VsCodeProgress } from "./types/vscode";
+import { TestFileEditor } from "./file-system/edit/test-file-editor";
+import { TsConfigSpecEditor } from "./file-system/edit/tsconfig-spec-editor";
+import { VscodeTaskRunner } from "./task-management/vscode-task-runner";
+import { FileFinder } from "./file-system/find/file-finder";
+import { IUri } from "./file-system/types/file-system";
 
 export class Coordinator {
     private _testFileEditor!: TestFileEditor;
