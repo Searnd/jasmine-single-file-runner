@@ -2,12 +2,10 @@ import "reflect-metadata";
 
 import * as vscode from "vscode";
 import { CommandRegistrar } from "./core/commands/command-registrar";
-import { Coordinator } from "./core/commands/coordinator";
 import { UriWrapper } from "./core/file-system/types/file-system";
 import { container } from "tsyringe";
-
-
-import { CoordinatorFactory } from "./core/commands/coordinator.factory";
+import { Coordinator } from "./core/coordtinator/coordinator";
+import { CoordinatorFactory } from "./core/coordtinator/coordinator.factory";
 import { FileFinder } from "./core/file-system/find/file-finder";
 import { AngularFileFinder } from "./core/file-system/find/angular-file-finder";
 
