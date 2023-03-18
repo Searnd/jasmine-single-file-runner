@@ -3,7 +3,7 @@
 import * as vscode from "vscode";
 import { CommandRegistrar } from "./core/commands/command-registrar";
 import { Coordinator } from "./core/coordinator";
-import { IUri } from "./core/file-system/types/file-system";
+import { UriWrapper } from "./core/file-system/types/file-system";
 
 import "reflect-metadata";
 
@@ -17,12 +17,7 @@ export function activate(context: vscode.ExtensionContext): void {
 	commandRegistrar.registerPaletteCommand("jsfr.testCurrentFile", (vscodeResourceUri: vscode.Uri) => {
 		const isFile = /\.spec\.ts$/.test(vscodeResourceUri.path);
 
-		const resourceUri: IUri = {
-			...vscodeResourceUri,
-			with: vscodeResourceUri.with,
-			toJSON: vscodeResourceUri.toJSON,
-			isFolder: !isFile
-		};
+		const resourceUri = new UriWrapper(vscodeResourceUri, !isFile);
 
 		const progressOptions: vscode.ProgressOptions = {
 			title: "JSFR",

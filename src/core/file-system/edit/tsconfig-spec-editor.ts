@@ -1,4 +1,4 @@
-import { FileSystemError, Uri } from "vscode";
+import { FileSystemError } from "vscode";
 import * as fs from "fs/promises";
 import stripJsonComments = require("strip-json-comments");
 import * as path from "path";
@@ -13,7 +13,7 @@ export class TsConfigSpecEditor {
     private _tsconfigInitialData: string | undefined;
 
     constructor(
-        private readonly _tsconfigSpecFileUri: Uri,
+        private readonly _tsconfigSpecFileUri: IUri,
         private readonly _resourceUri: IUri
     ) {}
 
