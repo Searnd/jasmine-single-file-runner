@@ -8,6 +8,8 @@ import { container } from "tsyringe";
 
 
 import { CoordinatorFactory } from "./core/commands/coordinator.factory";
+import { FileFinder } from "./core/file-system/find/file-finder";
+import { AngularFileFinder } from "./core/file-system/find/angular-file-finder";
 
 let coordinator: Coordinator;
 
@@ -71,4 +73,6 @@ export function deactivate(): void {
  */
 function registerDependencies(): void {
 	container.register<CoordinatorFactory>(CoordinatorFactory, { useClass: CoordinatorFactory });
+	container.register<FileFinder>(FileFinder, { useClass: FileFinder });
+	container.register<AngularFileFinder>(AngularFileFinder, { useClass: AngularFileFinder });
 }
