@@ -9,7 +9,7 @@
 - Even more code cleanup
 - Update README
 - Update libraries
-- Change target VS Code version from 1.57.2 to 1.76.0
+- Change target VS Code version from 1.57.0 to 1.76.0
 # 0.6
 ### 0.6.4
 - More code cleanup
