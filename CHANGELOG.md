@@ -4,6 +4,9 @@
 
 <!-- ### 0.6.0 -->
 
+### 0.6.4
+- More code cleanup
+
 ### 0.6.3
 - Fix bundling
 
