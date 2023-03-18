@@ -88,11 +88,13 @@
     "cross-spawn": "^7.0.3",
     "express": "^4.18.2",
     "karma": "^6.3.20",
+    "reflect-metadata": "^0.1.13",
     "rxjs": "^7.5.7",
     "socket.io": "^4.5.4",
     "socket.io-client": "^4.5.1",
     "strip-json-comments": "^3.1.1",
     "tree-kill": "^1.2.2",
+    "tsyringe": "^4.7.0",
     "typescript": "^4.9.3"
   }
 }

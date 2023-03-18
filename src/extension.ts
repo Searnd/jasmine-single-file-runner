@@ -5,6 +5,8 @@ import { CommandRegistrar } from "./core/commands/command-registrar";
 import { Coordinator } from "./core/coordinator";
 import { IUri } from "./core/file-system/types/file-system";
 
+import "reflect-metadata";
+
 let coordinator: Coordinator | undefined;
 
 // this method is called when your extension is activated

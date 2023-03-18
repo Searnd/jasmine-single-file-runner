@@ -1,5 +1,10 @@
 {
 	"compilerOptions": {
+		"forceConsistentCasingInFileNames": true,
+		// tsyringe
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+		// end
 		"module": "commonjs",
 		"target": "es6",
 		"resolveJsonModule": true,
