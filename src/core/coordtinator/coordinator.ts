@@ -13,9 +13,9 @@ export class Coordinator {
 
     constructor(
         private readonly resourceUri: IUri,
-        private readonly testFileEditor: TestFileEditor,
         private readonly tsconfigSpecEditor: TsConfigSpecEditor,
         private readonly taskRunner: VscodeTaskRunner,
+        private readonly testFileEditor?: TestFileEditor,
     ) {
         vscode.tasks.onDidEndTask((e) => {
             if (e.execution.task.name === this.taskType) {
@@ -34,16 +34,16 @@ export class Coordinator {
     }
 
     public dispose(): void {
-        this.testFileEditor.restoreContextLine();
+        this.testFileEditor?.restoreContextLine();
         this.tsconfigSpecEditor.restoreFile();
     }
 
     private async prepareAsync(): Promise<void> {
-        if (!this.testFileEditor || !this.tsconfigSpecEditor || !this.taskRunner) {
-            throw new vscode.FileSystemError("Error: test file editor and/or tsconfig editor and/or task manager not initialized");
+        if (!this.tsconfigSpecEditor || !this.taskRunner) {
+            throw new vscode.FileSystemError("Error: tsconfig editor and/or task manager not initialized");
         }
 
-        await this.testFileEditor.addSpecFileToContextLineAsync();
+        await this.testFileEditor?.addSpecFileToContextLineAsync();
         await this.tsconfigSpecEditor.addSpecFileAsync();
     }
 
