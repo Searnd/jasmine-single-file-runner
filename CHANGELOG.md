@@ -3,6 +3,8 @@
 # 0.7
 
 <!-- ### 0.7.0 -->
+### 0.7.1
+- Fix extension name
 
 ### 0.7.0
 - Add dependency injection

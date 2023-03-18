@@ -1,6 +1,6 @@
 {
   "name": "jsfr",
-  "displayName": "Jasmine Single File Runner",
+  "displayName": "Jasmine Specific File Runner",
   "publisher": "AndresFlores",
   "author": {
     "name": "Andres Flores",
@@ -8,7 +8,7 @@
   },
   "description": "",
   "icon": "assets/images/logo-128-centered.png",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "engines": {
     "vscode": "^1.76.0"
   },
