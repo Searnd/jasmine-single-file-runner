@@ -1,7 +1,8 @@
 import * as vscode from "vscode";
+import { TaskType } from "./types/task-type";
 
 export class VscodeTaskRunner {
-    constructor(private readonly type: string) {
+    constructor(private readonly type: TaskType) {
     }
 
     public registerTaskProvider(name: string, commandLine: string, options: vscode.ShellExecutionOptions): vscode.Disposable {

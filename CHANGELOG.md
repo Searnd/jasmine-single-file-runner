@@ -1,9 +1,16 @@
 # Change Log
 
+# 0.7
+
+<!-- ### 0.7.0 -->
+
+### 0.7.0
+- Add dependency injection
+- Even more code cleanup
+- Update README
+- Update libraries
+- Change target VS Code version from 1.57.0 to 1.76.0
 # 0.6
-
-<!-- ### 0.6.0 -->
-
 ### 0.6.4
 - More code cleanup
 

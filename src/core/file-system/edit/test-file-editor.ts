@@ -1,4 +1,3 @@
-import { Uri } from "vscode";
 import { promises as fs } from "fs";
 import * as path from "path";
 import { LineNotFoundInFileError } from "../exceptions/error-index";
@@ -11,7 +10,7 @@ export class TestFileEditor {
     private contextLineInitialValue = "";
 
     constructor(
-        private readonly testFileUri: Uri,
+        private readonly testFileUri: IUri,
         private readonly resourceUri: IUri
     ) { }
 

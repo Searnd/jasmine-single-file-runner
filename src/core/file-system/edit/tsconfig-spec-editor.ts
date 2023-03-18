@@ -1,9 +1,9 @@
-import { FileSystemError, Uri } from "vscode";
+import { FileSystemError } from "vscode";
 import * as fs from "fs/promises";
 import stripJsonComments = require("strip-json-comments");
 import * as path from "path";
 import { IUri } from "../types/file-system";
-import { FileFinder } from "../find/file-finder";
+import { AngularFileFinder } from "../find/angular-file-finder";
 
 type Tsconfig = {
     include: string[]
@@ -13,12 +13,13 @@ export class TsConfigSpecEditor {
     private _tsconfigInitialData: string | undefined;
 
     constructor(
-        private readonly _tsconfigSpecFileUri: Uri,
-        private readonly _resourceUri: IUri
+        private readonly tsconfigSpecFileUri: IUri,
+        private readonly resourceUri: IUri,
+        private readonly angularFileFinder: AngularFileFinder
     ) {}
 
     public async addSpecFileAsync(): Promise<void> {
-        const data = await fs.readFile(this._tsconfigSpecFileUri.fsPath, {encoding: "utf8"});
+        const data = await fs.readFile(this.tsconfigSpecFileUri.fsPath, {encoding: "utf8"});
 
         this.backupFile(data);
 
@@ -27,20 +28,20 @@ export class TsConfigSpecEditor {
             throw new FileSystemError("Error: unable to fetch tsconfig.spec.json");
         }
 
-        const projectRootAbsolutePath = await FileFinder.getAngularProjectRootPath();
+        const projectRootAbsolutePath = await this.angularFileFinder.getAngularProjectRootPath();
         
         let projectRootRelativePath = path
-            .relative(this._tsconfigSpecFileUri.path, projectRootAbsolutePath)
+            .relative(this.tsconfigSpecFileUri.path, projectRootAbsolutePath)
             .replace(/\\/g, "/");
         
         // remove extra '.' in the path that was added by the call to path.relative
         projectRootRelativePath = projectRootRelativePath.slice(1);
 
-        const formattedSpecFilename = this.getPathRelativeToTsconfig(this._resourceUri.path);
+        const formattedSpecFilename = this.getPathRelativeToTsconfig(this.resourceUri.path);
 
         tsconfig.include = [ formattedSpecFilename, `${projectRootRelativePath}/src/*.d.ts`, `${projectRootRelativePath}/src/*.ts` ];
 
-        await fs.writeFile(this._tsconfigSpecFileUri.fsPath, JSON.stringify(tsconfig), "utf8");
+        await fs.writeFile(this.tsconfigSpecFileUri.fsPath, JSON.stringify(tsconfig), "utf8");
     }
 
     public async restoreFile(): Promise<void> {
@@ -48,7 +49,7 @@ export class TsConfigSpecEditor {
             throw new FileSystemError("Error: Nothing to restore");
         }
 
-        await fs.writeFile(this._tsconfigSpecFileUri.fsPath, this._tsconfigInitialData, "utf8");
+        await fs.writeFile(this.tsconfigSpecFileUri.fsPath, this._tsconfigInitialData, "utf8");
     }
 
     private backupFile(data: string): void {
@@ -59,7 +60,7 @@ export class TsConfigSpecEditor {
     }
 
     private getPathRelativeToTsconfig(pathStr: string): string {
-        let specFileRelativePath = path.relative(this._tsconfigSpecFileUri.path, pathStr);
+        let specFileRelativePath = path.relative(this.tsconfigSpecFileUri.path, pathStr);
 
         // remove extra '.' in the path that was added by the call to path.relative
         specFileRelativePath = specFileRelativePath.slice(1);
@@ -67,7 +68,7 @@ export class TsConfigSpecEditor {
         // clean up for windows
         specFileRelativePath = specFileRelativePath.replace(/\\/g, "/");
 
-        if (this._resourceUri.isFolder) {
+        if (this.resourceUri.isFolder) {
             specFileRelativePath += "/**/*.spec.ts";
         }
 

@@ -1,7 +1,5 @@
 import * as vscode from "vscode";
-
-type PaletteCommandCallback = (...args: any[]) => any;
-type TextEditorCommandCallback = (textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit, ...args: any[]) => void;
+import { PaletteCommand, TextEditorCommand } from "./types/command";
 
 export class CommandRegistrar {
     private context: vscode.ExtensionContext;
@@ -10,13 +8,13 @@ export class CommandRegistrar {
         this.context = context;
     }
 
-	public registerPaletteCommand(command: string, callback: PaletteCommandCallback): void {
+	public registerPaletteCommand(command: string, callback: PaletteCommand): void {
 		const disposable = vscode.commands.registerCommand(command, callback);
 
 		this.context.subscriptions.push(disposable);
 	}
 
-	public registerTextEditorCommand(command: string, callback: TextEditorCommandCallback): void {
+	public registerTextEditorCommand(command: string, callback: TextEditorCommand): void {
 		const disposable = vscode.commands.registerTextEditorCommand(command, callback);
 
 		this.context.subscriptions.push(disposable);

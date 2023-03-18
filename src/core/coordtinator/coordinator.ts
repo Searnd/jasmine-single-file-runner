@@ -1,24 +1,21 @@
 
 import * as path from "path";
 import * as vscode from "vscode";
-import { VsCodeProgress } from "./types/vscode";
-import { TestFileEditor } from "./file-system/edit/test-file-editor";
-import { TsConfigSpecEditor } from "./file-system/edit/tsconfig-spec-editor";
-import { VscodeTaskRunner } from "./tasks/vscode-task-runner";
-import { FileFinder } from "./file-system/find/file-finder";
-import { IUri } from "./file-system/types/file-system";
-import { TaskType } from "./tasks/types/task-type";
+import { VsCodeProgress } from "../types/vscode";
+import { TestFileEditor } from "../file-system/edit/test-file-editor";
+import { TsConfigSpecEditor } from "../file-system/edit/tsconfig-spec-editor";
+import { VscodeTaskRunner } from "../tasks/vscode-task-runner";
+import { TaskType } from "../tasks/types/task-type";
+import { IUri } from "../file-system/types/file-system";
 
 export class Coordinator {
-    private testFileEditor!: TestFileEditor;
-    private tsconfigSpecEditor!: TsConfigSpecEditor;
-
-    private taskRunner!: VscodeTaskRunner;
-
     private readonly taskType: TaskType = "ngTest";
 
     constructor(
-        private readonly resourceUri: IUri
+        private readonly resourceUri: IUri,
+        private readonly testFileEditor: TestFileEditor,
+        private readonly tsconfigSpecEditor: TsConfigSpecEditor,
+        private readonly taskRunner: VscodeTaskRunner,
     ) {
         vscode.tasks.onDidEndTask((e) => {
             if (e.execution.task.name === this.taskType) {
@@ -41,19 +38,7 @@ export class Coordinator {
         this.tsconfigSpecEditor.restoreFile();
     }
 
-    private async initializeAsync(): Promise<void> {
-        const testFileUri = await FileFinder.getFileLocation("**/src/test.ts");
-        this.testFileEditor = new TestFileEditor(testFileUri, this.resourceUri);
-
-        const tsconfigSpecFileUri = await FileFinder.getFileLocation("**/tsconfig.spec.json");
-        this.tsconfigSpecEditor = new TsConfigSpecEditor(tsconfigSpecFileUri, this.resourceUri);
-
-        this.taskRunner = new VscodeTaskRunner(this.taskType);
-    }
-
     private async prepareAsync(): Promise<void> {
-        await this.initializeAsync();
-
         if (!this.testFileEditor || !this.tsconfigSpecEditor || !this.taskRunner) {
             throw new vscode.FileSystemError("Error: test file editor and/or tsconfig editor and/or task manager not initialized");
         }

@@ -1,26 +1,48 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
+import "reflect-metadata";
+
 import * as vscode from "vscode";
 import { CommandRegistrar } from "./core/commands/command-registrar";
-import { Coordinator } from "./core/coordinator";
-import { IUri } from "./core/file-system/types/file-system";
+import { UriWrapper } from "./core/file-system/types/file-system";
+import { container } from "tsyringe";
+import { Coordinator } from "./core/coordtinator/coordinator";
+import { CoordinatorFactory } from "./core/coordtinator/coordinator.factory";
+import { FileFinder } from "./core/file-system/find/file-finder";
+import { AngularFileFinder } from "./core/file-system/find/angular-file-finder";
+import { PaletteCommand } from "./core/commands/types/command";
 
-let coordinator: Coordinator | undefined;
+let coordinator: Coordinator;
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
+/**
+ * Called when the extension is activated.
+ *
+ * @export
+ * @param {vscode.ExtensionContext} context
+ */
 export function activate(context: vscode.ExtensionContext): void {
+	registerDependencies();
+
 	const commandRegistrar = new CommandRegistrar(context);
 
-	commandRegistrar.registerPaletteCommand("jsfr.testCurrentFile", (vscodeResourceUri: vscode.Uri) => {
+	commandRegistrar.registerPaletteCommand("jsfr.testCurrentFile", mainCommand);
+	commandRegistrar.registerPaletteCommand("jsfr.testCurrentSelection", mainCommand);
+	commandRegistrar.registerPaletteCommand("jsfr.testCurrentDirectory", mainCommand);
+}
+
+/**
+ * Called when the extension is deactivated.
+ *
+ * @export
+ */
+export function deactivate(): void {
+	coordinator?.dispose();
+}
+
+const mainCommand: PaletteCommand = (vscodeResourceUri: vscode.Uri) => {
+		coordinator?.dispose();
+
 		const isFile = /\.spec\.ts$/.test(vscodeResourceUri.path);
 
-		const resourceUri: IUri = {
-			...vscodeResourceUri,
-			with: vscodeResourceUri.with,
-			toJSON: vscodeResourceUri.toJSON,
-			isFolder: !isFile
-		};
+		const resourceUri = new UriWrapper(vscodeResourceUri, !isFile);
 
 		const progressOptions: vscode.ProgressOptions = {
 			title: "JSFR",
@@ -31,7 +53,9 @@ export function activate(context: vscode.ExtensionContext): void {
 			progress.report({message: "Preparing..."});
 
 			try {
-				coordinator = new Coordinator(resourceUri);
+				const coordinatorFactory = container.resolve(CoordinatorFactory);
+
+				coordinator = await coordinatorFactory.createAsync(resourceUri);
 
 				await coordinator.executeTestsAsync(progress);
 			}
@@ -43,10 +67,14 @@ export function activate(context: vscode.ExtensionContext): void {
 				throw e;
 			}
 		});
-	});
-}
+	};
 
-// this method is called when your extension is deactivated
-export function deactivate(): void {
-	coordinator?.dispose();
+/**
+ * Register dependencies for injection.
+ *
+ */
+function registerDependencies(): void {
+	container.register<CoordinatorFactory>(CoordinatorFactory, { useClass: CoordinatorFactory });
+	container.register<FileFinder>(FileFinder, { useClass: FileFinder });
+	container.register<AngularFileFinder>(AngularFileFinder, { useClass: AngularFileFinder });
 }

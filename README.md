@@ -1,6 +1,6 @@
-# Jasmine/Karma Single File Runner README ![](https://github.com/Searnd/jasmine-single-file-runner/actions/workflows/main.yml/badge.svg)
+# Jasmine/Karma Specific File Runner README ![](https://github.com/Searnd/jasmine-single-file-runner/actions/workflows/main.yml/badge.svg)
 
-Or JSFR for short. This extension gives you the ability to provide a single file for testing to the Angular test suite, significantly reducing test compilation time.
+Or JSFR for short. This extension significantly reduces the amount of time spent waiting for your Angular tests to compile and run in cases where you only want to test a specific set of files.
 
 Below is a comparison between executing a single test file in a moderate-sized project using **JSFR** (top) and using **fdescribe** (bottom):
 
@@ -8,7 +8,7 @@ Below is a comparison between executing a single test file in a moderate-sized p
 
 ## Features
 
-Execute tests in a `.spec.ts` file by simply right-clicking on it and selecting the option `JSFR: Test Current File`:
+Execute tests in a `.spec.ts` file by simply right-clicking on it and selecting the option `JSFR: Test current file`:
 
 <img src="assets/docs/te-right-click.gif" width="481px">
 
@@ -20,7 +20,7 @@ To all the tests from a given directory, simply right-click on the corresponding
 
 ## Requirements
 
-Must have VS Code version 1.57.0 or higher.
+Must have VS Code version 1.76.0 or higher.
 
 Must have VS Code open in an angular project (contains an `angular.json` file).
 
@@ -28,66 +28,14 @@ Must have the angular cli installed globally (`npm i -g @angular/cli`).
 
 ## How does it work?
 The default configuration for testing with Angular/Karma has the compiler searching recursively for all `.spec.ts` files in the project. This is done both
-in the `test.ts` file and the `tsconfig.spec.json` file. As such, in cases where we simply want to run tests in a few files, we're spending a lot of unecessary time and resources looking for and compiling all these other tests.
+in the `test.ts` file and the `tsconfig.spec.json` file. Because of this, we're forced to spend the same amount of time compiling every single test whether we wamt to run the whole suite or just a few tests.
 To solve this problem, JSFR modifies the `test.ts` and `tsconfig.spec.json` files so that we're only pointing to a given set of files—those that we actually want
 to test. These changes are reverted as soon as the testing has ended via terminated the task or closing VS Code.
 
 ## Limitations
-Changes made to the `test.ts` file while JSFR is running won't be kept, as `test.ts` is reverted to its initial state before starting JSFR.
-<!-- To ensure that specs are properly discovered and displayed in the test explorer, `describe` and `it` statements must have their labels defined inline using a string literal, or by a variable whose last assignment is a string literal.
-
-e.g.
-
-### Works:
-
-```typescript
-describe("AppComponent", () => {});
-```
-
-```typescript
-const label = "AppComponent";
-describe(label, () => {});
-```
-### Doesn't work:
-```typescript
-let doMagic = "do magic";
-const label = "should" + doMagic;
-it(label, () => {});
-```
-
-Furthermore, the callback function can only be defined inline.
-
-e.g.
-
-### Works
-```typescript
-describe("", () => {
-    // do stuff
-});
-```
-
-```typescript
-describe("", function () {
-    // do stuff
-});
-```
-
-### Doesn't work
-```typescript
-const doStuff = () {
-    // do stuff
-}
-describe("", doStuff);
-```
-```typescript
-function doStuff() {
-    // do stuff
-}
-describe("", doStuff);
-``` -->
+Changes made to the `test.ts` and `tsconfig.spec.json` files while JSFR is running won't be kept, as they are reverted to its initial state before starting JSFR.
 
 ---
-
 ## Releases
 
 See the [changelog](CHANGELOG.md).
