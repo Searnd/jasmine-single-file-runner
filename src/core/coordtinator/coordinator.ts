@@ -48,7 +48,7 @@ export class Coordinator {
     }
 
     private async startTaskAsync(progress: VsCodeProgress): Promise<void> {
-        const ngTestTask = await this.taskRunner.getTask(this.taskType);
+        const ngTestTask = await this.taskRunner.getTaskAsync(this.taskType);
 
         if(!ngTestTask) {
             vscode.window.showErrorMessage("Error: task not properly registered");
@@ -57,8 +57,8 @@ export class Coordinator {
         }
 
         vscode.tasks.executeTask(ngTestTask).then(
-            () => { progress.report({message: "JSFR: Executing tests"}); },
-            () => { vscode.window.showErrorMessage("Error: unable to run ng test"); }
+            () => progress.report({message: "JSFR: Executing tests"}),
+            () => vscode.window.showErrorMessage("Error: unable to run ng test")
         );
     }
 }

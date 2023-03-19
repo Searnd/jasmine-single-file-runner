@@ -13,12 +13,12 @@ export class VscodeTaskRunner {
 
                 return [task];
             },
-            resolveTask: (task) => task
+            resolveTask: () => undefined
         });
     }
 
-    public async startTask(name: string): Promise<vscode.TaskExecution> {
-        const task = await this.getTask(name);
+    public async startTaskAsync(name: string): Promise<vscode.TaskExecution> {
+        const task = await this.getTaskAsync(name);
 
         if (task) {
             return vscode.tasks.executeTask(task);
@@ -27,12 +27,10 @@ export class VscodeTaskRunner {
         return Promise.reject(`Unable to start task. No task found with name ${name}.`);
     }
 
-    public async getTask(name: string): Promise<vscode.Task|undefined> {
+    public async getTaskAsync(name: string): Promise<vscode.Task|undefined> {
         const tasks = await vscode.tasks.fetchTasks({type: this.type});
 
-        return tasks.find((task) => {
-            return task.name === name;
-        });
+        return tasks.find(task => task.name === name);
     }
 
     public killTask(name: string): void {
