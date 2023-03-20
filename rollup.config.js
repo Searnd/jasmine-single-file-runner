@@ -1,11 +1,11 @@
 import terser from "@rollup/plugin-terser";
-import typescript from "@rollup/plugin-typescript";
 
 export default {
-  input: "src/extension.ts",
+  input: "out/extension.js",
   output: {
     dir: "out",
-    format: "cjs"
+    format: "cjs",
+    sourcemap: true
   },
-  plugins: [typescript(), terser()]
-}
+  plugins: [terser()]
+};
