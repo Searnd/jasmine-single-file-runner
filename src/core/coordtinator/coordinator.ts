@@ -27,8 +27,7 @@ export class Coordinator {
     public async executeTestsAsync(progress: VsCodeProgress): Promise<void> {
         await this.prepareAsync();
 
-        const specFileDirectory = path.dirname(this.resourceUri.path);
-        this.taskRunner.registerTaskProvider(this.taskType, "npx ng test", {cwd: specFileDirectory});
+        this.registerTask();
 
         await this.startTaskAsync(progress);
     }
@@ -39,26 +38,27 @@ export class Coordinator {
     }
 
     private async prepareAsync(): Promise<void> {
-        if (!this.tsconfigSpecEditor || !this.taskRunner) {
-            throw new vscode.FileSystemError("Error: tsconfig editor and/or task manager not initialized");
-        }
-
         await this.testFileEditor?.addSpecFileToContextLineAsync();
         await this.tsconfigSpecEditor.addSpecFileAsync();
+    }
+
+    private registerTask(): void {
+        const specFileDirectory = path.dirname(this.resourceUri.path);
+        this.taskRunner.registerTaskProvider(this.taskType, "npx ng test", {cwd: specFileDirectory});
     }
 
     private async startTaskAsync(progress: VsCodeProgress): Promise<void> {
         const ngTestTask = await this.taskRunner.getTaskAsync(this.taskType);
 
         if(!ngTestTask) {
-            vscode.window.showErrorMessage("Error: task not properly registered");
+            vscode.window.showErrorMessage("Error: Task not properly registered");
 
             return;
         }
 
         vscode.tasks.executeTask(ngTestTask).then(
             () => progress.report({message: "JSFR: Executing tests"}),
-            () => vscode.window.showErrorMessage("Error: unable to run ng test")
+            () => vscode.window.showErrorMessage("Error: Unable to run ng test")
         );
     }
 }
