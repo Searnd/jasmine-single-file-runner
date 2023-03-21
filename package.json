@@ -82,6 +82,8 @@
     "package": "vsce package -o dist/jsfr.vsix"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^24.0.1",
+    "@rollup/plugin-node-resolve": "^15.0.1",
     "@rollup/plugin-terser": "^0.4.0",
     "@rollup/plugin-typescript": "^11.0.0",
     "@types/cross-spawn": "^6.0.2",
