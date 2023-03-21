@@ -2,6 +2,10 @@
 
 # 0.7
 
+### 0.7.3
+- Fix plugin not starting
+- Remove unused packages
+
 ### 0.7.2
 - No longer crash if `test.ts` file is not found
 
