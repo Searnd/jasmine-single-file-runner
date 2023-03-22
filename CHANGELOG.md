@@ -2,6 +2,9 @@
 
 # 0.7
 
+### 0.7.5
+- Update dependencies
+
 ### 0.7.4
 - Tiny code cleanup
 
