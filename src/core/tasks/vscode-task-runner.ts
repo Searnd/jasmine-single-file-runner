@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { TaskError } from "./exceptions/task.error";
 import { TaskType } from "./types/task-type";
 
 export class VscodeTaskRunner {
@@ -13,7 +14,7 @@ export class VscodeTaskRunner {
 
                 return [task];
             },
-            resolveTask: () => undefined
+            resolveTask: task => task
         });
     }
 
@@ -21,10 +22,10 @@ export class VscodeTaskRunner {
         const task = await this.getTaskAsync(name);
 
         if (task) {
-            return vscode.tasks.executeTask(task);
+            return await vscode.tasks.executeTask(task);
         }
 
-        return Promise.reject(`Unable to start task. No task found with name ${name}.`);
+        throw new TaskError(`Unable to start task. No task found with name ${name}.`);
     }
 
     public async getTaskAsync(name: string): Promise<vscode.Task|undefined> {

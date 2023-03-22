@@ -8,7 +8,7 @@
   },
   "description": "",
   "icon": "assets/images/logo-128-centered.png",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "engines": {
     "vscode": "^1.76.0"
   },
