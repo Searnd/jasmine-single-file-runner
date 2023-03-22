@@ -11,14 +11,24 @@ export class CoordinatorFactory {
   constructor(private readonly angularFileFinder: AngularFileFinder) {}
 
   public async createAsync(resourceUri: IUri): Promise<Coordinator> {
-    const testFileUri = await this.angularFileFinder.getFileLocation("**/src/test.ts");
-    const testFileEditor = new TestFileEditor(testFileUri, resourceUri);
-
     const tsconfigSpecFileUri = await this.angularFileFinder.getFileLocation("**/tsconfig.spec.json");
     const tsconfigSpecEditor = new TsConfigSpecEditor(tsconfigSpecFileUri, resourceUri, this.angularFileFinder);
 
     const taskRunner = new VscodeTaskRunner("ngTest");
 
-    return new Coordinator(resourceUri, testFileEditor, tsconfigSpecEditor, taskRunner);
+    return new Coordinator(resourceUri, tsconfigSpecEditor, taskRunner, await this.tryCreateTestFileEditor(resourceUri));
+  }
+
+  private async tryCreateTestFileEditor(resourceUri: IUri): Promise<TestFileEditor | undefined> {
+    try {
+      const testFileUri = await this.angularFileFinder.getFileLocation("**/src/test.ts");
+
+      return new TestFileEditor(testFileUri, resourceUri);
+    }
+    catch {
+      // TODO: log warning
+
+      return undefined;
+    }
   }
 }
